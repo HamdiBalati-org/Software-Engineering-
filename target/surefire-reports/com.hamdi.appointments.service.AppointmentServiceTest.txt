@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.hamdi.appointments.service.AppointmentServiceTest
+-------------------------------------------------------------------------------
+Tests run: 19, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 13.519 s - in com.hamdi.appointments.service.AppointmentServiceTest

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Appointment.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">AppointmentSystem</a> &gt; <a href="index.source.html" class="el_package">com.hamdi.appointments.domain</a> &gt; <span class="el_source">Appointment.java</span></div><h1>Appointment.java</h1><pre class="source lang-java linenums">package com.hamdi.appointments.domain;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Represents a scheduled appointment in the system.
+ *
+ * @author Hamdi
+ * @version 1.0
+ */
+public class Appointment {
+
+    private LocalDateTime dateTime;
+    private int durationMinutes;
+    private int maxParticipants;
+    private int currentParticipants;
+    private String status;
+    private List&lt;String&gt; bookedUsers;
+    private Map&lt;String, AppointmentType&gt; userTypes; // ✅ نوع لكل مستخدم
+
+    /**
+     * Creates a new Appointment with Pending status and no type.
+     *
+     * @param dateTime        the date and time
+     * @param durationMinutes the duration in minutes
+     * @param maxParticipants the maximum participants
+     */
+<span class="fc" id="L32">    public Appointment(LocalDateTime dateTime, int durationMinutes, int maxParticipants) {</span>
+<span class="fc" id="L33">        this.dateTime            = dateTime;</span>
+<span class="fc" id="L34">        this.durationMinutes     = durationMinutes;</span>
+<span class="fc" id="L35">        this.maxParticipants     = maxParticipants;</span>
+<span class="fc" id="L36">        this.currentParticipants = 0;</span>
+<span class="fc" id="L37">        this.status              = &quot;Pending&quot;;</span>
+<span class="fc" id="L38">        this.bookedUsers         = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L39">        this.userTypes           = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L40">    }</span>
+
+    /**
+     * Creates a new Appointment with a predefined type.
+     *
+     * @param dateTime        the date and time
+     * @param durationMinutes the duration in minutes
+     * @param maxParticipants the maximum participants
+     * @param type            the appointment type
+     */
+    public Appointment(LocalDateTime dateTime, int durationMinutes,
+<span class="nc" id="L51">                       int maxParticipants, AppointmentType type) {</span>
+<span class="nc" id="L52">        this.dateTime            = dateTime;</span>
+<span class="nc" id="L53">        this.durationMinutes     = durationMinutes;</span>
+<span class="nc" id="L54">        this.maxParticipants     = maxParticipants;</span>
+<span class="nc" id="L55">        this.currentParticipants = 0;</span>
+<span class="nc" id="L56">        this.status              = &quot;Pending&quot;;</span>
+<span class="nc" id="L57">        this.bookedUsers         = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L58">        this.userTypes           = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L59">    }</span>
+
+    /** @return the appointment date and time */
+<span class="fc" id="L62">    public LocalDateTime getDateTime() { return dateTime; }</span>
+
+    /** @return duration in minutes */
+<span class="fc" id="L65">    public int getDurationMinutes() { return durationMinutes; }</span>
+
+    /** @return max participants */
+<span class="fc" id="L68">    public int getMaxParticipants() { return maxParticipants; }</span>
+
+    /** @return current participants */
+<span class="fc" id="L71">    public int getCurrentParticipants() { return currentParticipants; }</span>
+
+    /** @return appointment status */
+<span class="fc" id="L74">    public String getStatus() { return status; }</span>
+
+    /** @return booked users list */
+<span class="nc" id="L77">    public List&lt;String&gt; getBookedUsers() { return bookedUsers; }</span>
+
+    /**
+     * Returns the type chosen by a specific user.
+     *
+     * @param username the username
+     * @return the appointment type or null
+     */
+    public AppointmentType getTypeForUser(String username) {
+<span class="fc" id="L86">        return userTypes.get(username);</span>
+    }
+
+    /**
+     * Returns the userTypes map.
+     *
+     * @return map of username to AppointmentType
+     */
+<span class="nc" id="L94">    public Map&lt;String, AppointmentType&gt; getUserTypes() { return userTypes; }</span>
+
+    /**
+     * Sets the appointment status.
+     *
+     * @param status the new status
+     */
+<span class="nc" id="L101">    public void setStatus(String status) { this.status = status; }</span>
+
+    /**
+     * Sets the type for a specific user.
+     *
+     * @param username the username
+     * @param type     the appointment type
+     */
+    public void setTypeForUser(String username, AppointmentType type) {
+<span class="fc" id="L110">        userTypes.put(username, type);</span>
+<span class="fc" id="L111">    }</span>
+
+    /**
+     * Checks if a user already booked this appointment.
+     *
+     * @param username the username to check
+     * @return true if already booked
+     */
+    public boolean isBookedByUser(String username) {
+<span class="fc" id="L120">        return bookedUsers.contains(username);</span>
+    }
+
+    /**
+     * Increments participants and sets status to Confirmed.
+     *
+     * @param username the booking username
+     */
+    public void incrementParticipants(String username) {
+<span class="pc bpc" id="L129" title="2 of 4 branches missed.">        if (currentParticipants &lt; maxParticipants &amp;&amp; !isBookedByUser(username)) {</span>
+<span class="fc" id="L130">            currentParticipants++;</span>
+<span class="fc" id="L131">            bookedUsers.add(username);</span>
+<span class="fc" id="L132">            this.status = &quot;Confirmed&quot;;</span>
+        }
+<span class="fc" id="L134">    }</span>
+
+    /**
+     * Cancels a booking for a specific user.
+     *
+     * @param username the username to cancel
+     * @return true if cancelled successfully
+     */
+    public boolean cancelBooking(String username) {
+<span class="pc bpc" id="L143" title="1 of 2 branches missed.">        if (!isBookedByUser(username)) return false;</span>
+<span class="fc" id="L144">        bookedUsers.remove(username);</span>
+<span class="fc" id="L145">        userTypes.remove(username); // ✅ نمسح النوع مع الحجز</span>
+<span class="fc" id="L146">        currentParticipants--;</span>
+<span class="pc bpc" id="L147" title="1 of 2 branches missed.">        this.status = currentParticipants &gt; 0 ? &quot;Confirmed&quot; : &quot;Pending&quot;;</span>
+<span class="fc" id="L148">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BookingsGUI.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">AppointmentSystem</a> &gt; <a href="index.source.html" class="el_package">com.hamdi.appointments.gui</a> &gt; <span class="el_source">BookingsGUI.java</span></div><h1>BookingsGUI.java</h1><pre class="source lang-java linenums">package com.hamdi.appointments.gui;
+
+import com.hamdi.appointments.domain.Appointment;
+import com.hamdi.appointments.domain.AppointmentType;
+import com.hamdi.appointments.service.AppointmentService;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.util.List;
+
+/**
+ * Shows all bookings for admin management.
+ *
+ * @author Hamdi
+ * @version 1.0
+ */
+public class BookingsGUI extends JFrame {
+
+    private static final long serialVersionUID = 1L;
+
+    private AppointmentService service;
+    private String adminName;
+
+    private JTable table;
+    private DefaultTableModel tableModel;
+
+    private JTextField userField;
+    private JTextField dateTimeField;
+    private JTextField newDateTimeField;
+
+    private JButton cancelButton;
+    private JButton modifyButton;
+    private JButton backButton;
+
+    /**
+     * Builds the bookings management window for admin.
+     *
+     * @param service   the appointment service
+     * @param adminName the logged-in admin username
+     */
+    public BookingsGUI(AppointmentService service, String adminName) {
+<span class="nc" id="L43">        super(&quot;All Bookings - Admin: &quot; + adminName);</span>
+<span class="nc" id="L44">        this.service   = service;</span>
+<span class="nc" id="L45">        this.adminName = adminName;</span>
+
+<span class="nc" id="L47">        tableModel = new DefaultTableModel(</span>
+            new Object[]{&quot;User&quot;, &quot;DateTime&quot;, &quot;Duration&quot;, &quot;Type&quot;, &quot;Status&quot;}, 0);
+
+<span class="nc" id="L50">        table = new JTable(tableModel);</span>
+<span class="nc" id="L51">        refreshTable();</span>
+<span class="nc" id="L52">        JScrollPane scrollPane = new JScrollPane(table);</span>
+
+        // ✅ لما الأدمن يضغط على سطر يتعبى تلقائياً
+<span class="nc" id="L55">        table.getSelectionModel().addListSelectionListener(e -&gt; {</span>
+<span class="nc" id="L56">            int row = table.getSelectedRow();</span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">            if (row != -1) {</span>
+<span class="nc" id="L58">                userField.setText(tableModel.getValueAt(row, 0).toString());</span>
+<span class="nc" id="L59">                dateTimeField.setText(tableModel.getValueAt(row, 1).toString());</span>
+            }
+<span class="nc" id="L61">        });</span>
+
+<span class="nc" id="L63">        JPanel topPanel    = new JPanel(new FlowLayout(FlowLayout.LEFT));</span>
+<span class="nc" id="L64">        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));</span>
+
+<span class="nc" id="L66">        userField        = new JTextField(8);</span>
+<span class="nc" id="L67">        dateTimeField    = new JTextField(12);</span>
+<span class="nc" id="L68">        newDateTimeField = new JTextField(12);</span>
+<span class="nc" id="L69">        cancelButton     = new JButton(&quot;Admin Cancel&quot;);</span>
+<span class="nc" id="L70">        modifyButton     = new JButton(&quot;Admin Modify&quot;);</span>
+<span class="nc" id="L71">        backButton       = new JButton(&quot;Back&quot;);</span>
+
+        // ✅ سطر أول - Cancel
+<span class="nc" id="L74">        topPanel.add(new JLabel(&quot;Target User:&quot;));</span>
+<span class="nc" id="L75">        topPanel.add(userField);</span>
+<span class="nc" id="L76">        topPanel.add(new JLabel(&quot;DateTime:&quot;));</span>
+<span class="nc" id="L77">        topPanel.add(dateTimeField);</span>
+<span class="nc" id="L78">        topPanel.add(cancelButton);</span>
+
+        // ✅ سطر ثاني - Modify + Back
+<span class="nc" id="L81">        bottomPanel.add(new JLabel(&quot;New DateTime:&quot;));</span>
+<span class="nc" id="L82">        bottomPanel.add(newDateTimeField);</span>
+<span class="nc" id="L83">        bottomPanel.add(modifyButton);</span>
+<span class="nc" id="L84">        bottomPanel.add(backButton);</span>
+
+<span class="nc" id="L86">        setLayout(new BorderLayout());</span>
+<span class="nc" id="L87">        add(scrollPane,  BorderLayout.CENTER);</span>
+<span class="nc" id="L88">        add(topPanel,    BorderLayout.NORTH);</span>
+<span class="nc" id="L89">        add(bottomPanel, BorderLayout.SOUTH);</span>
+
+<span class="nc" id="L91">        setSize(750, 400);</span>
+<span class="nc" id="L92">        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);</span>
+<span class="nc" id="L93">        setLocationRelativeTo(null);</span>
+<span class="nc" id="L94">        setVisible(true);</span>
+
+        // ------------------ Admin Cancel ------------------
+<span class="nc" id="L97">        cancelButton.addActionListener(e -&gt; {</span>
+<span class="nc" id="L98">            String user = userField.getText().trim();</span>
+<span class="nc" id="L99">            String dt   = dateTimeField.getText().trim();</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">            if (user.isEmpty()) {</span>
+<span class="nc" id="L101">                JOptionPane.showMessageDialog(null, &quot;Please enter a Target User!&quot;);</span>
+<span class="nc" id="L102">                return;</span>
+            }
+<span class="nc bnc" id="L104" title="All 2 branches missed.">            if (dt.isEmpty()) {</span>
+<span class="nc" id="L105">                JOptionPane.showMessageDialog(null, &quot;Please enter a DateTime!&quot;);</span>
+<span class="nc" id="L106">                return;</span>
+            }
+<span class="nc" id="L108">            service.adminCancelAppointment(dt, user, adminName);</span>
+<span class="nc" id="L109">            refreshTable();</span>
+<span class="nc" id="L110">        });</span>
+
+        // ------------------ Admin Modify ------------------
+<span class="nc" id="L113">        modifyButton.addActionListener(e -&gt; {</span>
+<span class="nc" id="L114">            String user  = userField.getText().trim();</span>
+<span class="nc" id="L115">            String oldDt = dateTimeField.getText().trim();</span>
+<span class="nc" id="L116">            String newDt = newDateTimeField.getText().trim();</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">            if (user.isEmpty()) {</span>
+<span class="nc" id="L118">                JOptionPane.showMessageDialog(null, &quot;Please enter a Target User!&quot;);</span>
+<span class="nc" id="L119">                return;</span>
+            }
+<span class="nc bnc" id="L121" title="All 2 branches missed.">            if (oldDt.isEmpty()) {</span>
+<span class="nc" id="L122">                JOptionPane.showMessageDialog(null, &quot;Please enter the current DateTime!&quot;);</span>
+<span class="nc" id="L123">                return;</span>
+            }
+<span class="nc bnc" id="L125" title="All 2 branches missed.">            if (newDt.isEmpty()) {</span>
+<span class="nc" id="L126">                JOptionPane.showMessageDialog(null, &quot;Please enter the new DateTime!&quot;);</span>
+<span class="nc" id="L127">                return;</span>
+            }
+<span class="nc" id="L129">            service.adminModifyAppointment(oldDt, newDt, user, adminName);</span>
+<span class="nc" id="L130">            refreshTable();</span>
+<span class="nc" id="L131">        });</span>
+
+        // ------------------ Back ------------------
+<span class="nc" id="L134">        backButton.addActionListener(e -&gt; dispose());</span>
+<span class="nc" id="L135">    }</span>
+
+    /**
+     * Refreshes the bookings table showing all users and their bookings.
+     */
+    private void refreshTable() {
+<span class="nc" id="L141">        tableModel.setRowCount(0);</span>
+
+<span class="nc" id="L143">        List&lt;Appointment&gt; appointments = service.getAllAppointments();</span>
+
+<span class="nc bnc" id="L145" title="All 2 branches missed.">        for (Appointment a : appointments) {</span>
+<span class="nc bnc" id="L146" title="All 2 branches missed.">            if (!a.getBookedUsers().isEmpty()) {</span>
+<span class="nc bnc" id="L147" title="All 2 branches missed.">                for (String user : a.getBookedUsers()) {</span>
+<span class="nc" id="L148">                    AppointmentType type = a.getTypeForUser(user);</span>
+<span class="nc" id="L149">                    tableModel.addRow(new Object[]{</span>
+                            user,
+<span class="nc" id="L151">                            a.getDateTime(),</span>
+<span class="nc" id="L152">                            a.getDurationMinutes(),</span>
+<span class="nc bnc" id="L153" title="All 2 branches missed.">                            type != null ? type : &quot;-&quot;,</span>
+<span class="nc" id="L154">                            a.getStatus()</span>
+                    });
+<span class="nc" id="L156">                }</span>
+            }
+<span class="nc" id="L158">        }</span>
+<span class="nc" id="L159">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

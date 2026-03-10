@@ -46,7 +46,22 @@
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
+                    <!-- ✅ مضاف: لتوليد تقرير الـ coverage -->
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
                 </executions>
+            </plugin>
+
+            <!-- Surefire plugin - مهم لتشغيل JUnit 5 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0</version>
             </plugin>
 
             <!-- Compiler plugin -->

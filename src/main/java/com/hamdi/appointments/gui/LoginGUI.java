@@ -9,35 +9,52 @@ import javax.swing.*;
 import java.awt.*;
 import java.time.LocalDateTime;
 
+/**
+ * Login window for the Appointment Scheduling System.
+ *
+ * @author Hamdi
+ * @version 1.0
+ */
 public class LoginGUI extends JFrame {
 
-    private AuthService auth;
-    private AppointmentService service;
+    private static final long serialVersionUID = 1L;
 
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JButton loginButton;
 
+    private static AppointmentRepository sharedRepo;
+    private static AppointmentService    sharedService;
+    private static AuthService           sharedAuth;
+
+    /**
+     * Initializes shared services once, then builds the login UI.
+     */
     public LoginGUI() {
         super("Login");
 
-        // ------------------ إعداد Repository وService ------------------
-        AppointmentRepository repo = new AppointmentRepository();
+        if (sharedRepo == null) {
+            sharedRepo = new AppointmentRepository();
+            // ✅ مواعيد بدون نوع - المستخدم يختار وقت الحجز
+            sharedRepo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 10, 0), 30, 1));
+            sharedRepo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 11, 0), 60, 3));
+            sharedRepo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 12, 0), 45, 5));
+            sharedRepo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 13, 0), 30, 2));
+            sharedRepo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 14, 0), 60, 2));
+            sharedRepo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 15, 0), 90, 3));
+            sharedRepo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 16, 0), 45, 8));
+            sharedService = new AppointmentService(sharedRepo);
+        }
 
-        // إضافة مواعيد افتراضية
-        repo.addAppointment(new Appointment(LocalDateTime.of(2026,3,7,10,0), 30, 2));
-        repo.addAppointment(new Appointment(LocalDateTime.of(2026,3,7,11,0), 60, 1));
-        repo.addAppointment(new Appointment(LocalDateTime.of(2026,3,7,12,0), 45, 3));
+        if (sharedAuth == null) {
+            sharedAuth = new AuthService();
+            sharedAuth.addAdministrator("admin", "1234");
+            sharedAuth.addAdministrator("hamdi", "1122");
+            sharedAuth.addUser("user1", "1234");
+            sharedAuth.addUser("user2", "1234");
+        }
 
-        service = new AppointmentService(repo);
-
-        // إعداد المستخدمين
-        auth = new AuthService();
-        auth.addAdministrator("admin", "1234");
-        auth.addAdministrator("hamdi", "1122");
-
-        // ------------------ إعداد واجهة المستخدم ------------------
-        setLayout(new GridLayout(3,2));
+        setLayout(new GridLayout(3, 2));
 
         add(new JLabel("Username:"));
         usernameField = new JTextField();
@@ -50,28 +67,32 @@ public class LoginGUI extends JFrame {
         loginButton = new JButton("Login");
         add(loginButton);
 
-        setSize(400,150);
+        setSize(400, 150);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);
 
-        // ------------------ زر تسجيل الدخول ------------------
         loginButton.addActionListener(e -> {
             String username = usernameField.getText();
             String password = new String(passwordField.getPassword());
 
-            if(auth.login(username, password)){
-                JOptionPane.showMessageDialog(this, username + " logged in successfully!");
-                // افتح نافذة المواعيد
-                new AppointmentsGUI(service, username);
-                dispose(); // اغلق نافذة تسجيل الدخول
+            if (sharedAuth.login(username, password)) {
+                if (sharedAuth.isAdmin(username)) {
+                    JOptionPane.showMessageDialog(this,
+                            "Welcome Admin, " + username + "! 👋");
+                } else {
+                    JOptionPane.showMessageDialog(this,
+                            "Welcome, " + username + "! 👋");
+                }
+                new AppointmentsGUI(sharedService, username, sharedAuth.isAdmin(username));
+                dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Login failed! Check credentials.");
             }
         });
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         new LoginGUI();
     }
 }

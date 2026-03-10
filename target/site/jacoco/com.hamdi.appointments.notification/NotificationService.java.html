@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NotificationService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">AppointmentSystem</a> &gt; <a href="index.source.html" class="el_package">com.hamdi.appointments.notification</a> &gt; <span class="el_source">NotificationService.java</span></div><h1>NotificationService.java</h1><pre class="source lang-java linenums">package com.hamdi.appointments.notification;
+
+import javax.swing.JOptionPane;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Sends notifications to users via GUI dialog and records sent messages.
+ *
+ * @author Hamdi
+ * @version 1.0
+ */
+<span class="fc" id="L13">public class NotificationService implements Observer {</span>
+
+    // ✅ قائمة لحفظ الرسائل المبعوتة - مطلوبة للـ Tests
+<span class="fc" id="L16">    private List&lt;String&gt; sentMessages = new ArrayList&lt;&gt;();</span>
+
+    /**
+     * Displays a notification message to the user via a GUI dialog
+     * and records the message for testing purposes.
+     *
+     * @param username the username to notify
+     * @param message  the notification message
+     */
+    @Override
+    public void notifyUser(String username, String message) {
+        // ✅ حفظ الرسالة
+<span class="fc" id="L28">        sentMessages.add(&quot;Notification for &quot; + username + &quot;: &quot; + message);</span>
+
+        // ✅ عرض الرسالة على GUI
+<span class="fc" id="L31">        JOptionPane.showMessageDialog(null,</span>
+            &quot;Notification for &quot; + username + &quot;:\n&quot; + message);
+<span class="fc" id="L33">    }</span>
+
+    /**
+     * Returns all messages sent by this notification service.
+     * Used in test mode to verify notifications were sent.
+     *
+     * @return list of sent messages
+     */
+    public List&lt;String&gt; getSentMessages() {
+<span class="nc" id="L42">        return sentMessages;</span>
+    }
+
+    /**
+     * Clears all recorded messages.
+     * Used between tests to reset state.
+     */
+    public void clearMessages() {
+<span class="nc" id="L50">        sentMessages.clear();</span>
+<span class="nc" id="L51">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

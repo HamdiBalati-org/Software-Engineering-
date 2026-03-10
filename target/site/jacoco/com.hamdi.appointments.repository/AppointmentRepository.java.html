@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AppointmentRepository.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">AppointmentSystem</a> &gt; <a href="index.source.html" class="el_package">com.hamdi.appointments.repository</a> &gt; <span class="el_source">AppointmentRepository.java</span></div><h1>AppointmentRepository.java</h1><pre class="source lang-java linenums">package com.hamdi.appointments.repository;
+
+import com.hamdi.appointments.domain.Appointment;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * In-memory repository for storing and retrieving appointments.
+ *
+ * @author Hamdi
+ * @version 1.0
+ */
+<span class="fc" id="L15">public class AppointmentRepository {</span>
+
+<span class="fc" id="L17">    private List&lt;Appointment&gt; appointments = new ArrayList&lt;&gt;();</span>
+
+    /**
+     * Adds a new appointment to the repository.
+     *
+     * @param a the appointment to add
+     */
+    public void addAppointment(Appointment a) {
+<span class="fc" id="L25">        appointments.add(a);</span>
+<span class="fc" id="L26">    }</span>
+
+    /**
+     * Finds an appointment by its date and time.
+     *
+     * @param dt the date and time to search for
+     * @return the matching appointment or null if not found
+     */
+    public Appointment findByDateTime(LocalDateTime dt) {
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        for (Appointment a : appointments) {</span>
+<span class="fc bfc" id="L36" title="All 2 branches covered.">            if (a.getDateTime().equals(dt)) {</span>
+<span class="fc" id="L37">                return a;</span>
+            }
+<span class="fc" id="L39">        }</span>
+<span class="fc" id="L40">        return null;</span>
+    }
+
+    /**
+     * Returns all appointments that are not fully booked.
+     *
+     * @return list of available appointments
+     */
+    public List&lt;Appointment&gt; getAvailableAppointments() {
+<span class="fc" id="L49">        List&lt;Appointment&gt; available = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">        for (Appointment a : appointments) {</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">            if (a.getCurrentParticipants() &lt; a.getMaxParticipants()) {</span>
+<span class="fc" id="L52">                available.add(a);</span>
+            }
+<span class="fc" id="L54">        }</span>
+<span class="fc" id="L55">        return available;</span>
+    }
+
+    /**
+     * Returns all appointments in the system.
+     *
+     * @return list of all appointments
+     */
+    public List&lt;Appointment&gt; getAllAppointments() {
+<span class="fc" id="L64">        return appointments; // ← للأدمن يشوف الكل</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

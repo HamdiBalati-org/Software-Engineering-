@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LoginGUI.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">AppointmentSystem</a> &gt; <a href="index.source.html" class="el_package">com.hamdi.appointments.gui</a> &gt; <span class="el_source">LoginGUI.java</span></div><h1>LoginGUI.java</h1><pre class="source lang-java linenums">package com.hamdi.appointments.gui;
+
+import com.hamdi.appointments.service.AppointmentService;
+import com.hamdi.appointments.service.AuthService;
+import com.hamdi.appointments.repository.AppointmentRepository;
+import com.hamdi.appointments.domain.Appointment;
+
+import javax.swing.*;
+import java.awt.*;
+import java.time.LocalDateTime;
+
+/**
+ * Login window for the Appointment Scheduling System.
+ *
+ * @author Hamdi
+ * @version 1.0
+ */
+public class LoginGUI extends JFrame {
+
+    private static final long serialVersionUID = 1L;
+
+    private JTextField usernameField;
+    private JPasswordField passwordField;
+    private JButton loginButton;
+
+    private static AppointmentRepository sharedRepo;
+    private static AppointmentService    sharedService;
+    private static AuthService           sharedAuth;
+
+    /**
+     * Initializes shared services once, then builds the login UI.
+     */
+    public LoginGUI() {
+<span class="nc" id="L34">        super(&quot;Login&quot;);</span>
+
+<span class="nc bnc" id="L36" title="All 2 branches missed.">        if (sharedRepo == null) {</span>
+<span class="nc" id="L37">            sharedRepo = new AppointmentRepository();</span>
+            // ✅ مواعيد بدون نوع - المستخدم يختار وقت الحجز
+<span class="nc" id="L39">            sharedRepo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 10, 0), 30, 1));</span>
+<span class="nc" id="L40">            sharedRepo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 11, 0), 60, 3));</span>
+<span class="nc" id="L41">            sharedRepo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 12, 0), 45, 5));</span>
+<span class="nc" id="L42">            sharedRepo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 13, 0), 30, 2));</span>
+<span class="nc" id="L43">            sharedRepo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 14, 0), 60, 2));</span>
+<span class="nc" id="L44">            sharedRepo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 15, 0), 90, 3));</span>
+<span class="nc" id="L45">            sharedRepo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 16, 0), 45, 8));</span>
+<span class="nc" id="L46">            sharedService = new AppointmentService(sharedRepo);</span>
+        }
+
+<span class="nc bnc" id="L49" title="All 2 branches missed.">        if (sharedAuth == null) {</span>
+<span class="nc" id="L50">            sharedAuth = new AuthService();</span>
+<span class="nc" id="L51">            sharedAuth.addAdministrator(&quot;admin&quot;, &quot;1234&quot;);</span>
+<span class="nc" id="L52">            sharedAuth.addAdministrator(&quot;hamdi&quot;, &quot;1122&quot;);</span>
+<span class="nc" id="L53">            sharedAuth.addUser(&quot;user1&quot;, &quot;1234&quot;);</span>
+<span class="nc" id="L54">            sharedAuth.addUser(&quot;user2&quot;, &quot;1234&quot;);</span>
+        }
+
+<span class="nc" id="L57">        setLayout(new GridLayout(3, 2));</span>
+
+<span class="nc" id="L59">        add(new JLabel(&quot;Username:&quot;));</span>
+<span class="nc" id="L60">        usernameField = new JTextField();</span>
+<span class="nc" id="L61">        add(usernameField);</span>
+
+<span class="nc" id="L63">        add(new JLabel(&quot;Password:&quot;));</span>
+<span class="nc" id="L64">        passwordField = new JPasswordField();</span>
+<span class="nc" id="L65">        add(passwordField);</span>
+
+<span class="nc" id="L67">        loginButton = new JButton(&quot;Login&quot;);</span>
+<span class="nc" id="L68">        add(loginButton);</span>
+
+<span class="nc" id="L70">        setSize(400, 150);</span>
+<span class="nc" id="L71">        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);</span>
+<span class="nc" id="L72">        setLocationRelativeTo(null);</span>
+<span class="nc" id="L73">        setVisible(true);</span>
+
+<span class="nc" id="L75">        loginButton.addActionListener(e -&gt; {</span>
+<span class="nc" id="L76">            String username = usernameField.getText();</span>
+<span class="nc" id="L77">            String password = new String(passwordField.getPassword());</span>
+
+<span class="nc bnc" id="L79" title="All 2 branches missed.">            if (sharedAuth.login(username, password)) {</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">                if (sharedAuth.isAdmin(username)) {</span>
+<span class="nc" id="L81">                    JOptionPane.showMessageDialog(this,</span>
+                            &quot;Welcome Admin, &quot; + username + &quot;! 👋&quot;);
+                } else {
+<span class="nc" id="L84">                    JOptionPane.showMessageDialog(this,</span>
+                            &quot;Welcome, &quot; + username + &quot;! 👋&quot;);
+                }
+<span class="nc" id="L87">                new AppointmentsGUI(sharedService, username, sharedAuth.isAdmin(username));</span>
+<span class="nc" id="L88">                dispose();</span>
+            } else {
+<span class="nc" id="L90">                JOptionPane.showMessageDialog(this, &quot;Login failed! Check credentials.&quot;);</span>
+            }
+<span class="nc" id="L92">        });</span>
+<span class="nc" id="L93">    }</span>
+
+    public static void main(String[] args) {
+<span class="nc" id="L96">        new LoginGUI();</span>
+<span class="nc" id="L97">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
