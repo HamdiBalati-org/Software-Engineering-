@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.hamdi.appointments.repository.AppointmentRepositoryTest
 -------------------------------------------------------------------------------
-Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.042 s - in com.hamdi.appointments.repository.AppointmentRepositoryTest
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.045 s - in com.hamdi.appointments.repository.AppointmentRepositoryTest

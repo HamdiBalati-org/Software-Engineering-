@@ -8,6 +8,7 @@ import com.hamdi.appointments.notification.NotificationService;
 import com.hamdi.appointments.strategy.*;
 
 import javax.swing.*;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class AppointmentService {
     private AppointmentRepository repo;
     private NotificationManager notificationManager;
     private boolean testMode;
+    private Clock clock;
 
     /**
      * Creates an AppointmentService for production use.
@@ -31,12 +33,13 @@ public class AppointmentService {
     public AppointmentService(AppointmentRepository repo) {
         this.repo      = repo;
         this.testMode  = false;
+        this.clock     = Clock.systemDefaultZone();
         this.notificationManager = new NotificationManager();
         this.notificationManager.addObserver(new NotificationService());
     }
 
     /**
-     * Creates an AppointmentService for testing (no GUI dialogs).
+     * Creates an AppointmentService for testing without GUI dialogs.
      *
      * @param repo     the appointment repository
      * @param testMode true to disable GUI dialogs
@@ -44,6 +47,22 @@ public class AppointmentService {
     public AppointmentService(AppointmentRepository repo, boolean testMode) {
         this.repo      = repo;
         this.testMode  = testMode;
+        this.clock     = Clock.systemDefaultZone();
+        this.notificationManager = new NotificationManager();
+        this.notificationManager.addObserver(new NotificationService());
+    }
+
+    /**
+     * Creates an AppointmentService for testing with a custom clock.
+     *
+     * @param repo     the appointment repository
+     * @param testMode true to disable GUI dialogs
+     * @param clock    the clock to use for time-based operations
+     */
+    public AppointmentService(AppointmentRepository repo, boolean testMode, Clock clock) {
+        this.repo      = repo;
+        this.testMode  = testMode;
+        this.clock     = clock;
         this.notificationManager = new NotificationManager();
         this.notificationManager.addObserver(new NotificationService());
     }
@@ -164,7 +183,8 @@ public class AppointmentService {
             return;
         }
 
-        if (!dt.isAfter(LocalDateTime.now())) {
+        // ✅ نستخدم clock بدل now()
+        if (!dt.isAfter(LocalDateTime.now(clock))) {
             showMessage("Cannot cancel past appointments!");
             return;
         }
@@ -202,7 +222,8 @@ public class AppointmentService {
             return;
         }
 
-        if (!oldDt.isAfter(LocalDateTime.now())) {
+        // ✅ نستخدم clock بدل now()
+        if (!oldDt.isAfter(LocalDateTime.now(clock))) {
             showMessage("Cannot modify past appointments!");
             return;
         }
