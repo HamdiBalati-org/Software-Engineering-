@@ -14,7 +14,7 @@ AppointmentSystem,com.hamdi.appointments.domain,User,15,0,0,0,6,0,3,0,3,0
 AppointmentSystem,com.hamdi.appointments.domain,Administrator,15,0,0,0,6,0,3,0,3,0
 AppointmentSystem,com.hamdi.appointments.repository,AppointmentRepository,0,65,0,8,0,16,0,9,0,5
 AppointmentSystem,com.hamdi.appointments.gui,BookingsGUI,397,0,20,0,82,0,16,0,6,0
-AppointmentSystem,com.hamdi.appointments.gui,LoginGUI,264,0,8,0,44,0,7,0,3,0
-AppointmentSystem,com.hamdi.appointments.gui,AppointmentsGUI,585,0,34,0,120,0,25,0,8,0
-AppointmentSystem,com.hamdi.appointments.service,AppointmentService,93,498,15,37,32,110,17,24,2,10
+AppointmentSystem,com.hamdi.appointments.gui,LoginGUI,296,0,8,0,50,0,11,0,7,0
+AppointmentSystem,com.hamdi.appointments.gui,AppointmentsGUI,624,0,40,0,128,0,28,0,8,0
+AppointmentSystem,com.hamdi.appointments.service,AppointmentService,125,504,17,39,34,112,19,24,2,10
 AppointmentSystem,com.hamdi.appointments.service,AuthService,0,65,1,7,0,11,1,9,0,6

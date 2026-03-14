@@ -6,6 +6,7 @@ import com.hamdi.appointments.repository.AppointmentRepository;
 import com.hamdi.appointments.notification.NotificationManager;
 import com.hamdi.appointments.notification.NotificationService;
 import com.hamdi.appointments.strategy.*;
+import com.hamdi.appointments.gui.LoginGUI;
 
 import javax.swing.*;
 import java.time.Clock;
@@ -183,7 +184,6 @@ public class AppointmentService {
             return;
         }
 
-        // ✅ نستخدم clock بدل now()
         if (!dt.isAfter(LocalDateTime.now(clock))) {
             showMessage("Cannot cancel past appointments!");
             return;
@@ -222,7 +222,6 @@ public class AppointmentService {
             return;
         }
 
-        // ✅ نستخدم clock بدل now()
         if (!oldDt.isAfter(LocalDateTime.now(clock))) {
             showMessage("Cannot modify past appointments!");
             return;
@@ -285,6 +284,12 @@ public class AppointmentService {
 
         appointment.cancelBooking(username);
 
+        // ✅ رسالة للمستخدم تنتظره
+        if (!testMode) {
+            LoginGUI.addPendingMessage(username,
+                "Admin '" + adminName + "' cancelled your appointment at " + dateTime);
+        }
+
         showMessage("Admin " + adminName + " cancelled " + username +
                 "'s appointment at " + dateTime + " successfully.");
 
@@ -338,6 +343,13 @@ public class AppointmentService {
         oldAppointment.cancelBooking(username);
         newAppointment.setTypeForUser(username, oldType);
         newAppointment.incrementParticipants(username);
+
+        // ✅ رسالة للمستخدم تنتظره
+        if (!testMode) {
+            LoginGUI.addPendingMessage(username,
+                "Admin '" + adminName + "' modified your appointment from "
+                + oldDateTime + " to " + newDateTime);
+        }
 
         showMessage("Admin " + adminName + " modified " + username + "'s appointment!\n" +
                 "From: " + oldDateTime + "\n" +

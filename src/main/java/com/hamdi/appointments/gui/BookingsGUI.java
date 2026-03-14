@@ -24,6 +24,7 @@ public class BookingsGUI extends JFrame {
 
     private JTable table;
     private DefaultTableModel tableModel;
+    private JLabel noBookingsLabel;
 
     private JTextField userField;
     private JTextField dateTimeField;
@@ -48,7 +49,8 @@ public class BookingsGUI extends JFrame {
             new Object[]{"User", "DateTime", "Duration", "Type", "Status"}, 0);
 
         table = new JTable(tableModel);
-        refreshTable();
+        // ✅ منع تبديل أماكن الأعمدة
+        table.getTableHeader().setReorderingAllowed(false);
         JScrollPane scrollPane = new JScrollPane(table);
 
         // ✅ لما الأدمن يضغط على سطر يتعبى تلقائياً
@@ -83,14 +85,26 @@ public class BookingsGUI extends JFrame {
         bottomPanel.add(modifyButton);
         bottomPanel.add(backButton);
 
+        // ✅ Label في وسط الشاشة
+        noBookingsLabel = new JLabel("No bookings available for any user.", JLabel.CENTER);
+        noBookingsLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        noBookingsLabel.setForeground(Color.GRAY);
+        noBookingsLabel.setVisible(false);
+
+        JPanel centerPanel = new JPanel(new BorderLayout());
+        centerPanel.add(noBookingsLabel, BorderLayout.NORTH);
+        centerPanel.add(scrollPane,      BorderLayout.CENTER);
+
         setLayout(new BorderLayout());
-        add(scrollPane,  BorderLayout.CENTER);
+        add(centerPanel, BorderLayout.CENTER);
         add(topPanel,    BorderLayout.NORTH);
         add(bottomPanel, BorderLayout.SOUTH);
 
         setSize(750, 400);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
+
+        refreshTable();
         setVisible(true);
 
         // ------------------ Admin Cancel ------------------
@@ -141,9 +155,11 @@ public class BookingsGUI extends JFrame {
         tableModel.setRowCount(0);
 
         List<Appointment> appointments = service.getAllAppointments();
+        boolean hasBookings = false;
 
         for (Appointment a : appointments) {
             if (!a.getBookedUsers().isEmpty()) {
+                hasBookings = true;
                 for (String user : a.getBookedUsers()) {
                     AppointmentType type = a.getTypeForUser(user);
                     tableModel.addRow(new Object[]{
@@ -156,5 +172,8 @@ public class BookingsGUI extends JFrame {
                 }
             }
         }
+
+        // ✅ إظهار أو إخفاء الـ Label
+        noBookingsLabel.setVisible(!hasBookings);
     }
 }

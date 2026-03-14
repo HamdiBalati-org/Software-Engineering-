@@ -8,6 +8,10 @@ import com.hamdi.appointments.domain.Appointment;
 import javax.swing.*;
 import java.awt.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Login window for the Appointment Scheduling System.
@@ -27,6 +31,31 @@ public class LoginGUI extends JFrame {
     private static AppointmentService    sharedService;
     private static AuthService           sharedAuth;
 
+    /** ✅ رسائل منتظرة لكل مستخدم */
+    public static Map<String, List<String>> pendingMessages = new HashMap<>();
+
+    /**
+     * Adds a pending message for a user.
+     *
+     * @param username the target username
+     * @param message  the message to deliver
+     */
+    public static void addPendingMessage(String username, String message) {
+        pendingMessages.computeIfAbsent(username, k -> new ArrayList<>()).add(message);
+    }
+
+    /**
+     * Returns and clears pending messages for a user.
+     *
+     * @param username the username
+     * @return list of pending messages
+     */
+    public static List<String> popPendingMessages(String username) {
+        List<String> msgs = pendingMessages.getOrDefault(username, new ArrayList<>());
+        pendingMessages.remove(username);
+        return msgs;
+    }
+
     /**
      * Initializes shared services once, then builds the login UI.
      */
@@ -35,7 +64,6 @@ public class LoginGUI extends JFrame {
 
         if (sharedRepo == null) {
             sharedRepo = new AppointmentRepository();
-            // ✅ مواعيد بدون نوع - المستخدم يختار وقت الحجز
             sharedRepo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 10, 0), 30, 1));
             sharedRepo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 11, 0), 60, 3));
             sharedRepo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 12, 0), 45, 5));
@@ -55,15 +83,12 @@ public class LoginGUI extends JFrame {
         }
 
         setLayout(new GridLayout(3, 2));
-
         add(new JLabel("Username:"));
         usernameField = new JTextField();
         add(usernameField);
-
         add(new JLabel("Password:"));
         passwordField = new JPasswordField();
         add(passwordField);
-
         loginButton = new JButton("Login");
         add(loginButton);
 
@@ -78,20 +103,23 @@ public class LoginGUI extends JFrame {
 
             if (sharedAuth.login(username, password)) {
                 if (sharedAuth.isAdmin(username)) {
-                    JOptionPane.showMessageDialog(this,
-                            "Welcome Admin, " + username + "! 👋");
+                    JOptionPane.showMessageDialog(this, "Welcome Admin, " + username + "! 👋");
                 } else {
-                    JOptionPane.showMessageDialog(this,
-                            "Welcome, " + username + "! 👋");
+                    JOptionPane.showMessageDialog(this, "Welcome, " + username + "! 👋");
                 }
-                new AppointmentsGUI(sharedService, username, sharedAuth.isAdmin(username));
                 dispose();
+                new AppointmentsGUI(sharedService, username, sharedAuth.isAdmin(username));
             } else {
                 JOptionPane.showMessageDialog(this, "Login failed! Check credentials.");
             }
         });
     }
 
+    /**
+     * Application entry point.
+     *
+     * @param args command-line arguments
+     */
     public static void main(String[] args) {
         new LoginGUI();
     }

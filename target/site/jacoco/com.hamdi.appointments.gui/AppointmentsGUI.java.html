@@ -120,107 +120,120 @@ public class AppointmentsGUI extends JFrame {
 <span class="nc" id="L120">        setLocationRelativeTo(null);</span>
 <span class="nc" id="L121">        setVisible(true);</span>
 
-        // ==================== أحداث الأزرار ====================
-
-<span class="nc bnc" id="L125" title="All 2 branches missed.">        if (!isAdmin) {</span>
-
-            // ------------------ Book ------------------
-<span class="nc" id="L128">            bookButton.addActionListener(e -&gt; {</span>
-<span class="nc" id="L129">                String dt = dateTimeField.getText().trim();</span>
-                int dur;
-<span class="nc bnc" id="L131" title="All 2 branches missed.">                if (dt.isEmpty()) {</span>
-<span class="nc" id="L132">                    JOptionPane.showMessageDialog(null, &quot;Please enter a DateTime!&quot;);</span>
-<span class="nc" id="L133">                    return;</span>
-                }
-                try {
-<span class="nc" id="L136">                    dur = Integer.parseInt(durationField.getText().trim());</span>
-<span class="nc" id="L137">                } catch (NumberFormatException ex) {</span>
-<span class="nc" id="L138">                    JOptionPane.showMessageDialog(null, &quot;Invalid duration!&quot;);</span>
-<span class="nc" id="L139">                    return;</span>
-<span class="nc" id="L140">                }</span>
-<span class="nc" id="L141">                AppointmentType type = (AppointmentType) typeComboBox.getSelectedItem();</span>
-<span class="nc" id="L142">                service.bookAppointment(dt, dur, currentUser, type);</span>
-<span class="nc" id="L143">                refreshTable();</span>
-<span class="nc" id="L144">            });</span>
-
-            // ------------------ Cancel My Booking ------------------
-<span class="nc" id="L147">            cancelButton.addActionListener(e -&gt; {</span>
-<span class="nc" id="L148">                String dt = dateTimeField.getText().trim();</span>
-<span class="nc bnc" id="L149" title="All 2 branches missed.">                if (dt.isEmpty()) {</span>
-<span class="nc" id="L150">                    JOptionPane.showMessageDialog(null, &quot;Please enter a DateTime!&quot;);</span>
-<span class="nc" id="L151">                    return;</span>
-                }
-<span class="nc" id="L153">                service.cancelAppointment(dt, currentUser);</span>
-<span class="nc" id="L154">                refreshTable();</span>
-<span class="nc" id="L155">            });</span>
-
-            // ------------------ Modify My Booking ------------------
-<span class="nc" id="L158">            modifyButton.addActionListener(e -&gt; {</span>
-<span class="nc" id="L159">                String oldDt = dateTimeField.getText().trim();</span>
-<span class="nc" id="L160">                String newDt = newDateTimeField.getText().trim();</span>
-<span class="nc bnc" id="L161" title="All 2 branches missed.">                if (oldDt.isEmpty()) {</span>
-<span class="nc" id="L162">                    JOptionPane.showMessageDialog(null, &quot;Please enter the current DateTime!&quot;);</span>
-<span class="nc" id="L163">                    return;</span>
-                }
-<span class="nc bnc" id="L165" title="All 2 branches missed.">                if (newDt.isEmpty()) {</span>
-<span class="nc" id="L166">                    JOptionPane.showMessageDialog(null, &quot;Please enter the new DateTime!&quot;);</span>
-<span class="nc" id="L167">                    return;</span>
-                }
-<span class="nc" id="L169">                service.modifyAppointment(oldDt, newDt, currentUser);</span>
-<span class="nc" id="L170">                refreshTable();</span>
-<span class="nc" id="L171">            });</span>
+        // ✅ عرض الرسائل المنتظرة للمستخدم فور ما يفتح النافذة
+<span class="nc bnc" id="L124" title="All 2 branches missed.">        if (!isAdmin) {</span>
+<span class="nc" id="L125">            List&lt;String&gt; msgs = LoginGUI.popPendingMessages(currentUser);</span>
+<span class="nc bnc" id="L126" title="All 2 branches missed.">            if (!msgs.isEmpty()) {</span>
+<span class="nc" id="L127">                StringBuilder sb = new StringBuilder(&quot;📢 Notifications:\n\n&quot;);</span>
+<span class="nc bnc" id="L128" title="All 2 branches missed.">                for (String msg : msgs) {</span>
+<span class="nc" id="L129">                    sb.append(&quot;• &quot;).append(msg).append(&quot;\n&quot;);</span>
+<span class="nc" id="L130">                }</span>
+<span class="nc" id="L131">                JOptionPane.showMessageDialog(this, sb.toString(),</span>
+                    &quot;Notifications&quot;, JOptionPane.INFORMATION_MESSAGE);
+            }
         }
 
-<span class="nc bnc" id="L174" title="All 2 branches missed.">        if (isAdmin) {</span>
+        // ==================== أحداث الأزرار ====================
+
+<span class="nc bnc" id="L138" title="All 2 branches missed.">        if (!isAdmin) {</span>
+
+            // ------------------ Book ------------------
+<span class="nc" id="L141">            bookButton.addActionListener(e -&gt; {</span>
+<span class="nc" id="L142">                String dt = dateTimeField.getText().trim();</span>
+                int dur;
+<span class="nc bnc" id="L144" title="All 2 branches missed.">                if (dt.isEmpty()) {</span>
+<span class="nc" id="L145">                    JOptionPane.showMessageDialog(null, &quot;Please enter a DateTime!&quot;);</span>
+<span class="nc" id="L146">                    return;</span>
+                }
+                try {
+<span class="nc" id="L149">                    dur = Integer.parseInt(durationField.getText().trim());</span>
+<span class="nc" id="L150">                } catch (NumberFormatException ex) {</span>
+<span class="nc" id="L151">                    JOptionPane.showMessageDialog(null, &quot;Invalid duration!&quot;);</span>
+<span class="nc" id="L152">                    return;</span>
+<span class="nc" id="L153">                }</span>
+<span class="nc" id="L154">                AppointmentType type = (AppointmentType) typeComboBox.getSelectedItem();</span>
+<span class="nc" id="L155">                service.bookAppointment(dt, dur, currentUser, type);</span>
+<span class="nc" id="L156">                refreshTable();</span>
+<span class="nc" id="L157">            });</span>
+
+            // ------------------ Cancel My Booking ------------------
+<span class="nc" id="L160">            cancelButton.addActionListener(e -&gt; {</span>
+<span class="nc" id="L161">                String dt = dateTimeField.getText().trim();</span>
+<span class="nc bnc" id="L162" title="All 2 branches missed.">                if (dt.isEmpty()) {</span>
+<span class="nc" id="L163">                    JOptionPane.showMessageDialog(null, &quot;Please enter a DateTime!&quot;);</span>
+<span class="nc" id="L164">                    return;</span>
+                }
+<span class="nc" id="L166">                service.cancelAppointment(dt, currentUser);</span>
+<span class="nc" id="L167">                refreshTable();</span>
+<span class="nc" id="L168">            });</span>
+
+            // ------------------ Modify My Booking ------------------
+<span class="nc" id="L171">            modifyButton.addActionListener(e -&gt; {</span>
+<span class="nc" id="L172">                String oldDt = dateTimeField.getText().trim();</span>
+<span class="nc" id="L173">                String newDt = newDateTimeField.getText().trim();</span>
+<span class="nc bnc" id="L174" title="All 2 branches missed.">                if (oldDt.isEmpty()) {</span>
+<span class="nc" id="L175">                    JOptionPane.showMessageDialog(null, &quot;Please enter the current DateTime!&quot;);</span>
+<span class="nc" id="L176">                    return;</span>
+                }
+<span class="nc bnc" id="L178" title="All 2 branches missed.">                if (newDt.isEmpty()) {</span>
+<span class="nc" id="L179">                    JOptionPane.showMessageDialog(null, &quot;Please enter the new DateTime!&quot;);</span>
+<span class="nc" id="L180">                    return;</span>
+                }
+<span class="nc" id="L182">                service.modifyAppointment(oldDt, newDt, currentUser);</span>
+<span class="nc" id="L183">                refreshTable();</span>
+<span class="nc" id="L184">            });</span>
+        }
+
+<span class="nc bnc" id="L187" title="All 2 branches missed.">        if (isAdmin) {</span>
 
             // ------------------ View All Bookings ------------------
-<span class="nc" id="L177">            viewBookingsButton.addActionListener(e -&gt; {</span>
-<span class="nc" id="L178">                new BookingsGUI(service, currentUser);</span>
-<span class="nc" id="L179">            });</span>
+<span class="nc" id="L190">            viewBookingsButton.addActionListener(e -&gt; {</span>
+<span class="nc" id="L191">                new BookingsGUI(service, currentUser);</span>
+<span class="nc" id="L192">            });</span>
         }
 
         // ------------------ Logout ------------------
-<span class="nc" id="L183">        logoutButton.addActionListener(e -&gt; {</span>
-<span class="nc" id="L184">            dispose();</span>
-<span class="nc" id="L185">            new LoginGUI();</span>
-<span class="nc" id="L186">        });</span>
-<span class="nc" id="L187">    }</span>
+<span class="nc" id="L196">        logoutButton.addActionListener(e -&gt; {</span>
+<span class="nc" id="L197">            dispose();</span>
+<span class="nc" id="L198">            new LoginGUI();</span>
+<span class="nc" id="L199">        });</span>
+<span class="nc" id="L200">    }</span>
 
     /**
      * Refreshes the appointments table.
      * Admins see all appointments, users see available ones only.
      */
     private void refreshTable() {
-<span class="nc" id="L194">        tableModel.setRowCount(0);</span>
+<span class="nc" id="L207">        tableModel.setRowCount(0);</span>
 
-<span class="nc bnc" id="L196" title="All 2 branches missed.">        List&lt;Appointment&gt; appointments = isAdmin</span>
-<span class="nc" id="L197">                ? service.getAllAppointments()</span>
-<span class="nc" id="L198">                : service.getAvailableAppointments();</span>
+<span class="nc bnc" id="L209" title="All 2 branches missed.">        List&lt;Appointment&gt; appointments = isAdmin</span>
+<span class="nc" id="L210">                ? service.getAllAppointments()</span>
+<span class="nc" id="L211">                : service.getAvailableAppointments();</span>
 
-<span class="nc bnc" id="L200" title="All 2 branches missed.">        for (Appointment a : appointments) {</span>
-<span class="nc bnc" id="L201" title="All 2 branches missed.">            if (isAdmin) {</span>
-<span class="nc bnc" id="L202" title="All 2 branches missed.">                String bookedBy = a.getBookedUsers().isEmpty()</span>
-<span class="nc" id="L203">                        ? &quot;-&quot;</span>
-<span class="nc" id="L204">                        : String.join(&quot;, &quot;, a.getBookedUsers());</span>
-<span class="nc" id="L205">                tableModel.addRow(new Object[]{</span>
-<span class="nc" id="L206">                        a.getDateTime(),</span>
-<span class="nc" id="L207">                        a.getDurationMinutes(),</span>
-<span class="nc" id="L208">                        a.getMaxParticipants(),</span>
-<span class="nc" id="L209">                        a.getCurrentParticipants(),</span>
-<span class="nc" id="L210">                        a.getStatus(),</span>
+<span class="nc bnc" id="L213" title="All 2 branches missed.">        for (Appointment a : appointments) {</span>
+<span class="nc bnc" id="L214" title="All 2 branches missed.">            if (isAdmin) {</span>
+<span class="nc bnc" id="L215" title="All 2 branches missed.">                String bookedBy = a.getBookedUsers().isEmpty()</span>
+<span class="nc" id="L216">                        ? &quot;-&quot;</span>
+<span class="nc" id="L217">                        : String.join(&quot;, &quot;, a.getBookedUsers());</span>
+<span class="nc" id="L218">                tableModel.addRow(new Object[]{</span>
+<span class="nc" id="L219">                        a.getDateTime(),</span>
+<span class="nc" id="L220">                        a.getDurationMinutes(),</span>
+<span class="nc" id="L221">                        a.getMaxParticipants(),</span>
+<span class="nc" id="L222">                        a.getCurrentParticipants(),</span>
+<span class="nc" id="L223">                        a.getStatus(),</span>
                         bookedBy
                 });
-<span class="nc" id="L213">            } else {</span>
-<span class="nc" id="L214">                tableModel.addRow(new Object[]{</span>
-<span class="nc" id="L215">                        a.getDateTime(),</span>
-<span class="nc" id="L216">                        a.getDurationMinutes(),</span>
-<span class="nc" id="L217">                        a.getMaxParticipants(),</span>
-<span class="nc" id="L218">                        a.getCurrentParticipants(),</span>
-<span class="nc" id="L219">                        a.getStatus(),</span>
-<span class="nc bnc" id="L220" title="All 2 branches missed.">                        a.getTypeForUser(currentUser) != null ? a.getTypeForUser(currentUser) : &quot;-&quot;</span>
+<span class="nc" id="L226">            } else {</span>
+<span class="nc" id="L227">                tableModel.addRow(new Object[]{</span>
+<span class="nc" id="L228">                        a.getDateTime(),</span>
+<span class="nc" id="L229">                        a.getDurationMinutes(),</span>
+<span class="nc" id="L230">                        a.getMaxParticipants(),</span>
+<span class="nc" id="L231">                        a.getCurrentParticipants(),</span>
+<span class="nc" id="L232">                        a.getStatus(),</span>
+<span class="nc bnc" id="L233" title="All 2 branches missed.">                        a.getTypeForUser(currentUser) != null ? a.getTypeForUser(currentUser) : &quot;-&quot;</span>
                 });
             }
-<span class="nc" id="L223">        }</span>
-<span class="nc" id="L224">    }</span>
+<span class="nc" id="L236">        }</span>
+<span class="nc" id="L237">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

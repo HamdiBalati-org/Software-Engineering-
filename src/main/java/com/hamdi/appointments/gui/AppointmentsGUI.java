@@ -34,6 +34,7 @@ public class AppointmentsGUI extends JFrame {
     private JButton bookButton;
     private JButton cancelButton;
     private JButton modifyButton;
+    private JButton myBookingsButton;
     private JButton viewBookingsButton;
     private JButton logoutButton;
 
@@ -59,6 +60,8 @@ public class AppointmentsGUI extends JFrame {
         }
 
         table = new JTable(tableModel);
+        // ✅ منع تبديل أماكن الأعمدة
+        table.getTableHeader().setReorderingAllowed(false);
         refreshTable();
         JScrollPane scrollPane = new JScrollPane(table);
 
@@ -83,9 +86,10 @@ public class AppointmentsGUI extends JFrame {
 
         // ✅ واجهة المستخدم العادي
         if (!isAdmin) {
-            bookButton   = new JButton("Book");
-            cancelButton = new JButton("Cancel My Booking");
-            modifyButton = new JButton("Modify My Booking");
+            bookButton       = new JButton("Book");
+            cancelButton     = new JButton("Cancel My Booking");
+            modifyButton     = new JButton("Modify My Booking");
+            myBookingsButton = new JButton("My Bookings");
 
             topPanel.add(new JLabel("DateTime:"));
             topPanel.add(dateTimeField);
@@ -95,6 +99,7 @@ public class AppointmentsGUI extends JFrame {
             topPanel.add(typeComboBox);
             topPanel.add(bookButton);
             topPanel.add(cancelButton);
+            topPanel.add(myBookingsButton);
 
             bottomPanel.add(new JLabel("New DateTime:"));
             bottomPanel.add(newDateTimeField);
@@ -111,7 +116,20 @@ public class AppointmentsGUI extends JFrame {
         bottomPanel.add(logoutButton);
 
         setLayout(new BorderLayout());
-        add(scrollPane, BorderLayout.CENTER);
+
+        // ✅ عنوان فوق الجدول للأدمن
+        if (isAdmin) {
+            JPanel centerPanel = new JPanel(new BorderLayout());
+            JLabel titleLabel  = new JLabel("Available Appointments", JLabel.CENTER);
+            titleLabel.setFont(new Font("Arial", Font.BOLD, 14));
+            titleLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+            centerPanel.add(titleLabel, BorderLayout.NORTH);
+            centerPanel.add(scrollPane, BorderLayout.CENTER);
+            add(centerPanel, BorderLayout.CENTER);
+        } else {
+            add(scrollPane, BorderLayout.CENTER);
+        }
+
         add(topPanel,    BorderLayout.NORTH);
         add(bottomPanel, BorderLayout.SOUTH);
 
@@ -119,6 +137,19 @@ public class AppointmentsGUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);
+
+        // ✅ عرض الرسائل المنتظرة للمستخدم فور ما يفتح النافذة
+        if (!isAdmin) {
+            List<String> msgs = LoginGUI.popPendingMessages(currentUser);
+            if (!msgs.isEmpty()) {
+                StringBuilder sb = new StringBuilder("📢 Notifications:\n\n");
+                for (String msg : msgs) {
+                    sb.append("• ").append(msg).append("\n");
+                }
+                JOptionPane.showMessageDialog(this, sb.toString(),
+                    "Notifications", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
 
         // ==================== أحداث الأزرار ====================
 
@@ -168,6 +199,30 @@ public class AppointmentsGUI extends JFrame {
                 }
                 service.modifyAppointment(oldDt, newDt, currentUser);
                 refreshTable();
+            });
+
+            // ------------------ My Bookings ------------------
+            myBookingsButton.addActionListener(e -> {
+                StringBuilder sb = new StringBuilder("📅 Your Bookings:\n\n");
+                boolean found = false;
+
+                for (Appointment a : service.getAllAppointments()) {
+                    if (a.isBookedByUser(currentUser)) {
+                        found = true;
+                        sb.append("• ").append(a.getDateTime())
+                          .append(" | Duration: ").append(a.getDurationMinutes()).append(" min")
+                          .append(" | Type: ").append(a.getTypeForUser(currentUser))
+                          .append(" | Status: ").append(a.getStatus())
+                          .append("\n");
+                    }
+                }
+
+                if (!found) {
+                    sb.append("You have no bookings yet.");
+                }
+
+                JOptionPane.showMessageDialog(this, sb.toString(),
+                    "My Bookings", JOptionPane.INFORMATION_MESSAGE);
             });
         }
 

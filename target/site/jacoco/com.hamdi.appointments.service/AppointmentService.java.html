@@ -6,6 +6,7 @@ import com.hamdi.appointments.repository.AppointmentRepository;
 import com.hamdi.appointments.notification.NotificationManager;
 import com.hamdi.appointments.notification.NotificationService;
 import com.hamdi.appointments.strategy.*;
+import com.hamdi.appointments.gui.LoginGUI;
 
 import javax.swing.*;
 import java.time.Clock;
@@ -30,13 +31,13 @@ public class AppointmentService {
      *
      * @param repo the appointment repository
      */
-<span class="nc" id="L33">    public AppointmentService(AppointmentRepository repo) {</span>
-<span class="nc" id="L34">        this.repo      = repo;</span>
-<span class="nc" id="L35">        this.testMode  = false;</span>
-<span class="nc" id="L36">        this.clock     = Clock.systemDefaultZone();</span>
-<span class="nc" id="L37">        this.notificationManager = new NotificationManager();</span>
-<span class="nc" id="L38">        this.notificationManager.addObserver(new NotificationService());</span>
-<span class="nc" id="L39">    }</span>
+<span class="nc" id="L34">    public AppointmentService(AppointmentRepository repo) {</span>
+<span class="nc" id="L35">        this.repo      = repo;</span>
+<span class="nc" id="L36">        this.testMode  = false;</span>
+<span class="nc" id="L37">        this.clock     = Clock.systemDefaultZone();</span>
+<span class="nc" id="L38">        this.notificationManager = new NotificationManager();</span>
+<span class="nc" id="L39">        this.notificationManager.addObserver(new NotificationService());</span>
+<span class="nc" id="L40">    }</span>
 
     /**
      * Creates an AppointmentService for testing without GUI dialogs.
@@ -44,13 +45,13 @@ public class AppointmentService {
      * @param repo     the appointment repository
      * @param testMode true to disable GUI dialogs
      */
-<span class="fc" id="L47">    public AppointmentService(AppointmentRepository repo, boolean testMode) {</span>
-<span class="fc" id="L48">        this.repo      = repo;</span>
-<span class="fc" id="L49">        this.testMode  = testMode;</span>
-<span class="fc" id="L50">        this.clock     = Clock.systemDefaultZone();</span>
-<span class="fc" id="L51">        this.notificationManager = new NotificationManager();</span>
-<span class="fc" id="L52">        this.notificationManager.addObserver(new NotificationService());</span>
-<span class="fc" id="L53">    }</span>
+<span class="fc" id="L48">    public AppointmentService(AppointmentRepository repo, boolean testMode) {</span>
+<span class="fc" id="L49">        this.repo      = repo;</span>
+<span class="fc" id="L50">        this.testMode  = testMode;</span>
+<span class="fc" id="L51">        this.clock     = Clock.systemDefaultZone();</span>
+<span class="fc" id="L52">        this.notificationManager = new NotificationManager();</span>
+<span class="fc" id="L53">        this.notificationManager.addObserver(new NotificationService());</span>
+<span class="fc" id="L54">    }</span>
 
     /**
      * Creates an AppointmentService for testing with a custom clock.
@@ -59,13 +60,13 @@ public class AppointmentService {
      * @param testMode true to disable GUI dialogs
      * @param clock    the clock to use for time-based operations
      */
-<span class="fc" id="L62">    public AppointmentService(AppointmentRepository repo, boolean testMode, Clock clock) {</span>
-<span class="fc" id="L63">        this.repo      = repo;</span>
-<span class="fc" id="L64">        this.testMode  = testMode;</span>
-<span class="fc" id="L65">        this.clock     = clock;</span>
-<span class="fc" id="L66">        this.notificationManager = new NotificationManager();</span>
-<span class="fc" id="L67">        this.notificationManager.addObserver(new NotificationService());</span>
-<span class="fc" id="L68">    }</span>
+<span class="fc" id="L63">    public AppointmentService(AppointmentRepository repo, boolean testMode, Clock clock) {</span>
+<span class="fc" id="L64">        this.repo      = repo;</span>
+<span class="fc" id="L65">        this.testMode  = testMode;</span>
+<span class="fc" id="L66">        this.clock     = clock;</span>
+<span class="fc" id="L67">        this.notificationManager = new NotificationManager();</span>
+<span class="fc" id="L68">        this.notificationManager.addObserver(new NotificationService());</span>
+<span class="fc" id="L69">    }</span>
 
     /**
      * Shows a message dialog in production mode only.
@@ -73,10 +74,10 @@ public class AppointmentService {
      * @param message the message to display
      */
     private void showMessage(String message) {
-<span class="pc bpc" id="L76" title="1 of 2 branches missed.">        if (!testMode) {</span>
-<span class="nc" id="L77">            JOptionPane.showMessageDialog(null, message);</span>
+<span class="pc bpc" id="L77" title="1 of 2 branches missed.">        if (!testMode) {</span>
+<span class="nc" id="L78">            JOptionPane.showMessageDialog(null, message);</span>
         }
-<span class="fc" id="L79">    }</span>
+<span class="fc" id="L80">    }</span>
 
     /**
      * Returns all available appointments.
@@ -84,7 +85,7 @@ public class AppointmentService {
      * @return list of available appointments
      */
     public List&lt;Appointment&gt; getAvailableAppointments() {
-<span class="fc" id="L87">        return repo.getAvailableAppointments();</span>
+<span class="fc" id="L88">        return repo.getAvailableAppointments();</span>
     }
 
     /**
@@ -93,7 +94,7 @@ public class AppointmentService {
      * @return list of all appointments
      */
     public List&lt;Appointment&gt; getAllAppointments() {
-<span class="nc" id="L96">        return repo.getAllAppointments();</span>
+<span class="nc" id="L97">        return repo.getAllAppointments();</span>
     }
 
     /**
@@ -103,15 +104,15 @@ public class AppointmentService {
      * @return the corresponding BookingRuleStrategy
      */
     private BookingRuleStrategy getRule(AppointmentType type) {
-<span class="pc bpc" id="L106" title="5 of 8 branches missed.">        switch (type) {</span>
-<span class="fc" id="L107">            case URGENT:     return new UrgentRule();</span>
-<span class="nc" id="L108">            case FOLLOW_UP:  return new FollowUpRule();</span>
-<span class="nc" id="L109">            case ASSESSMENT: return new AssessmentRule();</span>
-<span class="fc" id="L110">            case VIRTUAL:    return new VirtualRule();</span>
-<span class="nc" id="L111">            case IN_PERSON:  return new InPersonRule();</span>
-<span class="fc" id="L112">            case INDIVIDUAL: return new IndividualRule();</span>
-<span class="nc" id="L113">            case GROUP:      return new GroupRule();</span>
-<span class="nc" id="L114">            default:         return new VirtualRule();</span>
+<span class="pc bpc" id="L107" title="5 of 8 branches missed.">        switch (type) {</span>
+<span class="fc" id="L108">            case URGENT:     return new UrgentRule();</span>
+<span class="nc" id="L109">            case FOLLOW_UP:  return new FollowUpRule();</span>
+<span class="nc" id="L110">            case ASSESSMENT: return new AssessmentRule();</span>
+<span class="fc" id="L111">            case VIRTUAL:    return new VirtualRule();</span>
+<span class="nc" id="L112">            case IN_PERSON:  return new InPersonRule();</span>
+<span class="fc" id="L113">            case INDIVIDUAL: return new IndividualRule();</span>
+<span class="nc" id="L114">            case GROUP:      return new GroupRule();</span>
+<span class="nc" id="L115">            default:         return new VirtualRule();</span>
         }
     }
 
@@ -126,46 +127,46 @@ public class AppointmentService {
     public void bookAppointment(String dateTime, int duration,
                                 String username, AppointmentType type) {
 
-<span class="fc" id="L129">        LocalDateTime dt = LocalDateTime.parse(dateTime);</span>
-<span class="fc" id="L130">        Appointment appointment = repo.findByDateTime(dt);</span>
+<span class="fc" id="L130">        LocalDateTime dt = LocalDateTime.parse(dateTime);</span>
+<span class="fc" id="L131">        Appointment appointment = repo.findByDateTime(dt);</span>
 
-<span class="fc bfc" id="L132" title="All 2 branches covered.">        if (appointment == null) {</span>
-<span class="fc" id="L133">            showMessage(&quot;Appointment not found.&quot;);</span>
-<span class="fc" id="L134">            return;</span>
+<span class="fc bfc" id="L133" title="All 2 branches covered.">        if (appointment == null) {</span>
+<span class="fc" id="L134">            showMessage(&quot;Appointment not found.&quot;);</span>
+<span class="fc" id="L135">            return;</span>
         }
 
-<span class="fc bfc" id="L137" title="All 2 branches covered.">        if (duration != appointment.getDurationMinutes()) {</span>
-<span class="fc" id="L138">            showMessage(&quot;Invalid duration! Must be &quot; + appointment.getDurationMinutes() + &quot; mins.&quot;);</span>
-<span class="fc" id="L139">            return;</span>
+<span class="fc bfc" id="L138" title="All 2 branches covered.">        if (duration != appointment.getDurationMinutes()) {</span>
+<span class="fc" id="L139">            showMessage(&quot;Invalid duration! Must be &quot; + appointment.getDurationMinutes() + &quot; mins.&quot;);</span>
+<span class="fc" id="L140">            return;</span>
         }
 
-<span class="fc bfc" id="L142" title="All 2 branches covered.">        if (appointment.isBookedByUser(username)) {</span>
-<span class="fc" id="L143">            showMessage(&quot;You already booked this appointment!&quot;);</span>
-<span class="fc" id="L144">            return;</span>
+<span class="fc bfc" id="L143" title="All 2 branches covered.">        if (appointment.isBookedByUser(username)) {</span>
+<span class="fc" id="L144">            showMessage(&quot;You already booked this appointment!&quot;);</span>
+<span class="fc" id="L145">            return;</span>
         }
 
-<span class="fc bfc" id="L147" title="All 2 branches covered.">        if (appointment.getCurrentParticipants() &gt;= appointment.getMaxParticipants()) {</span>
-<span class="fc" id="L148">            showMessage(&quot;Appointment is fully booked.&quot;);</span>
-<span class="fc" id="L149">            return;</span>
+<span class="fc bfc" id="L148" title="All 2 branches covered.">        if (appointment.getCurrentParticipants() &gt;= appointment.getMaxParticipants()) {</span>
+<span class="fc" id="L149">            showMessage(&quot;Appointment is fully booked.&quot;);</span>
+<span class="fc" id="L150">            return;</span>
         }
 
-<span class="fc" id="L152">        BookingRuleStrategy rule = getRule(type);</span>
-<span class="fc bfc" id="L153" title="All 2 branches covered.">        if (!rule.isValid(appointment)) {</span>
-<span class="fc" id="L154">            showMessage(&quot;Booking rule violated!\n&quot; + rule.getRuleDescription());</span>
-<span class="fc" id="L155">            return;</span>
+<span class="fc" id="L153">        BookingRuleStrategy rule = getRule(type);</span>
+<span class="fc bfc" id="L154" title="All 2 branches covered.">        if (!rule.isValid(appointment)) {</span>
+<span class="fc" id="L155">            showMessage(&quot;Booking rule violated!\n&quot; + rule.getRuleDescription());</span>
+<span class="fc" id="L156">            return;</span>
         }
 
-<span class="fc" id="L158">        appointment.setTypeForUser(username, type);</span>
-<span class="fc" id="L159">        appointment.incrementParticipants(username);</span>
+<span class="fc" id="L159">        appointment.setTypeForUser(username, type);</span>
+<span class="fc" id="L160">        appointment.incrementParticipants(username);</span>
 
-<span class="fc" id="L161">        showMessage(&quot;Appointment booked successfully!\n&quot; +</span>
+<span class="fc" id="L162">        showMessage(&quot;Appointment booked successfully!\n&quot; +</span>
                 &quot;Type: &quot;         + type + &quot;\n&quot; +
-<span class="fc" id="L163">                &quot;Status: &quot;       + appointment.getStatus() + &quot;\n&quot; +</span>
-<span class="fc" id="L164">                &quot;Participants: &quot; + appointment.getCurrentParticipants());</span>
+<span class="fc" id="L164">                &quot;Status: &quot;       + appointment.getStatus() + &quot;\n&quot; +</span>
+<span class="fc" id="L165">                &quot;Participants: &quot; + appointment.getCurrentParticipants());</span>
 
-<span class="fc" id="L166">        notificationManager.notifyAllObservers(username,</span>
+<span class="fc" id="L167">        notificationManager.notifyAllObservers(username,</span>
                 &quot;Your &quot; + type + &quot; appointment at &quot; + dateTime + &quot; is confirmed.&quot;);
-<span class="fc" id="L168">    }</span>
+<span class="fc" id="L169">    }</span>
 
     /**
      * Cancels a user's booking. Only future appointments can be cancelled.
@@ -175,15 +176,14 @@ public class AppointmentService {
      */
     public void cancelAppointment(String dateTime, String username) {
 
-<span class="fc" id="L178">        LocalDateTime dt = LocalDateTime.parse(dateTime);</span>
-<span class="fc" id="L179">        Appointment appointment = repo.findByDateTime(dt);</span>
+<span class="fc" id="L179">        LocalDateTime dt = LocalDateTime.parse(dateTime);</span>
+<span class="fc" id="L180">        Appointment appointment = repo.findByDateTime(dt);</span>
 
-<span class="fc bfc" id="L181" title="All 2 branches covered.">        if (appointment == null) {</span>
-<span class="fc" id="L182">            showMessage(&quot;Appointment not found.&quot;);</span>
-<span class="fc" id="L183">            return;</span>
+<span class="fc bfc" id="L182" title="All 2 branches covered.">        if (appointment == null) {</span>
+<span class="fc" id="L183">            showMessage(&quot;Appointment not found.&quot;);</span>
+<span class="fc" id="L184">            return;</span>
         }
 
-        // ✅ نستخدم clock بدل now()
 <span class="fc bfc" id="L187" title="All 2 branches covered.">        if (!dt.isAfter(LocalDateTime.now(clock))) {</span>
 <span class="fc" id="L188">            showMessage(&quot;Cannot cancel past appointments!&quot;);</span>
 <span class="fc" id="L189">            return;</span>
@@ -222,44 +222,43 @@ public class AppointmentService {
 <span class="nc" id="L222">            return;</span>
         }
 
-        // ✅ نستخدم clock بدل now()
-<span class="fc bfc" id="L226" title="All 2 branches covered.">        if (!oldDt.isAfter(LocalDateTime.now(clock))) {</span>
-<span class="fc" id="L227">            showMessage(&quot;Cannot modify past appointments!&quot;);</span>
-<span class="fc" id="L228">            return;</span>
+<span class="fc bfc" id="L225" title="All 2 branches covered.">        if (!oldDt.isAfter(LocalDateTime.now(clock))) {</span>
+<span class="fc" id="L226">            showMessage(&quot;Cannot modify past appointments!&quot;);</span>
+<span class="fc" id="L227">            return;</span>
         }
 
-<span class="fc bfc" id="L231" title="All 2 branches covered.">        if (!oldAppointment.isBookedByUser(username)) {</span>
-<span class="fc" id="L232">            showMessage(&quot;You have no booking for this appointment!&quot;);</span>
-<span class="fc" id="L233">            return;</span>
+<span class="fc bfc" id="L230" title="All 2 branches covered.">        if (!oldAppointment.isBookedByUser(username)) {</span>
+<span class="fc" id="L231">            showMessage(&quot;You have no booking for this appointment!&quot;);</span>
+<span class="fc" id="L232">            return;</span>
         }
 
-<span class="pc bpc" id="L236" title="1 of 2 branches missed.">        if (newAppointment == null) {</span>
-<span class="nc" id="L237">            showMessage(&quot;New appointment not found.&quot;);</span>
-<span class="nc" id="L238">            return;</span>
+<span class="pc bpc" id="L235" title="1 of 2 branches missed.">        if (newAppointment == null) {</span>
+<span class="nc" id="L236">            showMessage(&quot;New appointment not found.&quot;);</span>
+<span class="nc" id="L237">            return;</span>
         }
 
-<span class="pc bpc" id="L241" title="1 of 2 branches missed.">        if (newAppointment.getCurrentParticipants() &gt;= newAppointment.getMaxParticipants()) {</span>
-<span class="nc" id="L242">            showMessage(&quot;New appointment is fully booked.&quot;);</span>
-<span class="nc" id="L243">            return;</span>
+<span class="pc bpc" id="L240" title="1 of 2 branches missed.">        if (newAppointment.getCurrentParticipants() &gt;= newAppointment.getMaxParticipants()) {</span>
+<span class="nc" id="L241">            showMessage(&quot;New appointment is fully booked.&quot;);</span>
+<span class="nc" id="L242">            return;</span>
         }
 
-<span class="pc bpc" id="L246" title="1 of 2 branches missed.">        if (newAppointment.isBookedByUser(username)) {</span>
-<span class="nc" id="L247">            showMessage(&quot;You already booked the new appointment!&quot;);</span>
-<span class="nc" id="L248">            return;</span>
+<span class="pc bpc" id="L245" title="1 of 2 branches missed.">        if (newAppointment.isBookedByUser(username)) {</span>
+<span class="nc" id="L246">            showMessage(&quot;You already booked the new appointment!&quot;);</span>
+<span class="nc" id="L247">            return;</span>
         }
 
-<span class="fc" id="L251">        AppointmentType oldType = oldAppointment.getTypeForUser(username);</span>
-<span class="fc" id="L252">        oldAppointment.cancelBooking(username);</span>
-<span class="fc" id="L253">        newAppointment.setTypeForUser(username, oldType);</span>
-<span class="fc" id="L254">        newAppointment.incrementParticipants(username);</span>
+<span class="fc" id="L250">        AppointmentType oldType = oldAppointment.getTypeForUser(username);</span>
+<span class="fc" id="L251">        oldAppointment.cancelBooking(username);</span>
+<span class="fc" id="L252">        newAppointment.setTypeForUser(username, oldType);</span>
+<span class="fc" id="L253">        newAppointment.incrementParticipants(username);</span>
 
-<span class="fc" id="L256">        showMessage(&quot;Appointment modified successfully!\n&quot; +</span>
+<span class="fc" id="L255">        showMessage(&quot;Appointment modified successfully!\n&quot; +</span>
                 &quot;From: &quot; + oldDateTime + &quot;\n&quot; +
                 &quot;To:   &quot; + newDateTime);
 
-<span class="fc" id="L260">        notificationManager.notifyAllObservers(username,</span>
+<span class="fc" id="L259">        notificationManager.notifyAllObservers(username,</span>
                 &quot;Your appointment has been modified to &quot; + newDateTime);
-<span class="fc" id="L262">    }</span>
+<span class="fc" id="L261">    }</span>
 
     /**
      * Allows admin to cancel any user's booking.
@@ -270,27 +269,33 @@ public class AppointmentService {
      */
     public void adminCancelAppointment(String dateTime, String username, String adminName) {
 
-<span class="fc" id="L273">        LocalDateTime dt = LocalDateTime.parse(dateTime);</span>
-<span class="fc" id="L274">        Appointment appointment = repo.findByDateTime(dt);</span>
+<span class="fc" id="L272">        LocalDateTime dt = LocalDateTime.parse(dateTime);</span>
+<span class="fc" id="L273">        Appointment appointment = repo.findByDateTime(dt);</span>
 
-<span class="pc bpc" id="L276" title="1 of 2 branches missed.">        if (appointment == null) {</span>
-<span class="nc" id="L277">            showMessage(&quot;Appointment not found.&quot;);</span>
-<span class="nc" id="L278">            return;</span>
+<span class="pc bpc" id="L275" title="1 of 2 branches missed.">        if (appointment == null) {</span>
+<span class="nc" id="L276">            showMessage(&quot;Appointment not found.&quot;);</span>
+<span class="nc" id="L277">            return;</span>
         }
 
-<span class="fc bfc" id="L281" title="All 2 branches covered.">        if (!appointment.isBookedByUser(username)) {</span>
-<span class="fc" id="L282">            showMessage(username + &quot; has no booking for this appointment!&quot;);</span>
-<span class="fc" id="L283">            return;</span>
+<span class="fc bfc" id="L280" title="All 2 branches covered.">        if (!appointment.isBookedByUser(username)) {</span>
+<span class="fc" id="L281">            showMessage(username + &quot; has no booking for this appointment!&quot;);</span>
+<span class="fc" id="L282">            return;</span>
         }
 
-<span class="fc" id="L286">        appointment.cancelBooking(username);</span>
+<span class="fc" id="L285">        appointment.cancelBooking(username);</span>
 
-<span class="fc" id="L288">        showMessage(&quot;Admin &quot; + adminName + &quot; cancelled &quot; + username +</span>
+        // ✅ رسالة للمستخدم تنتظره
+<span class="pc bpc" id="L288" title="1 of 2 branches missed.">        if (!testMode) {</span>
+<span class="nc" id="L289">            LoginGUI.addPendingMessage(username,</span>
+                &quot;Admin '&quot; + adminName + &quot;' cancelled your appointment at &quot; + dateTime);
+        }
+
+<span class="fc" id="L293">        showMessage(&quot;Admin &quot; + adminName + &quot; cancelled &quot; + username +</span>
                 &quot;'s appointment at &quot; + dateTime + &quot; successfully.&quot;);
 
-<span class="fc" id="L291">        notificationManager.notifyAllObservers(username,</span>
+<span class="fc" id="L296">        notificationManager.notifyAllObservers(username,</span>
                 &quot;Your appointment at &quot; + dateTime + &quot; was cancelled by admin.&quot;);
-<span class="fc" id="L293">    }</span>
+<span class="fc" id="L298">    }</span>
 
     /**
      * Allows admin to modify any user's booking.
@@ -303,48 +308,55 @@ public class AppointmentService {
     public void adminModifyAppointment(String oldDateTime, String newDateTime,
                                        String username, String adminName) {
 
-<span class="fc" id="L306">        LocalDateTime oldDt = LocalDateTime.parse(oldDateTime);</span>
-<span class="fc" id="L307">        LocalDateTime newDt = LocalDateTime.parse(newDateTime);</span>
+<span class="fc" id="L311">        LocalDateTime oldDt = LocalDateTime.parse(oldDateTime);</span>
+<span class="fc" id="L312">        LocalDateTime newDt = LocalDateTime.parse(newDateTime);</span>
 
-<span class="fc" id="L309">        Appointment oldAppointment = repo.findByDateTime(oldDt);</span>
-<span class="fc" id="L310">        Appointment newAppointment = repo.findByDateTime(newDt);</span>
+<span class="fc" id="L314">        Appointment oldAppointment = repo.findByDateTime(oldDt);</span>
+<span class="fc" id="L315">        Appointment newAppointment = repo.findByDateTime(newDt);</span>
 
-<span class="pc bpc" id="L312" title="1 of 2 branches missed.">        if (oldAppointment == null) {</span>
-<span class="nc" id="L313">            showMessage(&quot;Original appointment not found.&quot;);</span>
-<span class="nc" id="L314">            return;</span>
+<span class="pc bpc" id="L317" title="1 of 2 branches missed.">        if (oldAppointment == null) {</span>
+<span class="nc" id="L318">            showMessage(&quot;Original appointment not found.&quot;);</span>
+<span class="nc" id="L319">            return;</span>
         }
 
-<span class="fc bfc" id="L317" title="All 2 branches covered.">        if (!oldAppointment.isBookedByUser(username)) {</span>
-<span class="fc" id="L318">            showMessage(username + &quot; has no booking for this appointment!&quot;);</span>
-<span class="fc" id="L319">            return;</span>
+<span class="fc bfc" id="L322" title="All 2 branches covered.">        if (!oldAppointment.isBookedByUser(username)) {</span>
+<span class="fc" id="L323">            showMessage(username + &quot; has no booking for this appointment!&quot;);</span>
+<span class="fc" id="L324">            return;</span>
         }
 
-<span class="pc bpc" id="L322" title="1 of 2 branches missed.">        if (newAppointment == null) {</span>
-<span class="nc" id="L323">            showMessage(&quot;New appointment not found.&quot;);</span>
-<span class="nc" id="L324">            return;</span>
-        }
-
-<span class="pc bpc" id="L327" title="1 of 2 branches missed.">        if (newAppointment.getCurrentParticipants() &gt;= newAppointment.getMaxParticipants()) {</span>
-<span class="nc" id="L328">            showMessage(&quot;New appointment is fully booked.&quot;);</span>
+<span class="pc bpc" id="L327" title="1 of 2 branches missed.">        if (newAppointment == null) {</span>
+<span class="nc" id="L328">            showMessage(&quot;New appointment not found.&quot;);</span>
 <span class="nc" id="L329">            return;</span>
         }
 
-<span class="pc bpc" id="L332" title="1 of 2 branches missed.">        if (newAppointment.isBookedByUser(username)) {</span>
-<span class="nc" id="L333">            showMessage(username + &quot; already booked the new appointment!&quot;);</span>
+<span class="pc bpc" id="L332" title="1 of 2 branches missed.">        if (newAppointment.getCurrentParticipants() &gt;= newAppointment.getMaxParticipants()) {</span>
+<span class="nc" id="L333">            showMessage(&quot;New appointment is fully booked.&quot;);</span>
 <span class="nc" id="L334">            return;</span>
         }
 
-<span class="fc" id="L337">        AppointmentType oldType = oldAppointment.getTypeForUser(username);</span>
-<span class="fc" id="L338">        oldAppointment.cancelBooking(username);</span>
-<span class="fc" id="L339">        newAppointment.setTypeForUser(username, oldType);</span>
-<span class="fc" id="L340">        newAppointment.incrementParticipants(username);</span>
+<span class="pc bpc" id="L337" title="1 of 2 branches missed.">        if (newAppointment.isBookedByUser(username)) {</span>
+<span class="nc" id="L338">            showMessage(username + &quot; already booked the new appointment!&quot;);</span>
+<span class="nc" id="L339">            return;</span>
+        }
 
-<span class="fc" id="L342">        showMessage(&quot;Admin &quot; + adminName + &quot; modified &quot; + username + &quot;'s appointment!\n&quot; +</span>
+<span class="fc" id="L342">        AppointmentType oldType = oldAppointment.getTypeForUser(username);</span>
+<span class="fc" id="L343">        oldAppointment.cancelBooking(username);</span>
+<span class="fc" id="L344">        newAppointment.setTypeForUser(username, oldType);</span>
+<span class="fc" id="L345">        newAppointment.incrementParticipants(username);</span>
+
+        // ✅ رسالة للمستخدم تنتظره
+<span class="pc bpc" id="L348" title="1 of 2 branches missed.">        if (!testMode) {</span>
+<span class="nc" id="L349">            LoginGUI.addPendingMessage(username,</span>
+                &quot;Admin '&quot; + adminName + &quot;' modified your appointment from &quot;
+                + oldDateTime + &quot; to &quot; + newDateTime);
+        }
+
+<span class="fc" id="L354">        showMessage(&quot;Admin &quot; + adminName + &quot; modified &quot; + username + &quot;'s appointment!\n&quot; +</span>
                 &quot;From: &quot; + oldDateTime + &quot;\n&quot; +
                 &quot;To:   &quot; + newDateTime);
 
-<span class="fc" id="L346">        notificationManager.notifyAllObservers(username,</span>
+<span class="fc" id="L358">        notificationManager.notifyAllObservers(username,</span>
                 &quot;Your appointment was modified to &quot; + newDateTime + &quot; by admin.&quot;);
-<span class="fc" id="L348">    }</span>
+<span class="fc" id="L360">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
