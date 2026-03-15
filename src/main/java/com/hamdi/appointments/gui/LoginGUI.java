@@ -82,15 +82,39 @@ public class LoginGUI extends JFrame {
             sharedAuth.addUser("user2", "1234");
         }
 
-        setLayout(new GridLayout(3, 2));
-        add(new JLabel("Username:"));
-        usernameField = new JTextField();
-        add(usernameField);
-        add(new JLabel("Password:"));
-        passwordField = new JPasswordField();
-        add(passwordField);
-        loginButton = new JButton("Login");
-        add(loginButton);
+        // ✅ Fields
+        usernameField = new JTextField(15);
+        passwordField = new JPasswordField(15);
+        loginButton   = new JButton("Login");
+
+        // ✅ GridBagLayout لتوسيط الزر
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill   = GridBagConstraints.HORIZONTAL;
+
+        // Username Label
+        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 1;
+        add(new JLabel("Username:"), gbc);
+
+        // Username Field
+        gbc.gridx = 1; gbc.gridy = 0;
+        add(usernameField, gbc);
+
+        // Password Label
+        gbc.gridx = 0; gbc.gridy = 1;
+        add(new JLabel("Password:"), gbc);
+
+        // Password Field
+        gbc.gridx = 1; gbc.gridy = 1;
+        add(passwordField, gbc);
+
+        // ✅ Login Button في النص
+        gbc.gridx = 0; gbc.gridy = 2;
+        gbc.gridwidth = 2;
+        gbc.fill   = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.CENTER;
+        add(loginButton, gbc);
 
         setSize(400, 150);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
