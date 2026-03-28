@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.hamdi.appointments.repository.AppointmentRepositoryTest" time="0.022" tests="5" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.hamdi.appointments.strategy.StrategyTest" time="0.054" tests="20" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="21"/>
     <property name="sun.cpu.isalist" value="amd64"/>
     <property name="sun.jnu.encoding" value="Cp1252"/>
     <property name="java.class.path" value="C:\Users\Msys\eclipse-workspace\AppointmentSystem\target\test-classes;C:\Users\Msys\eclipse-workspace\AppointmentSystem\target\classes;C:\Users\Msys\.m2\repository\org\junit\jupiter\junit-jupiter\5.9.2\junit-jupiter-5.9.2.jar;C:\Users\Msys\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.9.2\junit-jupiter-api-5.9.2.jar;C:\Users\Msys\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\Msys\.m2\repository\org\junit\platform\junit-platform-commons\1.9.2\junit-platform-commons-1.9.2.jar;C:\Users\Msys\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\Msys\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.9.2\junit-jupiter-params-5.9.2.jar;C:\Users\Msys\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.9.2\junit-jupiter-engine-5.9.2.jar;C:\Users\Msys\.m2\repository\org\junit\platform\junit-platform-engine\1.9.2\junit-platform-engine-1.9.2.jar;C:\Users\Msys\.m2\repository\org\mockito\mockito-core\5.5.0\mockito-core-5.5.0.jar;C:\Users\Msys\.m2\repository\net\bytebuddy\byte-buddy\1.14.6\byte-buddy-1.14.6.jar;C:\Users\Msys\.m2\repository\net\bytebuddy\byte-buddy-agent\1.14.6\byte-buddy-agent-1.14.6.jar;C:\Users\Msys\.m2\repository\org\objenesis\objenesis\3.3\objenesis-3.3.jar;"/>
+    <property name="sun.awt.enableExtraMouseButtons" value="true"/>
     <property name="java.vm.vendor" value="Eclipse Adoptium"/>
     <property name="sun.arch.data.model" value="64"/>
     <property name="user.variant" value=""/>
@@ -60,9 +61,24 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="65.0"/>
   </properties>
-  <testcase name="testGetAvailableAppointments_OneFullyBooked" classname="com.hamdi.appointments.repository.AppointmentRepositoryTest" time="0.001"/>
-  <testcase name="testGetAllAppointments" classname="com.hamdi.appointments.repository.AppointmentRepositoryTest" time="0.001"/>
-  <testcase name="testFindByDateTime_NotFound" classname="com.hamdi.appointments.repository.AppointmentRepositoryTest" time="0.003"/>
-  <testcase name="testGetAvailableAppointments_AllAvailable" classname="com.hamdi.appointments.repository.AppointmentRepositoryTest" time="0.002"/>
-  <testcase name="testFindByDateTime_Found" classname="com.hamdi.appointments.repository.AppointmentRepositoryTest" time="0.005"/>
+  <testcase name="testAssessmentRule_Description" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.002"/>
+  <testcase name="testIndividualRule_Description" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.003"/>
+  <testcase name="testFollowUpRule_Description" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.001"/>
+  <testcase name="testFollowUpRule_Valid" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.001"/>
+  <testcase name="testVirtualRule_AlwaysValid" classname="com.hamdi.appointments.strategy.StrategyTest" time="0"/>
+  <testcase name="testIndividualRule_Invalid" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.001"/>
+  <testcase name="testInPersonRule_Invalid" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.001"/>
+  <testcase name="testUrgentRule_Valid" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.002"/>
+  <testcase name="testUrgentRule_Description" classname="com.hamdi.appointments.strategy.StrategyTest" time="0"/>
+  <testcase name="testVirtualRule_Description" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.001"/>
+  <testcase name="testAssessmentRule_Valid" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.001"/>
+  <testcase name="testIndividualRule_Valid" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.002"/>
+  <testcase name="testGroupRule_Description" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.002"/>
+  <testcase name="testGroupRule_Valid" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.001"/>
+  <testcase name="testUrgentRule_Invalid" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.001"/>
+  <testcase name="testInPersonRule_Description" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.001"/>
+  <testcase name="testInPersonRule_Valid" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.002"/>
+  <testcase name="testGroupRule_Invalid" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.001"/>
+  <testcase name="testAssessmentRule_Invalid" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.001"/>
+  <testcase name="testFollowUpRule_Invalid" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.001"/>
 </testsuite>

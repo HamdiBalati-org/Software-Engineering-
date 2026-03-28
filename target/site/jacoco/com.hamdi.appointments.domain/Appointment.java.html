@@ -74,7 +74,7 @@ public class Appointment {
 <span class="fc" id="L74">    public String getStatus() { return status; }</span>
 
     /** @return booked users list */
-<span class="nc" id="L77">    public List&lt;String&gt; getBookedUsers() { return bookedUsers; }</span>
+<span class="fc" id="L77">    public List&lt;String&gt; getBookedUsers() { return bookedUsers; }</span>
 
     /**
      * Returns the type chosen by a specific user.
@@ -140,7 +140,7 @@ public class Appointment {
      * @return true if cancelled successfully
      */
     public boolean cancelBooking(String username) {
-<span class="pc bpc" id="L143" title="1 of 2 branches missed.">        if (!isBookedByUser(username)) return false;</span>
+<span class="fc bfc" id="L143" title="All 2 branches covered.">        if (!isBookedByUser(username)) return false;</span>
 <span class="fc" id="L144">        bookedUsers.remove(username);</span>
 <span class="fc" id="L145">        userTypes.remove(username); // ✅ نمسح النوع مع الحجز</span>
 <span class="fc" id="L146">        currentParticipants--;</span>

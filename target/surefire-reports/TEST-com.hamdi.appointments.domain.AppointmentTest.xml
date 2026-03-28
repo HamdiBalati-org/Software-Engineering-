@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.hamdi.appointments.repository.AppointmentRepositoryTest" time="0.022" tests="5" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.hamdi.appointments.domain.AppointmentTest" time="0.117" tests="16" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="21"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -60,9 +60,20 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="65.0"/>
   </properties>
-  <testcase name="testGetAvailableAppointments_OneFullyBooked" classname="com.hamdi.appointments.repository.AppointmentRepositoryTest" time="0.001"/>
-  <testcase name="testGetAllAppointments" classname="com.hamdi.appointments.repository.AppointmentRepositoryTest" time="0.001"/>
-  <testcase name="testFindByDateTime_NotFound" classname="com.hamdi.appointments.repository.AppointmentRepositoryTest" time="0.003"/>
-  <testcase name="testGetAvailableAppointments_AllAvailable" classname="com.hamdi.appointments.repository.AppointmentRepositoryTest" time="0.002"/>
-  <testcase name="testFindByDateTime_Found" classname="com.hamdi.appointments.repository.AppointmentRepositoryTest" time="0.005"/>
+  <testcase name="testCancelBooking_RemovesType" classname="com.hamdi.appointments.domain.AppointmentTest" time="0.058"/>
+  <testcase name="testIsBookedByUser_False" classname="com.hamdi.appointments.domain.AppointmentTest" time="0.002"/>
+  <testcase name="testGetMaxParticipants" classname="com.hamdi.appointments.domain.AppointmentTest" time="0.002"/>
+  <testcase name="testIsBookedByUser_True" classname="com.hamdi.appointments.domain.AppointmentTest" time="0.002"/>
+  <testcase name="testGetDateTime" classname="com.hamdi.appointments.domain.AppointmentTest" time="0.003"/>
+  <testcase name="testIncrementParticipants" classname="com.hamdi.appointments.domain.AppointmentTest" time="0"/>
+  <testcase name="testCancelBooking_Success" classname="com.hamdi.appointments.domain.AppointmentTest" time="0"/>
+  <testcase name="testGetBookedUsers_AfterBooking" classname="com.hamdi.appointments.domain.AppointmentTest" time="0.001"/>
+  <testcase name="testSetAndGetTypeForUser" classname="com.hamdi.appointments.domain.AppointmentTest" time="0.001"/>
+  <testcase name="testGetTypeForUser_NotSet" classname="com.hamdi.appointments.domain.AppointmentTest" time="0.001"/>
+  <testcase name="testGetDurationMinutes" classname="com.hamdi.appointments.domain.AppointmentTest" time="0.001"/>
+  <testcase name="testCancelBooking_UserNotBooked" classname="com.hamdi.appointments.domain.AppointmentTest" time="0"/>
+  <testcase name="testIncrementParticipants_MultipleUsers" classname="com.hamdi.appointments.domain.AppointmentTest" time="0"/>
+  <testcase name="testInitialParticipants" classname="com.hamdi.appointments.domain.AppointmentTest" time="0"/>
+  <testcase name="testInitialStatus" classname="com.hamdi.appointments.domain.AppointmentTest" time="0"/>
+  <testcase name="testGetBookedUsers_Empty" classname="com.hamdi.appointments.domain.AppointmentTest" time="0.002"/>
 </testsuite>

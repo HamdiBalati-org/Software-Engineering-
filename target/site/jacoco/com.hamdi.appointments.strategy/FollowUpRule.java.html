@@ -9,18 +9,18 @@ import com.hamdi.appointments.domain.Appointment;
  * @author Hamdi
  * @version 1.0
  */
-<span class="nc" id="L12">public class FollowUpRule implements BookingRuleStrategy {</span>
+<span class="fc" id="L12">public class FollowUpRule implements BookingRuleStrategy {</span>
 
     private static final int MAX_DURATION = 60;
 
     @Override
     public boolean isValid(Appointment appointment) {
-<span class="nc bnc" id="L18" title="All 2 branches missed.">        return appointment.getDurationMinutes() &lt;= MAX_DURATION;</span>
+<span class="fc bfc" id="L18" title="All 2 branches covered.">        return appointment.getDurationMinutes() &lt;= MAX_DURATION;</span>
     }
 
     @Override
     public String getRuleDescription() {
-<span class="nc" id="L23">        return &quot;Follow-up appointments must not exceed &quot; + MAX_DURATION + &quot; minutes.&quot;;</span>
+<span class="fc" id="L23">        return &quot;Follow-up appointments must not exceed &quot; + MAX_DURATION + &quot; minutes.&quot;;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

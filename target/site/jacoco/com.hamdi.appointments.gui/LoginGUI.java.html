@@ -76,44 +76,68 @@ public class LoginGUI extends JFrame {
 
 <span class="nc bnc" id="L77" title="All 2 branches missed.">        if (sharedAuth == null) {</span>
 <span class="nc" id="L78">            sharedAuth = new AuthService();</span>
-<span class="nc" id="L79">            sharedAuth.addAdministrator(&quot;admin&quot;, &quot;1234&quot;);</span>
-<span class="nc" id="L80">            sharedAuth.addAdministrator(&quot;hamdi&quot;, &quot;1122&quot;);</span>
+<span class="nc" id="L79">            sharedAuth.addAdministrator(&quot;Abood&quot;, &quot;1234&quot;);</span>
+<span class="nc" id="L80">            sharedAuth.addAdministrator(&quot;Hamdi&quot;, &quot;1122&quot;);</span>
 <span class="nc" id="L81">            sharedAuth.addUser(&quot;user1&quot;, &quot;1234&quot;);</span>
 <span class="nc" id="L82">            sharedAuth.addUser(&quot;user2&quot;, &quot;1234&quot;);</span>
         }
 
-<span class="nc" id="L85">        setLayout(new GridLayout(3, 2));</span>
-<span class="nc" id="L86">        add(new JLabel(&quot;Username:&quot;));</span>
-<span class="nc" id="L87">        usernameField = new JTextField();</span>
-<span class="nc" id="L88">        add(usernameField);</span>
-<span class="nc" id="L89">        add(new JLabel(&quot;Password:&quot;));</span>
-<span class="nc" id="L90">        passwordField = new JPasswordField();</span>
-<span class="nc" id="L91">        add(passwordField);</span>
-<span class="nc" id="L92">        loginButton = new JButton(&quot;Login&quot;);</span>
-<span class="nc" id="L93">        add(loginButton);</span>
+        // ✅ Fields
+<span class="nc" id="L86">        usernameField = new JTextField(15);</span>
+<span class="nc" id="L87">        passwordField = new JPasswordField(15);</span>
+<span class="nc" id="L88">        loginButton   = new JButton(&quot;Login&quot;);</span>
 
-<span class="nc" id="L95">        setSize(400, 150);</span>
-<span class="nc" id="L96">        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);</span>
-<span class="nc" id="L97">        setLocationRelativeTo(null);</span>
-<span class="nc" id="L98">        setVisible(true);</span>
+        // ✅ GridBagLayout لتوسيط الزر
+<span class="nc" id="L91">        setLayout(new GridBagLayout());</span>
+<span class="nc" id="L92">        GridBagConstraints gbc = new GridBagConstraints();</span>
+<span class="nc" id="L93">        gbc.insets = new Insets(5, 5, 5, 5);</span>
+<span class="nc" id="L94">        gbc.fill   = GridBagConstraints.HORIZONTAL;</span>
 
-<span class="nc" id="L100">        loginButton.addActionListener(e -&gt; {</span>
-<span class="nc" id="L101">            String username = usernameField.getText();</span>
-<span class="nc" id="L102">            String password = new String(passwordField.getPassword());</span>
+        // Username Label
+<span class="nc" id="L97">        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 1;</span>
+<span class="nc" id="L98">        add(new JLabel(&quot;Username:&quot;), gbc);</span>
 
-<span class="nc bnc" id="L104" title="All 2 branches missed.">            if (sharedAuth.login(username, password)) {</span>
-<span class="nc bnc" id="L105" title="All 2 branches missed.">                if (sharedAuth.isAdmin(username)) {</span>
-<span class="nc" id="L106">                    JOptionPane.showMessageDialog(this, &quot;Welcome Admin, &quot; + username + &quot;! 👋&quot;);</span>
+        // Username Field
+<span class="nc" id="L101">        gbc.gridx = 1; gbc.gridy = 0;</span>
+<span class="nc" id="L102">        add(usernameField, gbc);</span>
+
+        // Password Label
+<span class="nc" id="L105">        gbc.gridx = 0; gbc.gridy = 1;</span>
+<span class="nc" id="L106">        add(new JLabel(&quot;Password:&quot;), gbc);</span>
+
+        // Password Field
+<span class="nc" id="L109">        gbc.gridx = 1; gbc.gridy = 1;</span>
+<span class="nc" id="L110">        add(passwordField, gbc);</span>
+
+        // ✅ Login Button في النص
+<span class="nc" id="L113">        gbc.gridx = 0; gbc.gridy = 2;</span>
+<span class="nc" id="L114">        gbc.gridwidth = 2;</span>
+<span class="nc" id="L115">        gbc.fill   = GridBagConstraints.NONE;</span>
+<span class="nc" id="L116">        gbc.anchor = GridBagConstraints.CENTER;</span>
+<span class="nc" id="L117">        add(loginButton, gbc);</span>
+
+<span class="nc" id="L119">        setSize(400, 150);</span>
+<span class="nc" id="L120">        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);</span>
+<span class="nc" id="L121">        setLocationRelativeTo(null);</span>
+<span class="nc" id="L122">        setVisible(true);</span>
+
+<span class="nc" id="L124">        loginButton.addActionListener(e -&gt; {</span>
+<span class="nc" id="L125">            String username = usernameField.getText();</span>
+<span class="nc" id="L126">            String password = new String(passwordField.getPassword());</span>
+
+<span class="nc bnc" id="L128" title="All 2 branches missed.">            if (sharedAuth.login(username, password)) {</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">                if (sharedAuth.isAdmin(username)) {</span>
+<span class="nc" id="L130">                    JOptionPane.showMessageDialog(this, &quot;Welcome Admin, &quot; + username + &quot;! 👋&quot;);</span>
                 } else {
-<span class="nc" id="L108">                    JOptionPane.showMessageDialog(this, &quot;Welcome, &quot; + username + &quot;! 👋&quot;);</span>
+<span class="nc" id="L132">                    JOptionPane.showMessageDialog(this, &quot;Welcome, &quot; + username + &quot;! 👋&quot;);</span>
                 }
-<span class="nc" id="L110">                dispose();</span>
-<span class="nc" id="L111">                new AppointmentsGUI(sharedService, username, sharedAuth.isAdmin(username));</span>
+<span class="nc" id="L134">                dispose();</span>
+<span class="nc" id="L135">                new AppointmentsGUI(sharedService, username, sharedAuth.isAdmin(username));</span>
             } else {
-<span class="nc" id="L113">                JOptionPane.showMessageDialog(this, &quot;Login failed! Check credentials.&quot;);</span>
+<span class="nc" id="L137">                JOptionPane.showMessageDialog(this, &quot;Login failed! Check credentials.&quot;);</span>
             }
-<span class="nc" id="L115">        });</span>
-<span class="nc" id="L116">    }</span>
+<span class="nc" id="L139">        });</span>
+<span class="nc" id="L140">    }</span>
 
     /**
      * Application entry point.
@@ -121,7 +145,7 @@ public class LoginGUI extends JFrame {
      * @param args command-line arguments
      */
     public static void main(String[] args) {
-<span class="nc" id="L124">        new LoginGUI();</span>
-<span class="nc" id="L125">    }</span>
+<span class="nc" id="L148">        new LoginGUI();</span>
+<span class="nc" id="L149">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -94,7 +94,7 @@ public class AppointmentService {
      * @return list of all appointments
      */
     public List&lt;Appointment&gt; getAllAppointments() {
-<span class="nc" id="L97">        return repo.getAllAppointments();</span>
+<span class="fc" id="L97">        return repo.getAllAppointments();</span>
     }
 
     /**
@@ -104,14 +104,14 @@ public class AppointmentService {
      * @return the corresponding BookingRuleStrategy
      */
     private BookingRuleStrategy getRule(AppointmentType type) {
-<span class="pc bpc" id="L107" title="5 of 8 branches missed.">        switch (type) {</span>
+<span class="pc bpc" id="L107" title="1 of 8 branches missed.">        switch (type) {</span>
 <span class="fc" id="L108">            case URGENT:     return new UrgentRule();</span>
-<span class="nc" id="L109">            case FOLLOW_UP:  return new FollowUpRule();</span>
-<span class="nc" id="L110">            case ASSESSMENT: return new AssessmentRule();</span>
+<span class="fc" id="L109">            case FOLLOW_UP:  return new FollowUpRule();</span>
+<span class="fc" id="L110">            case ASSESSMENT: return new AssessmentRule();</span>
 <span class="fc" id="L111">            case VIRTUAL:    return new VirtualRule();</span>
-<span class="nc" id="L112">            case IN_PERSON:  return new InPersonRule();</span>
+<span class="fc" id="L112">            case IN_PERSON:  return new InPersonRule();</span>
 <span class="fc" id="L113">            case INDIVIDUAL: return new IndividualRule();</span>
-<span class="nc" id="L114">            case GROUP:      return new GroupRule();</span>
+<span class="fc" id="L114">            case GROUP:      return new GroupRule();</span>
 <span class="nc" id="L115">            default:         return new VirtualRule();</span>
         }
     }
@@ -217,9 +217,9 @@ public class AppointmentService {
 <span class="fc" id="L217">        Appointment oldAppointment = repo.findByDateTime(oldDt);</span>
 <span class="fc" id="L218">        Appointment newAppointment = repo.findByDateTime(newDt);</span>
 
-<span class="pc bpc" id="L220" title="1 of 2 branches missed.">        if (oldAppointment == null) {</span>
-<span class="nc" id="L221">            showMessage(&quot;Original appointment not found.&quot;);</span>
-<span class="nc" id="L222">            return;</span>
+<span class="fc bfc" id="L220" title="All 2 branches covered.">        if (oldAppointment == null) {</span>
+<span class="fc" id="L221">            showMessage(&quot;Original appointment not found.&quot;);</span>
+<span class="fc" id="L222">            return;</span>
         }
 
 <span class="fc bfc" id="L225" title="All 2 branches covered.">        if (!oldDt.isAfter(LocalDateTime.now(clock))) {</span>
@@ -232,14 +232,14 @@ public class AppointmentService {
 <span class="fc" id="L232">            return;</span>
         }
 
-<span class="pc bpc" id="L235" title="1 of 2 branches missed.">        if (newAppointment == null) {</span>
-<span class="nc" id="L236">            showMessage(&quot;New appointment not found.&quot;);</span>
-<span class="nc" id="L237">            return;</span>
+<span class="fc bfc" id="L235" title="All 2 branches covered.">        if (newAppointment == null) {</span>
+<span class="fc" id="L236">            showMessage(&quot;New appointment not found.&quot;);</span>
+<span class="fc" id="L237">            return;</span>
         }
 
-<span class="pc bpc" id="L240" title="1 of 2 branches missed.">        if (newAppointment.getCurrentParticipants() &gt;= newAppointment.getMaxParticipants()) {</span>
-<span class="nc" id="L241">            showMessage(&quot;New appointment is fully booked.&quot;);</span>
-<span class="nc" id="L242">            return;</span>
+<span class="fc bfc" id="L240" title="All 2 branches covered.">        if (newAppointment.getCurrentParticipants() &gt;= newAppointment.getMaxParticipants()) {</span>
+<span class="fc" id="L241">            showMessage(&quot;New appointment is fully booked.&quot;);</span>
+<span class="fc" id="L242">            return;</span>
         }
 
 <span class="pc bpc" id="L245" title="1 of 2 branches missed.">        if (newAppointment.isBookedByUser(username)) {</span>
@@ -272,9 +272,9 @@ public class AppointmentService {
 <span class="fc" id="L272">        LocalDateTime dt = LocalDateTime.parse(dateTime);</span>
 <span class="fc" id="L273">        Appointment appointment = repo.findByDateTime(dt);</span>
 
-<span class="pc bpc" id="L275" title="1 of 2 branches missed.">        if (appointment == null) {</span>
-<span class="nc" id="L276">            showMessage(&quot;Appointment not found.&quot;);</span>
-<span class="nc" id="L277">            return;</span>
+<span class="fc bfc" id="L275" title="All 2 branches covered.">        if (appointment == null) {</span>
+<span class="fc" id="L276">            showMessage(&quot;Appointment not found.&quot;);</span>
+<span class="fc" id="L277">            return;</span>
         }
 
 <span class="fc bfc" id="L280" title="All 2 branches covered.">        if (!appointment.isBookedByUser(username)) {</span>
@@ -314,9 +314,9 @@ public class AppointmentService {
 <span class="fc" id="L314">        Appointment oldAppointment = repo.findByDateTime(oldDt);</span>
 <span class="fc" id="L315">        Appointment newAppointment = repo.findByDateTime(newDt);</span>
 
-<span class="pc bpc" id="L317" title="1 of 2 branches missed.">        if (oldAppointment == null) {</span>
-<span class="nc" id="L318">            showMessage(&quot;Original appointment not found.&quot;);</span>
-<span class="nc" id="L319">            return;</span>
+<span class="fc bfc" id="L317" title="All 2 branches covered.">        if (oldAppointment == null) {</span>
+<span class="fc" id="L318">            showMessage(&quot;Original appointment not found.&quot;);</span>
+<span class="fc" id="L319">            return;</span>
         }
 
 <span class="fc bfc" id="L322" title="All 2 branches covered.">        if (!oldAppointment.isBookedByUser(username)) {</span>
@@ -324,14 +324,14 @@ public class AppointmentService {
 <span class="fc" id="L324">            return;</span>
         }
 
-<span class="pc bpc" id="L327" title="1 of 2 branches missed.">        if (newAppointment == null) {</span>
-<span class="nc" id="L328">            showMessage(&quot;New appointment not found.&quot;);</span>
-<span class="nc" id="L329">            return;</span>
+<span class="fc bfc" id="L327" title="All 2 branches covered.">        if (newAppointment == null) {</span>
+<span class="fc" id="L328">            showMessage(&quot;New appointment not found.&quot;);</span>
+<span class="fc" id="L329">            return;</span>
         }
 
-<span class="pc bpc" id="L332" title="1 of 2 branches missed.">        if (newAppointment.getCurrentParticipants() &gt;= newAppointment.getMaxParticipants()) {</span>
-<span class="nc" id="L333">            showMessage(&quot;New appointment is fully booked.&quot;);</span>
-<span class="nc" id="L334">            return;</span>
+<span class="fc bfc" id="L332" title="All 2 branches covered.">        if (newAppointment.getCurrentParticipants() &gt;= newAppointment.getMaxParticipants()) {</span>
+<span class="fc" id="L333">            showMessage(&quot;New appointment is fully booked.&quot;);</span>
+<span class="fc" id="L334">            return;</span>
         }
 
 <span class="pc bpc" id="L337" title="1 of 2 branches missed.">        if (newAppointment.isBookedByUser(username)) {</span>

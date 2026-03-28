@@ -76,8 +76,8 @@ public class LoginGUI extends JFrame {
 
         if (sharedAuth == null) {
             sharedAuth = new AuthService();
-            sharedAuth.addAdministrator("admin", "1234");
-            sharedAuth.addAdministrator("hamdi", "1122");
+            sharedAuth.addAdministrator("Abood", "1234");
+            sharedAuth.addAdministrator("Hamdi", "1122");
             sharedAuth.addUser("user1", "1234");
             sharedAuth.addUser("user2", "1234");
         }

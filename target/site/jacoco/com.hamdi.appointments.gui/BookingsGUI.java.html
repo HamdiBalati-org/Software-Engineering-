@@ -24,6 +24,7 @@ public class BookingsGUI extends JFrame {
 
     private JTable table;
     private DefaultTableModel tableModel;
+    private JLabel noBookingsLabel;
 
     private JTextField userField;
     private JTextField dateTimeField;
@@ -40,122 +41,140 @@ public class BookingsGUI extends JFrame {
      * @param adminName the logged-in admin username
      */
     public BookingsGUI(AppointmentService service, String adminName) {
-<span class="nc" id="L43">        super(&quot;All Bookings - Admin: &quot; + adminName);</span>
-<span class="nc" id="L44">        this.service   = service;</span>
-<span class="nc" id="L45">        this.adminName = adminName;</span>
+<span class="nc" id="L44">        super(&quot;All Bookings - Admin: &quot; + adminName);</span>
+<span class="nc" id="L45">        this.service   = service;</span>
+<span class="nc" id="L46">        this.adminName = adminName;</span>
 
-<span class="nc" id="L47">        tableModel = new DefaultTableModel(</span>
+<span class="nc" id="L48">        tableModel = new DefaultTableModel(</span>
             new Object[]{&quot;User&quot;, &quot;DateTime&quot;, &quot;Duration&quot;, &quot;Type&quot;, &quot;Status&quot;}, 0);
 
-<span class="nc" id="L50">        table = new JTable(tableModel);</span>
-<span class="nc" id="L51">        refreshTable();</span>
-<span class="nc" id="L52">        JScrollPane scrollPane = new JScrollPane(table);</span>
+<span class="nc" id="L51">        table = new JTable(tableModel);</span>
+        // ✅ منع تبديل أماكن الأعمدة
+<span class="nc" id="L53">        table.getTableHeader().setReorderingAllowed(false);</span>
+<span class="nc" id="L54">        JScrollPane scrollPane = new JScrollPane(table);</span>
 
         // ✅ لما الأدمن يضغط على سطر يتعبى تلقائياً
-<span class="nc" id="L55">        table.getSelectionModel().addListSelectionListener(e -&gt; {</span>
-<span class="nc" id="L56">            int row = table.getSelectedRow();</span>
-<span class="nc bnc" id="L57" title="All 2 branches missed.">            if (row != -1) {</span>
-<span class="nc" id="L58">                userField.setText(tableModel.getValueAt(row, 0).toString());</span>
-<span class="nc" id="L59">                dateTimeField.setText(tableModel.getValueAt(row, 1).toString());</span>
+<span class="nc" id="L57">        table.getSelectionModel().addListSelectionListener(e -&gt; {</span>
+<span class="nc" id="L58">            int row = table.getSelectedRow();</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">            if (row != -1) {</span>
+<span class="nc" id="L60">                userField.setText(tableModel.getValueAt(row, 0).toString());</span>
+<span class="nc" id="L61">                dateTimeField.setText(tableModel.getValueAt(row, 1).toString());</span>
             }
-<span class="nc" id="L61">        });</span>
+<span class="nc" id="L63">        });</span>
 
-<span class="nc" id="L63">        JPanel topPanel    = new JPanel(new FlowLayout(FlowLayout.LEFT));</span>
-<span class="nc" id="L64">        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));</span>
+<span class="nc" id="L65">        JPanel topPanel    = new JPanel(new FlowLayout(FlowLayout.LEFT));</span>
+<span class="nc" id="L66">        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));</span>
 
-<span class="nc" id="L66">        userField        = new JTextField(8);</span>
-<span class="nc" id="L67">        dateTimeField    = new JTextField(12);</span>
-<span class="nc" id="L68">        newDateTimeField = new JTextField(12);</span>
-<span class="nc" id="L69">        cancelButton     = new JButton(&quot;Admin Cancel&quot;);</span>
-<span class="nc" id="L70">        modifyButton     = new JButton(&quot;Admin Modify&quot;);</span>
-<span class="nc" id="L71">        backButton       = new JButton(&quot;Back&quot;);</span>
+<span class="nc" id="L68">        userField        = new JTextField(8);</span>
+<span class="nc" id="L69">        dateTimeField    = new JTextField(12);</span>
+<span class="nc" id="L70">        newDateTimeField = new JTextField(12);</span>
+<span class="nc" id="L71">        cancelButton     = new JButton(&quot;Admin Cancel&quot;);</span>
+<span class="nc" id="L72">        modifyButton     = new JButton(&quot;Admin Modify&quot;);</span>
+<span class="nc" id="L73">        backButton       = new JButton(&quot;Back&quot;);</span>
 
         // ✅ سطر أول - Cancel
-<span class="nc" id="L74">        topPanel.add(new JLabel(&quot;Target User:&quot;));</span>
-<span class="nc" id="L75">        topPanel.add(userField);</span>
-<span class="nc" id="L76">        topPanel.add(new JLabel(&quot;DateTime:&quot;));</span>
-<span class="nc" id="L77">        topPanel.add(dateTimeField);</span>
-<span class="nc" id="L78">        topPanel.add(cancelButton);</span>
+<span class="nc" id="L76">        topPanel.add(new JLabel(&quot;Target User:&quot;));</span>
+<span class="nc" id="L77">        topPanel.add(userField);</span>
+<span class="nc" id="L78">        topPanel.add(new JLabel(&quot;DateTime:&quot;));</span>
+<span class="nc" id="L79">        topPanel.add(dateTimeField);</span>
+<span class="nc" id="L80">        topPanel.add(cancelButton);</span>
 
         // ✅ سطر ثاني - Modify + Back
-<span class="nc" id="L81">        bottomPanel.add(new JLabel(&quot;New DateTime:&quot;));</span>
-<span class="nc" id="L82">        bottomPanel.add(newDateTimeField);</span>
-<span class="nc" id="L83">        bottomPanel.add(modifyButton);</span>
-<span class="nc" id="L84">        bottomPanel.add(backButton);</span>
+<span class="nc" id="L83">        bottomPanel.add(new JLabel(&quot;New DateTime:&quot;));</span>
+<span class="nc" id="L84">        bottomPanel.add(newDateTimeField);</span>
+<span class="nc" id="L85">        bottomPanel.add(modifyButton);</span>
+<span class="nc" id="L86">        bottomPanel.add(backButton);</span>
 
-<span class="nc" id="L86">        setLayout(new BorderLayout());</span>
-<span class="nc" id="L87">        add(scrollPane,  BorderLayout.CENTER);</span>
-<span class="nc" id="L88">        add(topPanel,    BorderLayout.NORTH);</span>
-<span class="nc" id="L89">        add(bottomPanel, BorderLayout.SOUTH);</span>
+        // ✅ Label في وسط الشاشة
+<span class="nc" id="L89">        noBookingsLabel = new JLabel(&quot;No bookings available for any user.&quot;, JLabel.CENTER);</span>
+<span class="nc" id="L90">        noBookingsLabel.setFont(new Font(&quot;Arial&quot;, Font.BOLD, 14));</span>
+<span class="nc" id="L91">        noBookingsLabel.setForeground(Color.GRAY);</span>
+<span class="nc" id="L92">        noBookingsLabel.setVisible(false);</span>
 
-<span class="nc" id="L91">        setSize(750, 400);</span>
-<span class="nc" id="L92">        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);</span>
-<span class="nc" id="L93">        setLocationRelativeTo(null);</span>
-<span class="nc" id="L94">        setVisible(true);</span>
+<span class="nc" id="L94">        JPanel centerPanel = new JPanel(new BorderLayout());</span>
+<span class="nc" id="L95">        centerPanel.add(noBookingsLabel, BorderLayout.NORTH);</span>
+<span class="nc" id="L96">        centerPanel.add(scrollPane,      BorderLayout.CENTER);</span>
+
+<span class="nc" id="L98">        setLayout(new BorderLayout());</span>
+<span class="nc" id="L99">        add(centerPanel, BorderLayout.CENTER);</span>
+<span class="nc" id="L100">        add(topPanel,    BorderLayout.NORTH);</span>
+<span class="nc" id="L101">        add(bottomPanel, BorderLayout.SOUTH);</span>
+
+<span class="nc" id="L103">        setSize(750, 400);</span>
+<span class="nc" id="L104">        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);</span>
+<span class="nc" id="L105">        setLocationRelativeTo(null);</span>
+
+<span class="nc" id="L107">        refreshTable();</span>
+<span class="nc" id="L108">        setVisible(true);</span>
 
         // ------------------ Admin Cancel ------------------
-<span class="nc" id="L97">        cancelButton.addActionListener(e -&gt; {</span>
-<span class="nc" id="L98">            String user = userField.getText().trim();</span>
-<span class="nc" id="L99">            String dt   = dateTimeField.getText().trim();</span>
-<span class="nc bnc" id="L100" title="All 2 branches missed.">            if (user.isEmpty()) {</span>
-<span class="nc" id="L101">                JOptionPane.showMessageDialog(null, &quot;Please enter a Target User!&quot;);</span>
-<span class="nc" id="L102">                return;</span>
+<span class="nc" id="L111">        cancelButton.addActionListener(e -&gt; {</span>
+<span class="nc" id="L112">            String user = userField.getText().trim();</span>
+<span class="nc" id="L113">            String dt   = dateTimeField.getText().trim();</span>
+<span class="nc bnc" id="L114" title="All 2 branches missed.">            if (user.isEmpty()) {</span>
+<span class="nc" id="L115">                JOptionPane.showMessageDialog(null, &quot;Please enter a Target User!&quot;);</span>
+<span class="nc" id="L116">                return;</span>
             }
-<span class="nc bnc" id="L104" title="All 2 branches missed.">            if (dt.isEmpty()) {</span>
-<span class="nc" id="L105">                JOptionPane.showMessageDialog(null, &quot;Please enter a DateTime!&quot;);</span>
-<span class="nc" id="L106">                return;</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">            if (dt.isEmpty()) {</span>
+<span class="nc" id="L119">                JOptionPane.showMessageDialog(null, &quot;Please enter a DateTime!&quot;);</span>
+<span class="nc" id="L120">                return;</span>
             }
-<span class="nc" id="L108">            service.adminCancelAppointment(dt, user, adminName);</span>
-<span class="nc" id="L109">            refreshTable();</span>
-<span class="nc" id="L110">        });</span>
+<span class="nc" id="L122">            service.adminCancelAppointment(dt, user, adminName);</span>
+<span class="nc" id="L123">            refreshTable();</span>
+<span class="nc" id="L124">        });</span>
 
         // ------------------ Admin Modify ------------------
-<span class="nc" id="L113">        modifyButton.addActionListener(e -&gt; {</span>
-<span class="nc" id="L114">            String user  = userField.getText().trim();</span>
-<span class="nc" id="L115">            String oldDt = dateTimeField.getText().trim();</span>
-<span class="nc" id="L116">            String newDt = newDateTimeField.getText().trim();</span>
-<span class="nc bnc" id="L117" title="All 2 branches missed.">            if (user.isEmpty()) {</span>
-<span class="nc" id="L118">                JOptionPane.showMessageDialog(null, &quot;Please enter a Target User!&quot;);</span>
-<span class="nc" id="L119">                return;</span>
+<span class="nc" id="L127">        modifyButton.addActionListener(e -&gt; {</span>
+<span class="nc" id="L128">            String user  = userField.getText().trim();</span>
+<span class="nc" id="L129">            String oldDt = dateTimeField.getText().trim();</span>
+<span class="nc" id="L130">            String newDt = newDateTimeField.getText().trim();</span>
+<span class="nc bnc" id="L131" title="All 2 branches missed.">            if (user.isEmpty()) {</span>
+<span class="nc" id="L132">                JOptionPane.showMessageDialog(null, &quot;Please enter a Target User!&quot;);</span>
+<span class="nc" id="L133">                return;</span>
             }
-<span class="nc bnc" id="L121" title="All 2 branches missed.">            if (oldDt.isEmpty()) {</span>
-<span class="nc" id="L122">                JOptionPane.showMessageDialog(null, &quot;Please enter the current DateTime!&quot;);</span>
-<span class="nc" id="L123">                return;</span>
+<span class="nc bnc" id="L135" title="All 2 branches missed.">            if (oldDt.isEmpty()) {</span>
+<span class="nc" id="L136">                JOptionPane.showMessageDialog(null, &quot;Please enter the current DateTime!&quot;);</span>
+<span class="nc" id="L137">                return;</span>
             }
-<span class="nc bnc" id="L125" title="All 2 branches missed.">            if (newDt.isEmpty()) {</span>
-<span class="nc" id="L126">                JOptionPane.showMessageDialog(null, &quot;Please enter the new DateTime!&quot;);</span>
-<span class="nc" id="L127">                return;</span>
+<span class="nc bnc" id="L139" title="All 2 branches missed.">            if (newDt.isEmpty()) {</span>
+<span class="nc" id="L140">                JOptionPane.showMessageDialog(null, &quot;Please enter the new DateTime!&quot;);</span>
+<span class="nc" id="L141">                return;</span>
             }
-<span class="nc" id="L129">            service.adminModifyAppointment(oldDt, newDt, user, adminName);</span>
-<span class="nc" id="L130">            refreshTable();</span>
-<span class="nc" id="L131">        });</span>
+<span class="nc" id="L143">            service.adminModifyAppointment(oldDt, newDt, user, adminName);</span>
+<span class="nc" id="L144">            refreshTable();</span>
+<span class="nc" id="L145">        });</span>
 
         // ------------------ Back ------------------
-<span class="nc" id="L134">        backButton.addActionListener(e -&gt; dispose());</span>
-<span class="nc" id="L135">    }</span>
+<span class="nc" id="L148">        backButton.addActionListener(e -&gt; dispose());</span>
+<span class="nc" id="L149">    }</span>
 
     /**
      * Refreshes the bookings table showing all users and their bookings.
      */
     private void refreshTable() {
-<span class="nc" id="L141">        tableModel.setRowCount(0);</span>
+<span class="nc" id="L155">        tableModel.setRowCount(0);</span>
 
-<span class="nc" id="L143">        List&lt;Appointment&gt; appointments = service.getAllAppointments();</span>
+<span class="nc" id="L157">        List&lt;Appointment&gt; appointments = service.getAllAppointments();</span>
+<span class="nc" id="L158">        boolean hasBookings = false;</span>
 
-<span class="nc bnc" id="L145" title="All 2 branches missed.">        for (Appointment a : appointments) {</span>
-<span class="nc bnc" id="L146" title="All 2 branches missed.">            if (!a.getBookedUsers().isEmpty()) {</span>
-<span class="nc bnc" id="L147" title="All 2 branches missed.">                for (String user : a.getBookedUsers()) {</span>
-<span class="nc" id="L148">                    AppointmentType type = a.getTypeForUser(user);</span>
-<span class="nc" id="L149">                    tableModel.addRow(new Object[]{</span>
+<span class="nc bnc" id="L160" title="All 2 branches missed.">        for (Appointment a : appointments) {</span>
+<span class="nc bnc" id="L161" title="All 2 branches missed.">            if (!a.getBookedUsers().isEmpty()) {</span>
+<span class="nc" id="L162">                hasBookings = true;</span>
+<span class="nc bnc" id="L163" title="All 2 branches missed.">                for (String user : a.getBookedUsers()) {</span>
+<span class="nc" id="L164">                    AppointmentType type = a.getTypeForUser(user);</span>
+<span class="nc" id="L165">                    tableModel.addRow(new Object[]{</span>
                             user,
-<span class="nc" id="L151">                            a.getDateTime(),</span>
-<span class="nc" id="L152">                            a.getDurationMinutes(),</span>
-<span class="nc bnc" id="L153" title="All 2 branches missed.">                            type != null ? type : &quot;-&quot;,</span>
-<span class="nc" id="L154">                            a.getStatus()</span>
+<span class="nc" id="L167">                            a.getDateTime(),</span>
+<span class="nc" id="L168">                            a.getDurationMinutes(),</span>
+<span class="nc bnc" id="L169" title="All 2 branches missed.">                            type != null ? type : &quot;-&quot;,</span>
+<span class="nc" id="L170">                            a.getStatus()</span>
                     });
-<span class="nc" id="L156">                }</span>
+<span class="nc" id="L172">                }</span>
             }
-<span class="nc" id="L158">        }</span>
-<span class="nc" id="L159">    }</span>
+<span class="nc" id="L174">        }</span>
+
+        // ✅ إظهار أو إخفاء الـ Label
+<span class="nc bnc" id="L177" title="All 2 branches missed.">        noBookingsLabel.setVisible(!hasBookings);</span>
+<span class="nc" id="L178">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
