@@ -70,14 +70,14 @@ public class LoginGUI extends JFrame {
             sharedRepo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 13, 0), 30, 2));
             sharedRepo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 14, 0), 60, 2));
             sharedRepo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 15, 0), 90, 3));
-            sharedRepo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 16, 0), 45, 8));
+            sharedRepo.addAppointment(new Appointment(LocalDateTime.of(2026, 3, 1, 16, 0), 45, 8));
             sharedService = new AppointmentService(sharedRepo);
         }
 
         if (sharedAuth == null) {
             sharedAuth = new AuthService();
-            sharedAuth.addAdministrator("Abood", "1234");
-            sharedAuth.addAdministrator("Hamdi", "1122");
+            sharedAuth.addAdministrator("abood", "1234");
+            sharedAuth.addAdministrator("hamdi", "1122");
             sharedAuth.addUser("user1", "1234");
             sharedAuth.addUser("user2", "1234");
         }

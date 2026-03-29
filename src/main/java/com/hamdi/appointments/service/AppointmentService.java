@@ -135,6 +135,12 @@ public class AppointmentService {
             return;
         }
 
+        // ✅ check إذا الموعد فات
+        if (!dt.isAfter(LocalDateTime.now(clock))) {
+            showMessage("It's too late! This appointment has already passed.");
+            return;
+        }
+
         if (duration != appointment.getDurationMinutes()) {
             showMessage("Invalid duration! Must be " + appointment.getDurationMinutes() + " mins.");
             return;
@@ -185,7 +191,7 @@ public class AppointmentService {
         }
 
         if (!dt.isAfter(LocalDateTime.now(clock))) {
-            showMessage("Cannot cancel past appointments!");
+            showMessage("It's too late! Cannot cancel past appointments.");
             return;
         }
 
@@ -223,7 +229,7 @@ public class AppointmentService {
         }
 
         if (!oldDt.isAfter(LocalDateTime.now(clock))) {
-            showMessage("Cannot modify past appointments!");
+            showMessage("It's too late! Cannot modify past appointments.");
             return;
         }
 
