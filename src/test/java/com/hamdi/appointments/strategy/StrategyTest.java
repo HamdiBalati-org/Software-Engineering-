@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Unit tests for all BookingRuleStrategy implementations.
  *
  * @author Hamdi
- * @version 1.0
+ * @version 2.0
  */
 public class StrategyTest {
 
@@ -107,14 +107,20 @@ public class StrategyTest {
     // ==================== IndividualRule ====================
 
     @Test
-    void testIndividualRule_Valid() {
+    void testIndividualRule_Valid_WithOneParticipant() {
         Appointment a = new Appointment(DT, 30, 1);
         assertTrue(new IndividualRule().isValid(a));
     }
 
     @Test
-    void testIndividualRule_Invalid() {
+    void testIndividualRule_Valid_WithMoreThanOneParticipant() {
         Appointment a = new Appointment(DT, 30, 3);
+        assertTrue(new IndividualRule().isValid(a));
+    }
+
+    @Test
+    void testIndividualRule_Invalid_WhenNoParticipantSlotsAvailable() {
+        Appointment a = new Appointment(DT, 30, 0);
         assertFalse(new IndividualRule().isValid(a));
     }
 

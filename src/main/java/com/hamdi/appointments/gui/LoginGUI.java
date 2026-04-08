@@ -80,6 +80,8 @@ public class LoginGUI extends JFrame {
             sharedAuth.addAdministrator("hamdi", "1122");
             sharedAuth.addUser("user1", "1234");
             sharedAuth.addUser("user2", "1234");
+            sharedAuth.addUser("user3", "1234");
+        
         }
 
         // ✅ Fields

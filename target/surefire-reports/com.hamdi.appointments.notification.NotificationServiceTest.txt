@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.hamdi.appointments.notification.NotificationServiceTest
 -------------------------------------------------------------------------------
-Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.966 s - in com.hamdi.appointments.notification.NotificationServiceTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.603 s - in com.hamdi.appointments.notification.NotificationServiceTest

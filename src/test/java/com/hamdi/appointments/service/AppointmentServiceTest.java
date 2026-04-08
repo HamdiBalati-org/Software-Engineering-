@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Unit tests for AppointmentService.
  *
  * @author Hamdi
- * @version 1.0
+ * @version 2.0
  */
 public class AppointmentServiceTest {
 
@@ -42,7 +42,7 @@ public class AppointmentServiceTest {
         service.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.VIRTUAL);
         Appointment a = repo.findByDateTime(DT1);
         assertEquals(1, a.getCurrentParticipants());
-        assertEquals("Confirmed", a.getStatus());
+        assertEquals("Confirmed", a.getStatusForUser("user1"));
         assertEquals(AppointmentType.VIRTUAL, a.getTypeForUser("user1"));
     }
 
@@ -77,14 +77,15 @@ public class AppointmentServiceTest {
         service.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.URGENT);
         service.bookAppointment("2026-06-01T10:00", 30, "user2", AppointmentType.VIRTUAL);
         Appointment a = repo.findByDateTime(DT1);
-        assertEquals(AppointmentType.URGENT,  a.getTypeForUser("user1"));
+        assertEquals(AppointmentType.URGENT, a.getTypeForUser("user1"));
         assertEquals(AppointmentType.VIRTUAL, a.getTypeForUser("user2"));
     }
 
     @Test
-    void testBookAppointment_RuleViolated_Individual() {
+    void testBookAppointment_Individual_AllowedWhenAppointmentCapacityIsGreaterThanOne() {
         service.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.INDIVIDUAL);
-        assertEquals(0, repo.findByDateTime(DT1).getCurrentParticipants());
+        assertEquals(1, repo.findByDateTime(DT1).getCurrentParticipants());
+        assertEquals(AppointmentType.INDIVIDUAL, repo.findByDateTime(DT1).getTypeForUser("user1"));
     }
 
     @Test
@@ -93,7 +94,8 @@ public class AppointmentServiceTest {
         assertEquals(0, repo.findByDateTime(DT2).getCurrentParticipants());
     }
 
-    // ✅ تيستات getRule لكل الأنواع
+    // ==================== getRule for all types ====================
+
     @Test
     void testBookAppointment_FollowUp_Valid() {
         service.bookAppointment("2026-06-01T11:00", 60, "user1", AppointmentType.FOLLOW_UP);
@@ -280,7 +282,7 @@ public class AppointmentServiceTest {
     void testGetAvailableAppointments() {
         assertEquals(2, service.getAvailableAppointments().size());
         service.bookAppointment("2026-06-01T11:00", 60, "user1", AppointmentType.VIRTUAL);
-        assertEquals(1, service.getAvailableAppointments().size());
+        assertEquals(2, service.getAvailableAppointments().size());
     }
 
     // ==================== Clock / Time Mocking Tests ====================

@@ -84,15 +84,15 @@ public class AppointmentService {
      *
      * @return list of available appointments
      */
-    public List<Appointment> getAvailableAppointments() {
-        return repo.getAvailableAppointments();
-    }
-
+  
     /**
      * Returns all appointments for admin use.
      *
      * @return list of all appointments
      */
+    public List<Appointment> getAvailableAppointments() {
+    	    return repo.getAllAppointments(); // ✅ التعديل الوحيد
+     }
     public List<Appointment> getAllAppointments() {
         return repo.getAllAppointments();
     }
@@ -293,10 +293,10 @@ public class AppointmentService {
         // ✅ رسالة للمستخدم تنتظره
         if (!testMode) {
             LoginGUI.addPendingMessage(username,
-                "Admin '" + adminName + "' cancelled your appointment at " + dateTime);
+                "Admin" + "' cancelled your appointment at " + dateTime);
         }
 
-        showMessage("Admin " + adminName + " cancelled " + username +
+        showMessage("Admin"  + " cancelled " + username +
                 "'s appointment at " + dateTime + " successfully.");
 
         notificationManager.notifyAllObservers(username,
@@ -353,11 +353,11 @@ public class AppointmentService {
         // ✅ رسالة للمستخدم تنتظره
         if (!testMode) {
             LoginGUI.addPendingMessage(username,
-                "Admin '" + adminName + "' modified your appointment from "
+                "Admin" + "' modified your appointment from "
                 + oldDateTime + " to " + newDateTime);
         }
 
-        showMessage("Admin " + adminName + " modified " + username + "'s appointment!\n" +
+        showMessage("Admin" + " modified " + username + "'s appointment!\n" +
                 "From: " + oldDateTime + "\n" +
                 "To:   " + newDateTime);
 

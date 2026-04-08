@@ -60,12 +60,10 @@ public class AppointmentsGUI extends JFrame {
         }
 
         table = new JTable(tableModel);
-        // ✅ منع تبديل أماكن الأعمدة
         table.getTableHeader().setReorderingAllowed(false);
         refreshTable();
         JScrollPane scrollPane = new JScrollPane(table);
 
-        // ✅ لما اليوزر يضغط على سطر يتعبى تلقائياً
         if (!isAdmin) {
             table.getSelectionModel().addListSelectionListener(e -> {
                 int row = table.getSelectedRow();
@@ -84,7 +82,6 @@ public class AppointmentsGUI extends JFrame {
         durationField    = new JTextField(5);
         typeComboBox     = new JComboBox<>(AppointmentType.values());
 
-        // ✅ واجهة المستخدم العادي
         if (!isAdmin) {
             bookButton       = new JButton("Book");
             cancelButton     = new JButton("Cancel My Booking");
@@ -106,7 +103,6 @@ public class AppointmentsGUI extends JFrame {
             bottomPanel.add(modifyButton);
         }
 
-        // ✅ واجهة الأدمن
         if (isAdmin) {
             viewBookingsButton = new JButton("View All Bookings");
             topPanel.add(viewBookingsButton);
@@ -117,7 +113,6 @@ public class AppointmentsGUI extends JFrame {
 
         setLayout(new BorderLayout());
 
-        // ✅ عنوان فوق الجدول للأدمن
         if (isAdmin) {
             JPanel centerPanel = new JPanel(new BorderLayout());
             JLabel titleLabel  = new JLabel("Available Appointments", JLabel.CENTER);
@@ -138,7 +133,6 @@ public class AppointmentsGUI extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
 
-        // ✅ عرض الرسائل المنتظرة للمستخدم فور ما يفتح النافذة
         if (!isAdmin) {
             List<String> msgs = LoginGUI.popPendingMessages(currentUser);
             if (!msgs.isEmpty()) {
@@ -151,11 +145,8 @@ public class AppointmentsGUI extends JFrame {
             }
         }
 
-        // ==================== أحداث الأزرار ====================
-
         if (!isAdmin) {
 
-            // ------------------ Book ------------------
             bookButton.addActionListener(e -> {
                 String dt = dateTimeField.getText().trim();
                 int dur;
@@ -174,7 +165,6 @@ public class AppointmentsGUI extends JFrame {
                 refreshTable();
             });
 
-            // ------------------ Cancel My Booking ------------------
             cancelButton.addActionListener(e -> {
                 String dt = dateTimeField.getText().trim();
                 if (dt.isEmpty()) {
@@ -185,7 +175,6 @@ public class AppointmentsGUI extends JFrame {
                 refreshTable();
             });
 
-            // ------------------ Modify My Booking ------------------
             modifyButton.addActionListener(e -> {
                 String oldDt = dateTimeField.getText().trim();
                 String newDt = newDateTimeField.getText().trim();
@@ -201,7 +190,6 @@ public class AppointmentsGUI extends JFrame {
                 refreshTable();
             });
 
-            // ------------------ My Bookings ------------------
             myBookingsButton.addActionListener(e -> {
                 StringBuilder sb = new StringBuilder("📅 Your Bookings:\n\n");
                 boolean found = false;
@@ -212,7 +200,7 @@ public class AppointmentsGUI extends JFrame {
                         sb.append("• ").append(a.getDateTime())
                           .append(" | Duration: ").append(a.getDurationMinutes()).append(" min")
                           .append(" | Type: ").append(a.getTypeForUser(currentUser))
-                          .append(" | Status: ").append(a.getStatus())
+                          .append(" | Status: ").append(a.getStatusForUser(currentUser))
                           .append("\n");
                     }
                 }
@@ -227,14 +215,9 @@ public class AppointmentsGUI extends JFrame {
         }
 
         if (isAdmin) {
-
-            // ------------------ View All Bookings ------------------
-            viewBookingsButton.addActionListener(e -> {
-                new BookingsGUI(service, currentUser);
-            });
+            viewBookingsButton.addActionListener(e -> new BookingsGUI(service, currentUser));
         }
 
-        // ------------------ Logout ------------------
         logoutButton.addActionListener(e -> {
             dispose();
             new LoginGUI();
@@ -243,7 +226,7 @@ public class AppointmentsGUI extends JFrame {
 
     /**
      * Refreshes the appointments table.
-     * Admins see all appointments, users see available ones only.
+     * Admins see all appointments, users see appointments returned by the service.
      */
     private void refreshTable() {
         tableModel.setRowCount(0);
@@ -271,7 +254,7 @@ public class AppointmentsGUI extends JFrame {
                         a.getDurationMinutes(),
                         a.getMaxParticipants(),
                         a.getCurrentParticipants(),
-                        a.getStatus(),
+                        a.getStatusForUser(currentUser),
                         a.getTypeForUser(currentUser) != null ? a.getTypeForUser(currentUser) : "-"
                 });
             }

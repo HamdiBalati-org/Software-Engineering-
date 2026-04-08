@@ -4,24 +4,24 @@ import com.hamdi.appointments.domain.Appointment;
 
 /**
  * Booking rule for group appointments.
- * Requires at least 2 participants.
+ * Group booking means the appointment must support at least two participants.
  *
  * @author Hamdi
- * @version 1.0
+ * @version 2.0
  */
 public class GroupRule implements BookingRuleStrategy {
 
-    private static final int MIN_PARTICIPANTS = 2;
+    private static final int REQUIRED_PARTICIPANTS = 2;
 
     /**
-     * Validates that the appointment supports at least 2 participants.
+     * Validates that the appointment can support a group booking.
      *
      * @param appointment the appointment to validate
      * @return true if maxParticipants >= 2
      */
     @Override
     public boolean isValid(Appointment appointment) {
-        return appointment.getMaxParticipants() >= MIN_PARTICIPANTS;
+        return appointment.getMaxParticipants() >= REQUIRED_PARTICIPANTS;
     }
 
     /**
@@ -31,6 +31,7 @@ public class GroupRule implements BookingRuleStrategy {
      */
     @Override
     public String getRuleDescription() {
-        return "Group appointments require at least " + MIN_PARTICIPANTS + " participants.";
+        return "Group appointments require at least "
+                + REQUIRED_PARTICIPANTS + " available participant slots.";
     }
 }

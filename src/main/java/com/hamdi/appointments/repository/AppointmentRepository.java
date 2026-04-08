@@ -10,7 +10,7 @@ import java.util.List;
  * In-memory repository for storing and retrieving appointments.
  *
  * @author Hamdi
- * @version 1.0
+ * @version 2.0
  */
 public class AppointmentRepository {
 
@@ -61,6 +61,6 @@ public class AppointmentRepository {
      * @return list of all appointments
      */
     public List<Appointment> getAllAppointments() {
-        return appointments; // ← للأدمن يشوف الكل
+        return appointments;
     }
 }

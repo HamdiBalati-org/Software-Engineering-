@@ -4,24 +4,25 @@ import com.hamdi.appointments.domain.Appointment;
 
 /**
  * Booking rule for individual appointments.
- * Allows exactly 1 participant.
+ * Individual booking means one user books for themselves.
+ * The appointment only needs to support at least one participant.
  *
  * @author Hamdi
- * @version 1.0
+ * @version 2.0
  */
 public class IndividualRule implements BookingRuleStrategy {
 
-    private static final int MAX_PARTICIPANTS = 1;
+    private static final int REQUIRED_PARTICIPANTS = 1;
 
     /**
-     * Validates that the appointment allows exactly 1 participant.
+     * Validates that the appointment can support an individual booking.
      *
      * @param appointment the appointment to validate
-     * @return true if maxParticipants == 1
+     * @return true if maxParticipants >= 1
      */
     @Override
     public boolean isValid(Appointment appointment) {
-        return appointment.getMaxParticipants() == MAX_PARTICIPANTS;
+        return appointment.getMaxParticipants() >= REQUIRED_PARTICIPANTS;
     }
 
     /**
@@ -31,6 +32,7 @@ public class IndividualRule implements BookingRuleStrategy {
      */
     @Override
     public String getRuleDescription() {
-        return "Individual appointments allow only " + MAX_PARTICIPANTS + " participant.";
+        return "Individual appointments require at least "
+                + REQUIRED_PARTICIPANTS + " available participant slot.";
     }
 }

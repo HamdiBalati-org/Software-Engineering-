@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.hamdi.appointments.domain.AppointmentTest" time="0.117" tests="16" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.hamdi.appointments.domain.AppointmentTest" time="0.114" tests="16" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="21"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -15,7 +15,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="US"/>
     <property name="sun.boot.library.path" value="C:\Users\Msys\Downloads\eclipse-committers-2025-03-R-win32-x86_64\eclipse\plugins\org.eclipse.justj.openjdk.hotspot.jre.full.win32.x86_64_21.0.6.v20250130-0529\jre\bin"/>
-    <property name="sun.java.command" value="C:\Users\Msys\AppData\Local\Temp\surefire13648791506661511104\surefirebooter-20260328220511951_3.jar C:\Users\Msys\AppData\Local\Temp\surefire13648791506661511104 2026-03-28T22-05-11_815-jvmRun1 surefire-20260328220511951_1tmp surefire_0-20260328220511951_2tmp"/>
+    <property name="sun.java.command" value="C:\Users\Msys\AppData\Local\Temp\surefire7350609234522322150\surefirebooter-20260409013700880_3.jar C:\Users\Msys\AppData\Local\Temp\surefire7350609234522322150 2026-04-09T01-37-00_533-jvmRun1 surefire-20260409013700880_1tmp surefire_0-20260409013700880_2tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="C:\Users\Msys\eclipse-workspace\AppointmentSystem\target\test-classes;C:\Users\Msys\eclipse-workspace\AppointmentSystem\target\classes;C:\Users\Msys\.m2\repository\org\junit\jupiter\junit-jupiter\5.9.2\junit-jupiter-5.9.2.jar;C:\Users\Msys\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.9.2\junit-jupiter-api-5.9.2.jar;C:\Users\Msys\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\Msys\.m2\repository\org\junit\platform\junit-platform-commons\1.9.2\junit-platform-commons-1.9.2.jar;C:\Users\Msys\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\Msys\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.9.2\junit-jupiter-params-5.9.2.jar;C:\Users\Msys\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.9.2\junit-jupiter-engine-5.9.2.jar;C:\Users\Msys\.m2\repository\org\junit\platform\junit-platform-engine\1.9.2\junit-platform-engine-1.9.2.jar;C:\Users\Msys\.m2\repository\org\mockito\mockito-core\5.5.0\mockito-core-5.5.0.jar;C:\Users\Msys\.m2\repository\net\bytebuddy\byte-buddy\1.14.6\byte-buddy-1.14.6.jar;C:\Users\Msys\.m2\repository\net\bytebuddy\byte-buddy-agent\1.14.6\byte-buddy-agent-1.14.6.jar;C:\Users\Msys\.m2\repository\org\objenesis\objenesis\3.3\objenesis-3.3.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -31,7 +31,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="C:\Users\Msys\AppData\Local\Temp\surefire13648791506661511104\surefirebooter-20260328220511951_3.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\Msys\AppData\Local\Temp\surefire7350609234522322150\surefirebooter-20260409013700880_3.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="21.0.6+7-LTS"/>
@@ -60,20 +60,20 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="65.0"/>
   </properties>
-  <testcase name="testCancelBooking_RemovesType" classname="com.hamdi.appointments.domain.AppointmentTest" time="0.058"/>
+  <testcase name="testCancelBooking_RemovesType" classname="com.hamdi.appointments.domain.AppointmentTest" time="0.054"/>
   <testcase name="testIsBookedByUser_False" classname="com.hamdi.appointments.domain.AppointmentTest" time="0.002"/>
   <testcase name="testGetMaxParticipants" classname="com.hamdi.appointments.domain.AppointmentTest" time="0.002"/>
-  <testcase name="testIsBookedByUser_True" classname="com.hamdi.appointments.domain.AppointmentTest" time="0.002"/>
-  <testcase name="testGetDateTime" classname="com.hamdi.appointments.domain.AppointmentTest" time="0.003"/>
-  <testcase name="testIncrementParticipants" classname="com.hamdi.appointments.domain.AppointmentTest" time="0"/>
-  <testcase name="testCancelBooking_Success" classname="com.hamdi.appointments.domain.AppointmentTest" time="0"/>
-  <testcase name="testGetBookedUsers_AfterBooking" classname="com.hamdi.appointments.domain.AppointmentTest" time="0.001"/>
-  <testcase name="testSetAndGetTypeForUser" classname="com.hamdi.appointments.domain.AppointmentTest" time="0.001"/>
-  <testcase name="testGetTypeForUser_NotSet" classname="com.hamdi.appointments.domain.AppointmentTest" time="0.001"/>
-  <testcase name="testGetDurationMinutes" classname="com.hamdi.appointments.domain.AppointmentTest" time="0.001"/>
-  <testcase name="testCancelBooking_UserNotBooked" classname="com.hamdi.appointments.domain.AppointmentTest" time="0"/>
-  <testcase name="testIncrementParticipants_MultipleUsers" classname="com.hamdi.appointments.domain.AppointmentTest" time="0"/>
+  <testcase name="testIsBookedByUser_True" classname="com.hamdi.appointments.domain.AppointmentTest" time="0.003"/>
+  <testcase name="testGetDateTime" classname="com.hamdi.appointments.domain.AppointmentTest" time="0.002"/>
+  <testcase name="testIncrementParticipants" classname="com.hamdi.appointments.domain.AppointmentTest" time="0.002"/>
+  <testcase name="testCancelBooking_Success" classname="com.hamdi.appointments.domain.AppointmentTest" time="0.001"/>
+  <testcase name="testGetBookedUsers_AfterBooking" classname="com.hamdi.appointments.domain.AppointmentTest" time="0"/>
+  <testcase name="testSetAndGetTypeForUser" classname="com.hamdi.appointments.domain.AppointmentTest" time="0"/>
+  <testcase name="testGetTypeForUser_NotSet" classname="com.hamdi.appointments.domain.AppointmentTest" time="0"/>
+  <testcase name="testGetDurationMinutes" classname="com.hamdi.appointments.domain.AppointmentTest" time="0"/>
+  <testcase name="testCancelBooking_UserNotBooked" classname="com.hamdi.appointments.domain.AppointmentTest" time="0.001"/>
+  <testcase name="testIncrementParticipants_MultipleUsers" classname="com.hamdi.appointments.domain.AppointmentTest" time="0.001"/>
   <testcase name="testInitialParticipants" classname="com.hamdi.appointments.domain.AppointmentTest" time="0"/>
-  <testcase name="testInitialStatus" classname="com.hamdi.appointments.domain.AppointmentTest" time="0"/>
-  <testcase name="testGetBookedUsers_Empty" classname="com.hamdi.appointments.domain.AppointmentTest" time="0.002"/>
+  <testcase name="testInitialStatus" classname="com.hamdi.appointments.domain.AppointmentTest" time="0.001"/>
+  <testcase name="testGetBookedUsers_Empty" classname="com.hamdi.appointments.domain.AppointmentTest" time="0.001"/>
 </testsuite>

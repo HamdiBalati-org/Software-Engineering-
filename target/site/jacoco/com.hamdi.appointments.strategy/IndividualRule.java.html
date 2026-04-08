@@ -4,24 +4,25 @@ import com.hamdi.appointments.domain.Appointment;
 
 /**
  * Booking rule for individual appointments.
- * Allows exactly 1 participant.
+ * Individual booking means one user books for themselves.
+ * The appointment only needs to support at least one participant.
  *
  * @author Hamdi
- * @version 1.0
+ * @version 2.0
  */
-<span class="fc" id="L12">public class IndividualRule implements BookingRuleStrategy {</span>
+<span class="fc" id="L13">public class IndividualRule implements BookingRuleStrategy {</span>
 
-    private static final int MAX_PARTICIPANTS = 1;
+    private static final int REQUIRED_PARTICIPANTS = 1;
 
     /**
-     * Validates that the appointment allows exactly 1 participant.
+     * Validates that the appointment can support an individual booking.
      *
      * @param appointment the appointment to validate
-     * @return true if maxParticipants == 1
+     * @return true if maxParticipants &gt;= 1
      */
     @Override
     public boolean isValid(Appointment appointment) {
-<span class="fc bfc" id="L24" title="All 2 branches covered.">        return appointment.getMaxParticipants() == MAX_PARTICIPANTS;</span>
+<span class="fc bfc" id="L25" title="All 2 branches covered.">        return appointment.getMaxParticipants() &gt;= REQUIRED_PARTICIPANTS;</span>
     }
 
     /**
@@ -31,7 +32,8 @@ import com.hamdi.appointments.domain.Appointment;
      */
     @Override
     public String getRuleDescription() {
-<span class="fc" id="L34">        return &quot;Individual appointments allow only &quot; + MAX_PARTICIPANTS + &quot; participant.&quot;;</span>
+<span class="fc" id="L35">        return &quot;Individual appointments require at least &quot;</span>
+                + REQUIRED_PARTICIPANTS + &quot; available participant slot.&quot;;
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
