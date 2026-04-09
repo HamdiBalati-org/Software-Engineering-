@@ -8,19 +8,21 @@ import java.util.List;
  * Implements the Observer Pattern.
  *
  * @author Hamdi
- * @version 1.0
+ * @version 1.2
  */
 public class NotificationManager {
 
     private List<Observer> observers = new ArrayList<>();
 
     /**
-     * Registers a new observer.
+     * Registers a new observer if it is not already added.
      *
      * @param observer the observer to add
      */
     public void addObserver(Observer observer) {
-        observers.add(observer);
+        if (!observers.contains(observer)) {
+            observers.add(observer);
+        }
     }
 
     /**
@@ -30,8 +32,8 @@ public class NotificationManager {
      * @param message  the notification message
      */
     public void notifyAllObservers(String username, String message) {
-        for (Observer obs : observers) {
-            obs.notifyUser(username, message);
+        for (Observer observer : observers) {
+            observer.notifyUser(username, message);
         }
     }
 }

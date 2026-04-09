@@ -8,20 +8,22 @@ import java.util.List;
  * Implements the Observer Pattern.
  *
  * @author Hamdi
- * @version 1.0
+ * @version 1.2
  */
 <span class="fc" id="L13">public class NotificationManager {</span>
 
 <span class="fc" id="L15">    private List&lt;Observer&gt; observers = new ArrayList&lt;&gt;();</span>
 
     /**
-     * Registers a new observer.
+     * Registers a new observer if it is not already added.
      *
      * @param observer the observer to add
      */
     public void addObserver(Observer observer) {
-<span class="fc" id="L23">        observers.add(observer);</span>
-<span class="fc" id="L24">    }</span>
+<span class="pc bpc" id="L23" title="1 of 2 branches missed.">        if (!observers.contains(observer)) {</span>
+<span class="fc" id="L24">            observers.add(observer);</span>
+        }
+<span class="fc" id="L26">    }</span>
 
     /**
      * Notifies all registered observers with a message.
@@ -30,9 +32,9 @@ import java.util.List;
      * @param message  the notification message
      */
     public void notifyAllObservers(String username, String message) {
-<span class="fc bfc" id="L33" title="All 2 branches covered.">        for (Observer obs : observers) {</span>
-<span class="fc" id="L34">            obs.notifyUser(username, message);</span>
-<span class="fc" id="L35">        }</span>
-<span class="fc" id="L36">    }</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        for (Observer observer : observers) {</span>
+<span class="fc" id="L36">            observer.notifyUser(username, message);</span>
+<span class="fc" id="L37">        }</span>
+<span class="fc" id="L38">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

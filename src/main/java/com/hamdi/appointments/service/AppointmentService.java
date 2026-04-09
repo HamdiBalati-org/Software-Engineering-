@@ -5,6 +5,8 @@ import com.hamdi.appointments.domain.AppointmentType;
 import com.hamdi.appointments.repository.AppointmentRepository;
 import com.hamdi.appointments.notification.NotificationManager;
 import com.hamdi.appointments.notification.NotificationService;
+import com.hamdi.appointments.notification.EmailSender;
+import com.hamdi.appointments.notification.GmailEmailSender;
 import com.hamdi.appointments.strategy.*;
 import com.hamdi.appointments.gui.LoginGUI;
 
@@ -13,96 +15,60 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * Coordinates appointment booking, cancellation, and modification.
- *
- * @author Hamdi
- * @version 1.0
- */
 public class AppointmentService {
 
     private AppointmentRepository repo;
     private NotificationManager notificationManager;
     private boolean testMode;
     private Clock clock;
+    private NotificationService notificationService;
 
-    /**
-     * Creates an AppointmentService for production use.
-     *
-     * @param repo the appointment repository
-     */
     public AppointmentService(AppointmentRepository repo) {
-        this.repo      = repo;
-        this.testMode  = false;
-        this.clock     = Clock.systemDefaultZone();
-        this.notificationManager = new NotificationManager();
-        this.notificationManager.addObserver(new NotificationService());
+        this(repo, false, Clock.systemDefaultZone(), null);
     }
 
-    /**
-     * Creates an AppointmentService for testing without GUI dialogs.
-     *
-     * @param repo     the appointment repository
-     * @param testMode true to disable GUI dialogs
-     */
     public AppointmentService(AppointmentRepository repo, boolean testMode) {
-        this.repo      = repo;
-        this.testMode  = testMode;
-        this.clock     = Clock.systemDefaultZone();
-        this.notificationManager = new NotificationManager();
-        this.notificationManager.addObserver(new NotificationService());
+        this(repo, testMode, Clock.systemDefaultZone(), null);
     }
 
-    /**
-     * Creates an AppointmentService for testing with a custom clock.
-     *
-     * @param repo     the appointment repository
-     * @param testMode true to disable GUI dialogs
-     * @param clock    the clock to use for time-based operations
-     */
     public AppointmentService(AppointmentRepository repo, boolean testMode, Clock clock) {
-        this.repo      = repo;
-        this.testMode  = testMode;
-        this.clock     = clock;
-        this.notificationManager = new NotificationManager();
-        this.notificationManager.addObserver(new NotificationService());
+        this(repo, testMode, clock, null);
     }
 
-    /**
-     * Shows a message dialog in production mode only.
-     *
-     * @param message the message to display
-     */
+    public AppointmentService(AppointmentRepository repo, boolean testMode, Clock clock,
+                              NotificationService notificationService) {
+
+        this.repo = repo;
+        this.testMode = testMode;
+        this.clock = clock;
+
+        this.notificationManager = new NotificationManager();
+
+        if (notificationService != null) {
+            this.notificationService = notificationService;
+        } else {
+            EmailSender emailSender =
+                    new GmailEmailSender("hamdiabuayman25@gmail.com", "vewx idkq hsnh hltk");
+            this.notificationService = new NotificationService(emailSender);
+        }
+
+        this.notificationManager.addObserver(this.notificationService);
+    }
+
     private void showMessage(String message) {
         if (!testMode) {
             JOptionPane.showMessageDialog(null, message);
         }
     }
 
-    /**
-     * Returns all available appointments.
-     *
-     * @return list of available appointments
-     */
-  
-    /**
-     * Returns all appointments for admin use.
-     *
-     * @return list of all appointments
-     */
     public List<Appointment> getAvailableAppointments() {
-    	    return repo.getAllAppointments(); // ✅ التعديل الوحيد
-     }
+        return repo.getAllAppointments();
+    }
+
     public List<Appointment> getAllAppointments() {
         return repo.getAllAppointments();
     }
 
-    /**
-     * Returns the booking rule for the given appointment type.
-     *
-     * @param type the appointment type
-     * @return the corresponding BookingRuleStrategy
-     */
     private BookingRuleStrategy getRule(AppointmentType type) {
         switch (type) {
             case URGENT:     return new UrgentRule();
@@ -116,14 +82,6 @@ public class AppointmentService {
         }
     }
 
-    /**
-     * Books an appointment for a specific user with a chosen type.
-     *
-     * @param dateTime the date and time string
-     * @param duration the requested duration in minutes
-     * @param username the booking username
-     * @param type     the appointment type chosen by the user
-     */
     public void bookAppointment(String dateTime, int duration,
                                 String username, AppointmentType type) {
 
@@ -135,7 +93,6 @@ public class AppointmentService {
             return;
         }
 
-        // ✅ check إذا الموعد فات
         if (!dt.isAfter(LocalDateTime.now(clock))) {
             showMessage("It's too late! This appointment has already passed.");
             return;
@@ -166,20 +123,27 @@ public class AppointmentService {
         appointment.incrementParticipants(username);
 
         showMessage("Appointment booked successfully!\n" +
-                "Type: "         + type + "\n" +
-                "Status: "       + appointment.getStatus() + "\n" +
+                "Type: " + type + "\n" +
+                "Status: " + appointment.getStatus() + "\n" +
                 "Participants: " + appointment.getCurrentParticipants());
 
-        notificationManager.notifyAllObservers(username,
-                "Your " + type + " appointment at " + dateTime + " is confirmed.");
+        String message =
+                "Appointment Booking Confirmation\n\n" +
+                "Dear " + username + ",\n\n" +
+                "Your appointment has been successfully booked.    • Here are the details:\n" +
+                "  • Type : " + appointment.getTypeForUser(username) + "\n" +
+                "  • Date & Time : " + appointment.getDateTime() + "\n" +
+                "  • Duration : " + appointment.getDurationMinutes() + " minutes\n" +
+                "  • Status : " + appointment.getStatusForUser(username) + "\n" +
+                "  • Participants : " + appointment.getCurrentParticipants() +
+                " / " + appointment.getMaxParticipants() + "\n\n" +
+                "If you need to make any changes, please log in to the system.\n\n" +
+                "Best regards,\n" +
+                "Appointment Booking System.";
+
+        notificationManager.notifyAllObservers(username, message);
     }
 
-    /**
-     * Cancels a user's booking. Only future appointments can be cancelled.
-     *
-     * @param dateTime the appointment date and time string
-     * @param username the username requesting cancellation
-     */
     public void cancelAppointment(String dateTime, String username) {
 
         LocalDateTime dt = LocalDateTime.parse(dateTime);
@@ -200,21 +164,31 @@ public class AppointmentService {
             return;
         }
 
+        AppointmentType userType = appointment.getTypeForUser(username);
         appointment.cancelBooking(username);
 
         showMessage("Appointment at " + dateTime + " cancelled successfully.");
 
-        notificationManager.notifyAllObservers(username,
-                "Your appointment at " + dateTime + " has been cancelled.");
+      //  AppointmentType userType = appointment.getTypeForUser(username);
+
+      
+
+      
+        String message =
+                "Appointment Cancellation Confirmation\n\n" +
+                "Dear " + username + ",\n\n" +
+                "Your appointment has been successfully cancelled.\n• Here is a summary:\n" +
+                "  • Type : " + userType + "\n" +
+                "  • Date & Time : " + appointment.getDateTime() + "\n" +
+                "  • Duration : " + appointment.getDurationMinutes() + " minutes\n" +
+                "  • Status : Cancelled\n\n" +
+                "Best regards,\n" +
+                "Appointment Booking System";
+
+        notificationManager.notifyAllObservers(username, message);
+       
     }
 
-    /**
-     * Modifies a user's booking from one slot to another.
-     *
-     * @param oldDateTime the current appointment date and time
-     * @param newDateTime the new appointment date and time
-     * @param username    the username requesting modification
-     */
     public void modifyAppointment(String oldDateTime, String newDateTime, String username) {
 
         LocalDateTime oldDt = LocalDateTime.parse(oldDateTime);
@@ -262,17 +236,23 @@ public class AppointmentService {
                 "From: " + oldDateTime + "\n" +
                 "To:   " + newDateTime);
 
-        notificationManager.notifyAllObservers(username,
-                "Your appointment has been modified to " + newDateTime);
+        String message =
+                "Appointment Updated Successfully\n\n" +
+                "Dear " + username + ",\n\n" +
+                "Your appointment has been modified. Here are your new appointment details:\n\n" +
+                "  • Type : " + newAppointment.getTypeForUser(username) + "\n" +
+                "  • Date & Time : " + newAppointment.getDateTime() + "\n" +
+                "  • Duration : " + newAppointment.getDurationMinutes() + " minutes\n" +
+                "  • Status : " + newAppointment.getStatusForUser(username) + "\n" +
+                "  • Participants: " + newAppointment.getCurrentParticipants() +
+                " / " + newAppointment.getMaxParticipants() + "\n\n" +
+                "If you need to make any changes, please log in to the system.\n\n" +
+                "Best regards,\n" +
+                "Appointment Booking System";
+
+        notificationManager.notifyAllObservers(username, message);
     }
 
-    /**
-     * Allows admin to cancel any user's booking.
-     *
-     * @param dateTime  the appointment date and time
-     * @param username  the target username
-     * @param adminName the admin performing the action
-     */
     public void adminCancelAppointment(String dateTime, String username, String adminName) {
 
         LocalDateTime dt = LocalDateTime.parse(dateTime);
@@ -287,30 +267,34 @@ public class AppointmentService {
             showMessage(username + " has no booking for this appointment!");
             return;
         }
-
+        AppointmentType userType = appointment.getTypeForUser(username);
         appointment.cancelBooking(username);
 
-        // ✅ رسالة للمستخدم تنتظره
         if (!testMode) {
             LoginGUI.addPendingMessage(username,
-                "Admin" + "' cancelled your appointment at " + dateTime);
+                    " The Admin" + " cancelled your appointment at " + dateTime);
         }
 
-        showMessage("Admin"  + " cancelled " + username +
+        showMessage("Admin " +  adminName + " cancelled " + username +
                 "'s appointment at " + dateTime + " successfully.");
+       
 
-        notificationManager.notifyAllObservers(username,
-                "Your appointment at " + dateTime + " was cancelled by admin.");
+        String message =
+                "Appointment Cancelled by Administrator\n\n" +
+                "Dear " + username + ",\n\n" +
+                "Your appointment has been cancelled by the administrator. \n  • Here is a summary:\n" +
+                "  • Type : " + userType + "\n" +
+                "  • Date & Time : " + appointment.getDateTime() + "\n" +
+                "  • Duration : " + appointment.getDurationMinutes() + " minutes\n" +
+                "  • Status : Cancelled\n" +
+                "  • Cancelled By : " + "The Admin of the system" + "\n\n" +
+                "If you need more information, please contact the administrator.\n\n" +
+                "Best regards,\n" +
+                "Appointment Booking System";
+
+        notificationManager.notifyAllObservers(username, message);
     }
 
-    /**
-     * Allows admin to modify any user's booking.
-     *
-     * @param oldDateTime the current appointment date and time
-     * @param newDateTime the new appointment date and time
-     * @param username    the target username
-     * @param adminName   the admin performing the action
-     */
     public void adminModifyAppointment(String oldDateTime, String newDateTime,
                                        String username, String adminName) {
 
@@ -350,18 +334,32 @@ public class AppointmentService {
         newAppointment.setTypeForUser(username, oldType);
         newAppointment.incrementParticipants(username);
 
-        // ✅ رسالة للمستخدم تنتظره
         if (!testMode) {
             LoginGUI.addPendingMessage(username,
-                "Admin" + "' modified your appointment from "
-                + oldDateTime + " to " + newDateTime);
+                    
+            		"The Admin"+ " modified your appointment from "
+                            + oldDateTime + " to " + newDateTime);
         }
 
-        showMessage("Admin" + " modified " + username + "'s appointment!\n" +
+        showMessage( "Admin "   + adminName + " modified " + username + "'s appointment!\n" +
                 "From: " + oldDateTime + "\n" +
                 "To:   " + newDateTime);
 
-        notificationManager.notifyAllObservers(username,
-                "Your appointment was modified to " + newDateTime + " by admin.");
+        String message =
+                "Appointment modified by Administrator\n\n" +
+                "Dear " + username + ",\n\n" +
+                "Your appointment has been updated by the administrator. Here are your new appointment details:\n\n" +
+                "  • Type : " + newAppointment.getTypeForUser(username) + "\n" +
+                "  • Date & Time : " + newAppointment.getDateTime() + "\n" +
+                "  • Duration : " + newAppointment.getDurationMinutes() + " minutes\n" +
+                "  • Status : " + newAppointment.getStatusForUser(username) + "\n" +
+                "  • Participants: " + newAppointment.getCurrentParticipants() +
+                " / " + newAppointment.getMaxParticipants() + "\n" +
+                "  • Modified By : " + "The Admin of the system" + "\n\n" +
+                "If you have any questions, please contact the administrator.\n\n" +
+                "Best regards,\n" +
+                "Appointment Booking System";
+
+        notificationManager.notifyAllObservers(username, message);
     }
 }

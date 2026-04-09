@@ -4,45 +4,42 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Sends notifications to users and records sent messages.
+ * Also sends email notifications asynchronously to avoid GUI freezing.
+ *
+ * @author Hamdi
+ * @version 5.0
+ */
+public class NotificationService implements Observer {
 
-* Sends notifications to users and records sent messages.
-* (Email sending removed for testing and security purposes)
-*
-* @author Hamdi
-* @version 2.0
-  */
-  public class NotificationService implements Observer {
+    private final List<String> sentMessages = new ArrayList<>();
+    private final EmailSender emailSender;
 
-  private List<String> sentMessages = new ArrayList<>();
+    private static final String SYSTEM_EMAIL = "hamdiabuayman25@gmail.com";
 
-  /**
+    public NotificationService(EmailSender emailSender) {
+        this.emailSender = emailSender;
+    }
 
-  * Records the notification (no real email sending).
-  *
-  * @param username the username to notify
-  * @param message  the notification message
-    */
     @Override
     public void notifyUser(String username, String message) {
-    // ✅ فقط تسجيل الرسالة
-    sentMessages.add("Notification for " + username + ": " + message);
+        sentMessages.add(message);
+
+        // إرسال الإيميل بالخلفية حتى لا يعلق الـ GUI
+        new Thread(() -> {
+            emailSender.sendEmail(
+                    SYSTEM_EMAIL,
+                    "Appointment Notification",
+                    message
+            );
+        }).start();
     }
 
-  /**
-
-  * Returns all messages sent by this notification service.
-  *
-  * @return list of sent messages
-    */
     public List<String> getSentMessages() {
-    return sentMessages;
+        return sentMessages;
     }
 
-  /**
-
-  * Clears all recorded messages.
-    */
     public void clearMessages() {
-    sentMessages.clear();
+        sentMessages.clear();
     }
-    }
+}

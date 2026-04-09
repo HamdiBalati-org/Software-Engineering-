@@ -6,12 +6,14 @@ AppointmentSystem,com.hamdi.appointments.strategy,GroupRule,0,13,0,2,0,3,0,4,0,3
 AppointmentSystem,com.hamdi.appointments.strategy,AssessmentRule,0,13,0,2,0,3,0,4,0,3
 AppointmentSystem,com.hamdi.appointments.strategy,VirtualRule,0,7,0,0,0,3,0,3,0,3
 AppointmentSystem,com.hamdi.appointments.strategy,IndividualRule,0,13,0,2,0,3,0,4,0,3
-AppointmentSystem,com.hamdi.appointments.notification,NotificationService,7,25,0,0,3,4,2,2,2,2
-AppointmentSystem,com.hamdi.appointments.notification,NotificationManager,0,31,0,2,0,8,0,4,0,3
+AppointmentSystem,com.hamdi.appointments.notification,GmailEmailSender.new Authenticator() {...},0,16,0,0,0,2,0,2,0,2
+AppointmentSystem,com.hamdi.appointments.notification,GmailEmailSender,12,67,0,0,6,18,0,2,0,2
+AppointmentSystem,com.hamdi.appointments.notification,NotificationService,15,24,0,0,4,8,3,2,3,2
+AppointmentSystem,com.hamdi.appointments.notification,NotificationManager,0,36,1,3,0,9,1,4,0,3
 AppointmentSystem,com.hamdi.appointments.domain,Appointment,57,134,8,8,18,36,9,15,3,13
 AppointmentSystem,com.hamdi.appointments.domain,AppointmentType,0,45,0,0,0,8,0,1,0,1
 AppointmentSystem,com.hamdi.appointments.domain,User,15,0,0,0,6,0,3,0,3,0
 AppointmentSystem,com.hamdi.appointments.domain,Administrator,15,0,0,0,6,0,3,0,3,0
 AppointmentSystem,com.hamdi.appointments.repository,AppointmentRepository,0,65,0,8,0,16,0,9,0,5
-AppointmentSystem,com.hamdi.appointments.service,AppointmentService,73,550,7,51,17,132,8,36,1,11
+AppointmentSystem,com.hamdi.appointments.service,AppointmentService,40,517,8,52,13,161,9,37,1,12
 AppointmentSystem,com.hamdi.appointments.service,AuthService,0,65,1,7,0,11,1,9,0,6
