@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Unit tests for AuthService.
  *
  * @author Hamdi
- * @version 1.0
+ * @version 2.0
  */
 public class AuthServiceTest {
 
@@ -60,5 +60,20 @@ public class AuthServiceTest {
     @Test
     void testIsUser_False() {
         assertFalse(authService.isUser("admin"));
+    }
+
+    @Test
+    void testLogin_EmptyUsername() {
+        assertFalse(authService.login("", "1234"));
+    }
+
+    @Test
+    void testLogin_EmptyPassword() {
+        assertFalse(authService.login("admin", ""));
+    }
+
+    @Test
+    void testLogin_BothEmpty() {
+        assertFalse(authService.login("", ""));
     }
 }

@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Unit tests for AppointmentService.
  *
  * @author Hamdi
- * @version 2.0
+ * @version 3.0
  */
 public class AppointmentServiceTest {
 
@@ -35,48 +35,65 @@ public class AppointmentServiceTest {
         service = new AppointmentService(repo, true);
     }
 
-    // ==================== bookAppointment ====================
+  
 
     @Test
     void testBookAppointment_Success() {
         service.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.VIRTUAL);
+
         Appointment a = repo.findByDateTime(DT1);
         assertEquals(1, a.getCurrentParticipants());
         assertEquals("Confirmed", a.getStatusForUser("user1"));
         assertEquals(AppointmentType.VIRTUAL, a.getTypeForUser("user1"));
+        assertTrue(a.isBookedByUser("user1"));
     }
 
     @Test
     void testBookAppointment_NotFound() {
         service.bookAppointment("2026-06-01T23:00", 30, "user1", AppointmentType.VIRTUAL);
+
         assertEquals(0, repo.findByDateTime(DT1).getCurrentParticipants());
+        assertFalse(repo.findByDateTime(DT1).isBookedByUser("user1"));
     }
 
     @Test
     void testBookAppointment_WrongDuration() {
         service.bookAppointment("2026-06-01T10:00", 99, "user1", AppointmentType.VIRTUAL);
-        assertEquals(0, repo.findByDateTime(DT1).getCurrentParticipants());
+
+        Appointment a = repo.findByDateTime(DT1);
+        assertEquals(0, a.getCurrentParticipants());
+        assertFalse(a.isBookedByUser("user1"));
+        assertNull(a.getTypeForUser("user1"));
     }
 
     @Test
     void testBookAppointment_AlreadyBooked() {
         service.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.VIRTUAL);
         service.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.VIRTUAL);
-        assertEquals(1, repo.findByDateTime(DT1).getCurrentParticipants());
+
+        Appointment a = repo.findByDateTime(DT1);
+        assertEquals(1, a.getCurrentParticipants());
+        assertTrue(a.isBookedByUser("user1"));
     }
 
     @Test
     void testBookAppointment_FullyBooked() {
         service.bookAppointment("2026-06-01T11:00", 60, "user1", AppointmentType.VIRTUAL);
         service.bookAppointment("2026-06-01T11:00", 60, "user2", AppointmentType.VIRTUAL);
-        assertEquals(1, repo.findByDateTime(DT2).getCurrentParticipants());
+
+        Appointment a = repo.findByDateTime(DT2);
+        assertEquals(1, a.getCurrentParticipants());
+        assertTrue(a.isBookedByUser("user1"));
+        assertFalse(a.isBookedByUser("user2"));
     }
 
     @Test
     void testBookAppointment_MultipleUsers_DifferentTypes() {
         service.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.URGENT);
         service.bookAppointment("2026-06-01T10:00", 30, "user2", AppointmentType.VIRTUAL);
+
         Appointment a = repo.findByDateTime(DT1);
+        assertEquals(2, a.getCurrentParticipants());
         assertEquals(AppointmentType.URGENT, a.getTypeForUser("user1"));
         assertEquals(AppointmentType.VIRTUAL, a.getTypeForUser("user2"));
     }
@@ -84,17 +101,35 @@ public class AppointmentServiceTest {
     @Test
     void testBookAppointment_Individual_AllowedWhenAppointmentCapacityIsGreaterThanOne() {
         service.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.INDIVIDUAL);
-        assertEquals(1, repo.findByDateTime(DT1).getCurrentParticipants());
-        assertEquals(AppointmentType.INDIVIDUAL, repo.findByDateTime(DT1).getTypeForUser("user1"));
+
+        Appointment a = repo.findByDateTime(DT1);
+        assertEquals(1, a.getCurrentParticipants());
+        assertEquals(AppointmentType.INDIVIDUAL, a.getTypeForUser("user1"));
     }
 
     @Test
     void testBookAppointment_RuleViolated_UrgentDuration() {
         service.bookAppointment("2026-06-01T11:00", 60, "user1", AppointmentType.URGENT);
-        assertEquals(0, repo.findByDateTime(DT2).getCurrentParticipants());
+
+        Appointment a = repo.findByDateTime(DT2);
+        assertEquals(0, a.getCurrentParticipants());
+        assertFalse(a.isBookedByUser("user1"));
+        assertNull(a.getTypeForUser("user1"));
     }
 
-    // ==================== getRule for all types ====================
+    @Test
+    void testBookAppointment_MultipleUsers_UntilFull_ThenRejectNext() {
+        service.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.VIRTUAL);
+        service.bookAppointment("2026-06-01T10:00", 30, "user2", AppointmentType.VIRTUAL);
+        service.bookAppointment("2026-06-01T10:00", 30, "user3", AppointmentType.VIRTUAL);
+        service.bookAppointment("2026-06-01T10:00", 30, "user4", AppointmentType.VIRTUAL);
+
+        Appointment a = repo.findByDateTime(DT1);
+        assertEquals(3, a.getCurrentParticipants());
+        assertFalse(a.isBookedByUser("user4"));
+    }
+
+    
 
     @Test
     void testBookAppointment_FollowUp_Valid() {
@@ -104,9 +139,12 @@ public class AppointmentServiceTest {
 
     @Test
     void testBookAppointment_Assessment_Valid() {
-        repo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 12, 0), 120, 3));
+        LocalDateTime dt3 = LocalDateTime.of(2026, 6, 1, 12, 0);
+        repo.addAppointment(new Appointment(dt3, 120, 3));
+
         service.bookAppointment("2026-06-01T12:00", 120, "user1", AppointmentType.ASSESSMENT);
-        assertEquals(1, repo.findByDateTime(LocalDateTime.of(2026, 6, 1, 12, 0)).getCurrentParticipants());
+
+        assertEquals(1, repo.findByDateTime(dt3).getCurrentParticipants());
     }
 
     @Test
@@ -127,22 +165,31 @@ public class AppointmentServiceTest {
         assertEquals(1, repo.findByDateTime(DT2).getCurrentParticipants());
     }
 
-    // ==================== cancelAppointment ====================
+   
 
     @Test
     void testCancelAppointment_Success() {
         service.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.VIRTUAL);
+
         service.cancelAppointment("2026-06-01T10:00", "user1");
+
         Appointment a = repo.findByDateTime(DT1);
         assertEquals(0, a.getCurrentParticipants());
         assertEquals("Pending", a.getStatus());
+        assertFalse(a.isBookedByUser("user1"));
+        assertNull(a.getTypeForUser("user1"));
     }
 
     @Test
     void testCancelAppointment_NotBooked() {
         service.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.VIRTUAL);
+
         service.cancelAppointment("2026-06-01T10:00", "user2");
-        assertEquals(1, repo.findByDateTime(DT1).getCurrentParticipants());
+
+        Appointment a = repo.findByDateTime(DT1);
+        assertEquals(1, a.getCurrentParticipants());
+        assertTrue(a.isBookedByUser("user1"));
+        assertFalse(a.isBookedByUser("user2"));
     }
 
     @Test
@@ -151,20 +198,26 @@ public class AppointmentServiceTest {
         assertEquals(0, repo.findByDateTime(DT1).getCurrentParticipants());
     }
 
-    // ==================== modifyAppointment ====================
+
 
     @Test
     void testModifyAppointment_Success() {
         service.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.VIRTUAL);
+
         service.modifyAppointment("2026-06-01T10:00", "2026-06-01T11:00", "user1");
+
         assertEquals(0, repo.findByDateTime(DT1).getCurrentParticipants());
         assertEquals(1, repo.findByDateTime(DT2).getCurrentParticipants());
+        assertFalse(repo.findByDateTime(DT1).isBookedByUser("user1"));
+        assertTrue(repo.findByDateTime(DT2).isBookedByUser("user1"));
     }
 
     @Test
     void testModifyAppointment_TypeTransferred() {
         service.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.VIRTUAL);
+
         service.modifyAppointment("2026-06-01T10:00", "2026-06-01T11:00", "user1");
+
         assertEquals(AppointmentType.VIRTUAL, repo.findByDateTime(DT2).getTypeForUser("user1"));
     }
 
@@ -183,33 +236,47 @@ public class AppointmentServiceTest {
     @Test
     void testModifyAppointment_NewNotFound() {
         service.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.VIRTUAL);
+
         service.modifyAppointment("2026-06-01T10:00", "2026-06-01T23:00", "user1");
+
         assertEquals(1, repo.findByDateTime(DT1).getCurrentParticipants());
+        assertTrue(repo.findByDateTime(DT1).isBookedByUser("user1"));
     }
 
     @Test
     void testModifyAppointment_NewFullyBooked() {
         service.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.VIRTUAL);
         service.bookAppointment("2026-06-01T11:00", 60, "user2", AppointmentType.VIRTUAL);
+
         service.modifyAppointment("2026-06-01T10:00", "2026-06-01T11:00", "user1");
+
         assertEquals(1, repo.findByDateTime(DT1).getCurrentParticipants());
+        assertTrue(repo.findByDateTime(DT1).isBookedByUser("user1"));
     }
 
     @Test
     void testModifyAppointment_NewAlreadyBooked() {
         service.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.VIRTUAL);
         service.bookAppointment("2026-06-01T11:00", 60, "user1", AppointmentType.VIRTUAL);
+
         service.modifyAppointment("2026-06-01T10:00", "2026-06-01T11:00", "user1");
+
         assertEquals(1, repo.findByDateTime(DT1).getCurrentParticipants());
+        assertEquals(1, repo.findByDateTime(DT2).getCurrentParticipants());
     }
 
-    // ==================== adminCancelAppointment ====================
+    
 
     @Test
     void testAdminCancelAppointment_Success() {
         service.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.VIRTUAL);
+
         service.adminCancelAppointment("2026-06-01T10:00", "user1", "admin");
-        assertEquals(0, repo.findByDateTime(DT1).getCurrentParticipants());
+
+        Appointment a = repo.findByDateTime(DT1);
+        assertEquals(0, a.getCurrentParticipants());
+        assertFalse(a.isBookedByUser("user1"));
+        assertNull(a.getTypeForUser("user1"));
     }
 
     @Test
@@ -224,14 +291,29 @@ public class AppointmentServiceTest {
         assertEquals(0, repo.findByDateTime(DT1).getCurrentParticipants());
     }
 
-    // ==================== adminModifyAppointment ====================
+
 
     @Test
     void testAdminModifyAppointment_Success() {
         service.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.VIRTUAL);
+
         service.adminModifyAppointment("2026-06-01T10:00", "2026-06-01T11:00", "user1", "admin");
+
         assertEquals(0, repo.findByDateTime(DT1).getCurrentParticipants());
         assertEquals(1, repo.findByDateTime(DT2).getCurrentParticipants());
+        assertTrue(repo.findByDateTime(DT2).isBookedByUser("user1"));
+    }
+
+    @Test
+    void testAdminModifyAppointment_TypeTransferred() {
+        service.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.URGENT);
+
+        LocalDateTime dt3 = LocalDateTime.of(2026, 6, 1, 12, 0);
+        repo.addAppointment(new Appointment(dt3, 30, 2));
+
+        service.adminModifyAppointment("2026-06-01T10:00", "2026-06-01T12:00", "user1", "admin");
+
+        assertEquals(AppointmentType.URGENT, repo.findByDateTime(dt3).getTypeForUser("user1"));
     }
 
     @Test
@@ -249,77 +331,100 @@ public class AppointmentServiceTest {
     @Test
     void testAdminModifyAppointment_NewNotFound() {
         service.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.VIRTUAL);
+
         service.adminModifyAppointment("2026-06-01T10:00", "2026-06-01T23:00", "user1", "admin");
+
         assertEquals(1, repo.findByDateTime(DT1).getCurrentParticipants());
+        assertTrue(repo.findByDateTime(DT1).isBookedByUser("user1"));
     }
 
     @Test
     void testAdminModifyAppointment_NewFullyBooked() {
         service.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.VIRTUAL);
         service.bookAppointment("2026-06-01T11:00", 60, "user2", AppointmentType.VIRTUAL);
+
         service.adminModifyAppointment("2026-06-01T10:00", "2026-06-01T11:00", "user1", "admin");
+
         assertEquals(1, repo.findByDateTime(DT1).getCurrentParticipants());
+        assertTrue(repo.findByDateTime(DT1).isBookedByUser("user1"));
     }
 
     @Test
     void testAdminModifyAppointment_NewAlreadyBooked() {
         service.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.VIRTUAL);
         service.bookAppointment("2026-06-01T11:00", 60, "user1", AppointmentType.VIRTUAL);
+
         service.adminModifyAppointment("2026-06-01T10:00", "2026-06-01T11:00", "user1", "admin");
+
         assertEquals(1, repo.findByDateTime(DT1).getCurrentParticipants());
+        assertEquals(1, repo.findByDateTime(DT2).getCurrentParticipants());
     }
 
-    // ==================== getAllAppointments ====================
+    
 
     @Test
     void testGetAllAppointments() {
         assertEquals(2, service.getAllAppointments().size());
     }
 
-    // ==================== getAvailableAppointments ====================
+  
 
     @Test
-    void testGetAvailableAppointments() {
+    void testGetAvailableAppointments_BeforeAndAfterFullBooking() {
         assertEquals(2, service.getAvailableAppointments().size());
+
         service.bookAppointment("2026-06-01T11:00", 60, "user1", AppointmentType.VIRTUAL);
+
+        // حسب الـ implementation الحالية، الموعد الممتلئ ما زال يظهر ضمن available appointments
         assertEquals(2, service.getAvailableAppointments().size());
     }
 
-    // ==================== Clock / Time Mocking Tests ====================
+
 
     @Test
     void testCancelAppointment_PastAppointment_Rejected() {
         Clock futureClock = Clock.fixed(
-            LocalDateTime.of(2027, 1, 1, 0, 0).toInstant(ZoneOffset.UTC),
-            ZoneId.of("UTC")
+                LocalDateTime.of(2027, 1, 1, 0, 0).toInstant(ZoneOffset.UTC),
+                ZoneId.of("UTC")
         );
+
         AppointmentService futureService = new AppointmentService(repo, true, futureClock);
+
         service.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.VIRTUAL);
         futureService.cancelAppointment("2026-06-01T10:00", "user1");
+
         assertEquals(1, repo.findByDateTime(DT1).getCurrentParticipants());
+        assertTrue(repo.findByDateTime(DT1).isBookedByUser("user1"));
     }
 
     @Test
     void testModifyAppointment_PastAppointment_Rejected() {
         Clock futureClock = Clock.fixed(
-            LocalDateTime.of(2027, 1, 1, 0, 0).toInstant(ZoneOffset.UTC),
-            ZoneId.of("UTC")
+                LocalDateTime.of(2027, 1, 1, 0, 0).toInstant(ZoneOffset.UTC),
+                ZoneId.of("UTC")
         );
+
         AppointmentService futureService = new AppointmentService(repo, true, futureClock);
+
         service.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.VIRTUAL);
         futureService.modifyAppointment("2026-06-01T10:00", "2026-06-01T11:00", "user1");
+
+        assertEquals(1, repo.findByDateTime(DT1).getCurrentParticipants());
         assertEquals(0, repo.findByDateTime(DT2).getCurrentParticipants());
     }
 
     @Test
     void testCancelAppointment_FutureAppointment_Accepted() {
         Clock pastClock = Clock.fixed(
-            LocalDateTime.of(2025, 1, 1, 0, 0).toInstant(ZoneOffset.UTC),
-            ZoneId.of("UTC")
+                LocalDateTime.of(2025, 1, 1, 0, 0).toInstant(ZoneOffset.UTC),
+                ZoneId.of("UTC")
         );
+
         AppointmentService pastService = new AppointmentService(repo, true, pastClock);
+
         pastService.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.VIRTUAL);
         pastService.cancelAppointment("2026-06-01T10:00", "user1");
+
         assertEquals(0, repo.findByDateTime(DT1).getCurrentParticipants());
         assertEquals("Pending", repo.findByDateTime(DT1).getStatus());
     }
@@ -327,12 +432,15 @@ public class AppointmentServiceTest {
     @Test
     void testModifyAppointment_FutureAppointment_Accepted() {
         Clock pastClock = Clock.fixed(
-            LocalDateTime.of(2025, 1, 1, 0, 0).toInstant(ZoneOffset.UTC),
-            ZoneId.of("UTC")
+                LocalDateTime.of(2025, 1, 1, 0, 0).toInstant(ZoneOffset.UTC),
+                ZoneId.of("UTC")
         );
+
         AppointmentService pastService = new AppointmentService(repo, true, pastClock);
+
         pastService.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.VIRTUAL);
         pastService.modifyAppointment("2026-06-01T10:00", "2026-06-01T11:00", "user1");
+
         assertEquals(0, repo.findByDateTime(DT1).getCurrentParticipants());
         assertEquals(1, repo.findByDateTime(DT2).getCurrentParticipants());
     }

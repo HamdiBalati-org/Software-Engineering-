@@ -2,14 +2,16 @@ package com.hamdi.appointments.domain;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit tests for Appointment domain class.
  *
  * @author Hamdi
- * @version 1.0
+ * @version 2.0
  */
 public class AppointmentTest {
 
@@ -21,7 +23,6 @@ public class AppointmentTest {
         appointment = new Appointment(DT, 30, 3);
     }
 
-    // ==================== Basic Getters ====================
 
     @Test
     void testGetDateTime() {
@@ -48,7 +49,6 @@ public class AppointmentTest {
         assertEquals(0, appointment.getCurrentParticipants());
     }
 
-    // ==================== incrementParticipants ====================
 
     @Test
     void testIncrementParticipants() {
@@ -61,20 +61,44 @@ public class AppointmentTest {
     void testIncrementParticipants_MultipleUsers() {
         appointment.incrementParticipants("user1");
         appointment.incrementParticipants("user2");
+
         assertEquals(2, appointment.getCurrentParticipants());
         assertTrue(appointment.isBookedByUser("user1"));
         assertTrue(appointment.isBookedByUser("user2"));
     }
 
-    // ==================== cancelBooking ====================
+    @Test
+    void testIncrementParticipants_SameUserTwice_DoesNotDuplicate() {
+        appointment.incrementParticipants("user1");
+        appointment.incrementParticipants("user1");
+
+        assertEquals(1, appointment.getCurrentParticipants());
+        assertTrue(appointment.isBookedByUser("user1"));
+    }
+
+    @Test
+    void testIncrementParticipants_DoesNotExceedMaxParticipants() {
+        Appointment limited = new Appointment(DT, 30, 1);
+
+        limited.incrementParticipants("user1");
+        limited.incrementParticipants("user2");
+
+        assertEquals(1, limited.getCurrentParticipants());
+        assertTrue(limited.isBookedByUser("user1"));
+        assertFalse(limited.isBookedByUser("user2"));
+    }
+
 
     @Test
     void testCancelBooking_Success() {
         appointment.incrementParticipants("user1");
+
         boolean result = appointment.cancelBooking("user1");
+
         assertTrue(result);
         assertEquals(0, appointment.getCurrentParticipants());
         assertEquals("Pending", appointment.getStatus());
+        assertFalse(appointment.isBookedByUser("user1"));
     }
 
     @Test
@@ -83,7 +107,20 @@ public class AppointmentTest {
         assertFalse(result);
     }
 
-    // ==================== isBookedByUser ====================
+    @Test
+    void testCancelBooking_OneOfMultipleUsers() {
+        appointment.incrementParticipants("user1");
+        appointment.incrementParticipants("user2");
+
+        boolean result = appointment.cancelBooking("user1");
+
+        assertTrue(result);
+        assertEquals(1, appointment.getCurrentParticipants());
+        assertFalse(appointment.isBookedByUser("user1"));
+        assertTrue(appointment.isBookedByUser("user2"));
+        assertEquals("Confirmed", appointment.getStatus());
+    }
+
 
     @Test
     void testIsBookedByUser_True() {
@@ -96,7 +133,7 @@ public class AppointmentTest {
         assertFalse(appointment.isBookedByUser("user1"));
     }
 
-    // ==================== setTypeForUser / getTypeForUser ====================
+
 
     @Test
     void testSetAndGetTypeForUser() {
@@ -113,11 +150,13 @@ public class AppointmentTest {
     void testCancelBooking_RemovesType() {
         appointment.incrementParticipants("user1");
         appointment.setTypeForUser("user1", AppointmentType.VIRTUAL);
+
         appointment.cancelBooking("user1");
+
         assertNull(appointment.getTypeForUser("user1"));
     }
 
-    // ==================== getBookedUsers ====================
+
 
     @Test
     void testGetBookedUsers_Empty() {
@@ -127,7 +166,17 @@ public class AppointmentTest {
     @Test
     void testGetBookedUsers_AfterBooking() {
         appointment.incrementParticipants("user1");
+
         assertEquals(1, appointment.getBookedUsers().size());
         assertTrue(appointment.getBookedUsers().contains("user1"));
+    }
+
+    @Test
+    void testGetBookedUsers_AfterCancellation_UserRemoved() {
+        appointment.incrementParticipants("user1");
+        appointment.cancelBooking("user1");
+
+        assertFalse(appointment.getBookedUsers().contains("user1"));
+        assertTrue(appointment.getBookedUsers().isEmpty());
     }
 }

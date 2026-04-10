@@ -166,7 +166,7 @@ public class Appointment {
      * @param username the booking username
      */
     public void incrementParticipants(String username) {
-<span class="pc bpc" id="L169" title="2 of 4 branches missed.">        if (currentParticipants &lt; maxParticipants &amp;&amp; !isBookedByUser(username)) {</span>
+<span class="fc bfc" id="L169" title="All 4 branches covered.">        if (currentParticipants &lt; maxParticipants &amp;&amp; !isBookedByUser(username)) {</span>
 <span class="fc" id="L170">            currentParticipants++;</span>
 <span class="fc" id="L171">            bookedUsers.add(username);</span>
 
@@ -193,10 +193,10 @@ public class Appointment {
 <span class="fc" id="L193">        userTypes.remove(username);</span>
 <span class="fc" id="L194">        currentParticipants--;</span>
 
-<span class="pc bpc" id="L196" title="1 of 2 branches missed.">        if (currentParticipants &lt;= 0) {</span>
+<span class="fc bfc" id="L196" title="All 2 branches covered.">        if (currentParticipants &lt;= 0) {</span>
 <span class="fc" id="L197">            this.status = &quot;Pending&quot;;</span>
-<span class="nc bnc" id="L198" title="All 2 branches missed.">        } else if (currentParticipants &lt; maxParticipants) {</span>
-<span class="nc" id="L199">            this.status = &quot;Confirmed&quot;;</span>
+<span class="pc bpc" id="L198" title="1 of 2 branches missed.">        } else if (currentParticipants &lt; maxParticipants) {</span>
+<span class="fc" id="L199">            this.status = &quot;Confirmed&quot;;</span>
         } else {
 <span class="nc" id="L201">            this.status = &quot;FULL&quot;;</span>
         }

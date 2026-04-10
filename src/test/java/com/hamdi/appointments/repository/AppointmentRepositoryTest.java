@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -12,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Unit tests for AppointmentRepository.
  *
  * @author Hamdi
- * @version 1.0
+ * @version 2.0
  */
 public class AppointmentRepositoryTest {
 
@@ -43,6 +44,14 @@ public class AppointmentRepositoryTest {
     }
 
     @Test
+    void testGetAllAppointments_ContainsExpectedAppointments() {
+        List<Appointment> all = repo.getAllAppointments();
+
+        assertTrue(all.stream().anyMatch(a -> a.getDateTime().equals(DT1)));
+        assertTrue(all.stream().anyMatch(a -> a.getDateTime().equals(DT2)));
+    }
+
+    @Test
     void testGetAvailableAppointments_AllAvailable() {
         assertEquals(2, repo.getAvailableAppointments().size());
     }
@@ -51,6 +60,20 @@ public class AppointmentRepositoryTest {
     void testGetAvailableAppointments_OneFullyBooked() {
         Appointment a = repo.findByDateTime(DT2);
         a.incrementParticipants("user1");
+
         assertEquals(1, repo.getAvailableAppointments().size());
+        assertTrue(repo.getAvailableAppointments().stream()
+                .noneMatch(app -> app.getDateTime().equals(DT2)));
+    }
+
+    @Test
+    void testAddAppointment_NewAppointmentCanBeRetrieved() {
+        LocalDateTime dt3 = LocalDateTime.of(2026, 6, 1, 12, 0);
+        Appointment newAppointment = new Appointment(dt3, 45, 2);
+
+        repo.addAppointment(newAppointment);
+
+        assertNotNull(repo.findByDateTime(dt3));
+        assertEquals(3, repo.getAllAppointments().size());
     }
 }

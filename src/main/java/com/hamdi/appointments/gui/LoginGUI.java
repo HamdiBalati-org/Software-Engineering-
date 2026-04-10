@@ -31,7 +31,6 @@ public class LoginGUI extends JFrame {
     private static AppointmentService    sharedService;
     private static AuthService           sharedAuth;
 
-    /** ✅ رسائل منتظرة لكل مستخدم */
     public static Map<String, List<String>> pendingMessages = new HashMap<>();
 
     /**
@@ -84,34 +83,32 @@ public class LoginGUI extends JFrame {
         
         }
 
-        // ✅ Fields
+
         usernameField = new JTextField(15);
         passwordField = new JPasswordField(15);
         loginButton   = new JButton("Login");
 
-        // ✅ GridBagLayout لتوسيط الزر
+   
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill   = GridBagConstraints.HORIZONTAL;
 
-        // Username Label
+
         gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 1;
         add(new JLabel("Username:"), gbc);
 
-        // Username Field
         gbc.gridx = 1; gbc.gridy = 0;
         add(usernameField, gbc);
 
-        // Password Label
+     
         gbc.gridx = 0; gbc.gridy = 1;
         add(new JLabel("Password:"), gbc);
 
-        // Password Field
+       
         gbc.gridx = 1; gbc.gridy = 1;
         add(passwordField, gbc);
 
-        // ✅ Login Button في النص
         gbc.gridx = 0; gbc.gridy = 2;
         gbc.gridwidth = 2;
         gbc.fill   = GridBagConstraints.NONE;

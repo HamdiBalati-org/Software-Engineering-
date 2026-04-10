@@ -27,12 +27,12 @@ public class NotificationService implements Observer {
 
         // إرسال الإيميل بالخلفية حتى لا يعلق الـ GUI
 <span class="fc" id="L29">        new Thread(() -&gt; {</span>
-<span class="nc" id="L30">            emailSender.sendEmail(</span>
+<span class="fc" id="L30">            emailSender.sendEmail(</span>
                     SYSTEM_EMAIL,
                     &quot;Appointment Notification&quot;,
                     message
             );
-<span class="pc" id="L35">        }).start();</span>
+<span class="fc" id="L35">        }).start();</span>
 <span class="fc" id="L36">    }</span>
 
     public List&lt;String&gt; getSentMessages() {

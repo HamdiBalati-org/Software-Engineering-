@@ -49,11 +49,9 @@ public class BookingsGUI extends JFrame {
             new Object[]{"User", "DateTime", "Duration", "Type", "Status"}, 0);
 
         table = new JTable(tableModel);
-        // ✅ منع تبديل أماكن الأعمدة
         table.getTableHeader().setReorderingAllowed(false);
         JScrollPane scrollPane = new JScrollPane(table);
 
-        // ✅ لما الأدمن يضغط على سطر يتعبى تلقائياً
         table.getSelectionModel().addListSelectionListener(e -> {
             int row = table.getSelectedRow();
             if (row != -1) {
@@ -72,20 +70,17 @@ public class BookingsGUI extends JFrame {
         modifyButton     = new JButton("Admin Modify");
         backButton       = new JButton("Back");
 
-        // ✅ سطر أول - Cancel
         topPanel.add(new JLabel("Target User:"));
         topPanel.add(userField);
         topPanel.add(new JLabel("DateTime:"));
         topPanel.add(dateTimeField);
         topPanel.add(cancelButton);
 
-        // ✅ سطر ثاني - Modify + Back
         bottomPanel.add(new JLabel("New DateTime:"));
         bottomPanel.add(newDateTimeField);
         bottomPanel.add(modifyButton);
         bottomPanel.add(backButton);
 
-        // ✅ Label في وسط الشاشة
         noBookingsLabel = new JLabel("No bookings available for any user.", JLabel.CENTER);
         noBookingsLabel.setFont(new Font("Arial", Font.BOLD, 14));
         noBookingsLabel.setForeground(Color.GRAY);
@@ -107,7 +102,6 @@ public class BookingsGUI extends JFrame {
         refreshTable();
         setVisible(true);
 
-        // ------------------ Admin Cancel ------------------
         cancelButton.addActionListener(e -> {
             String user = userField.getText().trim();
             String dt   = dateTimeField.getText().trim();
@@ -123,7 +117,6 @@ public class BookingsGUI extends JFrame {
             refreshTable();
         });
 
-        // ------------------ Admin Modify ------------------
         modifyButton.addActionListener(e -> {
             String user  = userField.getText().trim();
             String oldDt = dateTimeField.getText().trim();
@@ -144,7 +137,6 @@ public class BookingsGUI extends JFrame {
             refreshTable();
         });
 
-        // ------------------ Back ------------------
         backButton.addActionListener(e -> dispose());
     }
 
@@ -173,7 +165,6 @@ public class BookingsGUI extends JFrame {
             }
         }
 
-        // ✅ إظهار أو إخفاء الـ Label
         noBookingsLabel.setVisible(!hasBookings);
     }
 }
