@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.hamdi.appointments.strategy.StrategyTest
 -------------------------------------------------------------------------------
-Tests run: 21, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.04 s - in com.hamdi.appointments.strategy.StrategyTest
+Tests run: 21, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.019 s - in com.hamdi.appointments.strategy.StrategyTest

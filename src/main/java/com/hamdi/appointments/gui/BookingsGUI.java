@@ -9,12 +9,6 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 
-/**
- * Shows all bookings for admin management.
- *
- * @author Hamdi
- * @version 1.0
- */
 public class BookingsGUI extends JFrame {
 
     private static final long serialVersionUID = 1L;
@@ -34,12 +28,9 @@ public class BookingsGUI extends JFrame {
     private JButton modifyButton;
     private JButton backButton;
 
-    /**
-     * Builds the bookings management window for admin.
-     *
-     * @param service   the appointment service
-     * @param adminName the logged-in admin username
-     */
+    // 🔥 زر جديد
+    private JButton addAppointmentButton;
+
     public BookingsGUI(AppointmentService service, String adminName) {
         super("All Bookings - Admin: " + adminName);
         this.service   = service;
@@ -70,6 +61,8 @@ public class BookingsGUI extends JFrame {
         modifyButton     = new JButton("Admin Modify");
         backButton       = new JButton("Back");
 
+        addAppointmentButton = new JButton("Add Appointment");
+
         topPanel.add(new JLabel("Target User:"));
         topPanel.add(userField);
         topPanel.add(new JLabel("DateTime:"));
@@ -80,6 +73,8 @@ public class BookingsGUI extends JFrame {
         bottomPanel.add(newDateTimeField);
         bottomPanel.add(modifyButton);
         bottomPanel.add(backButton);
+
+        bottomPanel.add(addAppointmentButton);
 
         noBookingsLabel = new JLabel("No bookings available for any user.", JLabel.CENTER);
         noBookingsLabel.setFont(new Font("Arial", Font.BOLD, 14));
@@ -102,17 +97,22 @@ public class BookingsGUI extends JFrame {
         refreshTable();
         setVisible(true);
 
+        // ================== ACTIONS ==================
+
         cancelButton.addActionListener(e -> {
             String user = userField.getText().trim();
             String dt   = dateTimeField.getText().trim();
+
             if (user.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Please enter a Target User!");
                 return;
             }
+
             if (dt.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Please enter a DateTime!");
                 return;
             }
+
             service.adminCancelAppointment(dt, user, adminName);
             refreshTable();
         });
@@ -121,28 +121,54 @@ public class BookingsGUI extends JFrame {
             String user  = userField.getText().trim();
             String oldDt = dateTimeField.getText().trim();
             String newDt = newDateTimeField.getText().trim();
+
             if (user.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Please enter a Target User!");
                 return;
             }
+
             if (oldDt.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Please enter the current DateTime!");
                 return;
             }
+
             if (newDt.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Please enter the new DateTime!");
                 return;
             }
+
             service.adminModifyAppointment(oldDt, newDt, user, adminName);
             refreshTable();
+        });
+
+        // 🔥 ACTION جديد للإضافة
+        addAppointmentButton.addActionListener(e -> {
+
+            String dateTime = JOptionPane.showInputDialog("Enter date and time (yyyy-MM-ddTHH:mm):");
+            if (dateTime == null) return;
+
+            String durationStr = JOptionPane.showInputDialog("Enter duration (minutes):");
+            if (durationStr == null) return;
+
+            String maxStr = JOptionPane.showInputDialog("Enter max participants:");
+            if (maxStr == null) return;
+
+            try {
+                int duration = Integer.parseInt(durationStr);
+                int maxParticipants = Integer.parseInt(maxStr);
+
+                service.addAppointment(dateTime, duration, maxParticipants);
+
+                refreshTable(); // 🔥 تحديث الجدول
+
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(null, "Invalid numbers!");
+            }
         });
 
         backButton.addActionListener(e -> dispose());
     }
 
-    /**
-     * Refreshes the bookings table showing all users and their bookings.
-     */
     private void refreshTable() {
         tableModel.setRowCount(0);
 

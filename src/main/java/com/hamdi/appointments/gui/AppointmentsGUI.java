@@ -36,6 +36,7 @@ public class AppointmentsGUI extends JFrame {
     private JButton modifyButton;
     private JButton myBookingsButton;
     private JButton viewBookingsButton;
+    private JButton addAppointmentButton; // جديد
     private JButton logoutButton;
 
     /**
@@ -105,7 +106,10 @@ public class AppointmentsGUI extends JFrame {
 
         if (isAdmin) {
             viewBookingsButton = new JButton("View All Bookings");
+            addAppointmentButton = new JButton("Add Appointment");
+
             topPanel.add(viewBookingsButton);
+            topPanel.add(addAppointmentButton);
         }
 
         logoutButton = new JButton("Logout");
@@ -125,7 +129,7 @@ public class AppointmentsGUI extends JFrame {
             add(scrollPane, BorderLayout.CENTER);
         }
 
-        add(topPanel,    BorderLayout.NORTH);
+        add(topPanel, BorderLayout.NORTH);
         add(bottomPanel, BorderLayout.SOUTH);
 
         setSize(950, 450);
@@ -150,16 +154,19 @@ public class AppointmentsGUI extends JFrame {
             bookButton.addActionListener(e -> {
                 String dt = dateTimeField.getText().trim();
                 int dur;
+
                 if (dt.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Please enter a DateTime!");
                     return;
                 }
+
                 try {
                     dur = Integer.parseInt(durationField.getText().trim());
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(null, "Invalid duration!");
                     return;
                 }
+
                 AppointmentType type = (AppointmentType) typeComboBox.getSelectedItem();
                 service.bookAppointment(dt, dur, currentUser, type);
                 refreshTable();
@@ -167,10 +174,12 @@ public class AppointmentsGUI extends JFrame {
 
             cancelButton.addActionListener(e -> {
                 String dt = dateTimeField.getText().trim();
+
                 if (dt.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Please enter a DateTime!");
                     return;
                 }
+
                 service.cancelAppointment(dt, currentUser);
                 refreshTable();
             });
@@ -178,14 +187,17 @@ public class AppointmentsGUI extends JFrame {
             modifyButton.addActionListener(e -> {
                 String oldDt = dateTimeField.getText().trim();
                 String newDt = newDateTimeField.getText().trim();
+
                 if (oldDt.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Please enter the current DateTime!");
                     return;
                 }
+
                 if (newDt.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Please enter the new DateTime!");
                     return;
                 }
+
                 service.modifyAppointment(oldDt, newDt, currentUser);
                 refreshTable();
             });
@@ -216,6 +228,48 @@ public class AppointmentsGUI extends JFrame {
 
         if (isAdmin) {
             viewBookingsButton.addActionListener(e -> new BookingsGUI(service, currentUser));
+
+            addAppointmentButton.addActionListener(e -> {
+                String dateTime = JOptionPane.showInputDialog(
+                        this,
+                        "Enter date and time (yyyy-MM-ddTHH:mm):",
+                        "Add Appointment",
+                        JOptionPane.PLAIN_MESSAGE
+                );
+                if (dateTime == null) return;
+
+                String durationStr = JOptionPane.showInputDialog(
+                        this,
+                        "Enter duration (minutes):",
+                        "Add Appointment",
+                        JOptionPane.PLAIN_MESSAGE
+                );
+                if (durationStr == null) return;
+
+                String maxStr = JOptionPane.showInputDialog(
+                        this,
+                        "Enter max participants:",
+                        "Add Appointment",
+                        JOptionPane.PLAIN_MESSAGE
+                );
+                if (maxStr == null) return;
+
+                try {
+                    int duration = Integer.parseInt(durationStr.trim());
+                    int maxParticipants = Integer.parseInt(maxStr.trim());
+
+                    service.addAppointment(dateTime.trim(), duration, maxParticipants);
+                    refreshTable();
+
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "Duration and max participants must be valid numbers.",
+                            "Invalid Input",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                }
+            });
         }
 
         logoutButton.addActionListener(e -> {
@@ -240,6 +294,7 @@ public class AppointmentsGUI extends JFrame {
                 String bookedBy = a.getBookedUsers().isEmpty()
                         ? "-"
                         : String.join(", ", a.getBookedUsers());
+
                 tableModel.addRow(new Object[]{
                         a.getDateTime(),
                         a.getDurationMinutes(),

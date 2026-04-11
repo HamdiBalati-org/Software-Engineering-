@@ -2,6 +2,8 @@ package com.hamdi.appointments.service;
 
 import com.hamdi.appointments.domain.Appointment;
 import com.hamdi.appointments.domain.AppointmentType;
+import com.hamdi.appointments.notification.FakeEmailSender;
+import com.hamdi.appointments.notification.NotificationService;
 import com.hamdi.appointments.repository.AppointmentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,10 +34,17 @@ public class AppointmentServiceTest {
         repo = new AppointmentRepository();
         repo.addAppointment(new Appointment(DT1, 30, 3));
         repo.addAppointment(new Appointment(DT2, 60, 1));
-        service = new AppointmentService(repo, true);
-    }
 
-  
+        NotificationService notificationService =
+                new NotificationService(new FakeEmailSender());
+
+        Clock clock = Clock.fixed(
+                LocalDateTime.of(2025, 1, 1, 0, 0).toInstant(ZoneOffset.UTC),
+                ZoneId.of("UTC")
+        );
+
+        service = new AppointmentService(repo, true, clock, notificationService);
+    }
 
     @Test
     void testBookAppointment_Success() {
@@ -129,8 +138,6 @@ public class AppointmentServiceTest {
         assertFalse(a.isBookedByUser("user4"));
     }
 
-    
-
     @Test
     void testBookAppointment_FollowUp_Valid() {
         service.bookAppointment("2026-06-01T11:00", 60, "user1", AppointmentType.FOLLOW_UP);
@@ -165,8 +172,6 @@ public class AppointmentServiceTest {
         assertEquals(1, repo.findByDateTime(DT2).getCurrentParticipants());
     }
 
-   
-
     @Test
     void testCancelAppointment_Success() {
         service.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.VIRTUAL);
@@ -197,8 +202,6 @@ public class AppointmentServiceTest {
         service.cancelAppointment("2026-06-01T23:00", "user1");
         assertEquals(0, repo.findByDateTime(DT1).getCurrentParticipants());
     }
-
-
 
     @Test
     void testModifyAppointment_Success() {
@@ -265,8 +268,6 @@ public class AppointmentServiceTest {
         assertEquals(1, repo.findByDateTime(DT2).getCurrentParticipants());
     }
 
-    
-
     @Test
     void testAdminCancelAppointment_Success() {
         service.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.VIRTUAL);
@@ -290,8 +291,6 @@ public class AppointmentServiceTest {
         service.adminCancelAppointment("2026-06-01T23:00", "user1", "admin");
         assertEquals(0, repo.findByDateTime(DT1).getCurrentParticipants());
     }
-
-
 
     @Test
     void testAdminModifyAppointment_Success() {
@@ -360,14 +359,10 @@ public class AppointmentServiceTest {
         assertEquals(1, repo.findByDateTime(DT2).getCurrentParticipants());
     }
 
-    
-
     @Test
     void testGetAllAppointments() {
         assertEquals(2, service.getAllAppointments().size());
     }
-
-  
 
     @Test
     void testGetAvailableAppointments_BeforeAndAfterFullBooking() {
@@ -375,20 +370,21 @@ public class AppointmentServiceTest {
 
         service.bookAppointment("2026-06-01T11:00", 60, "user1", AppointmentType.VIRTUAL);
 
-        // حسب الـ implementation الحالية، الموعد الممتلئ ما زال يظهر ضمن available appointments
         assertEquals(2, service.getAvailableAppointments().size());
     }
 
-
-
     @Test
     void testCancelAppointment_PastAppointment_Rejected() {
+        NotificationService notificationService =
+                new NotificationService(new FakeEmailSender());
+
         Clock futureClock = Clock.fixed(
                 LocalDateTime.of(2027, 1, 1, 0, 0).toInstant(ZoneOffset.UTC),
                 ZoneId.of("UTC")
         );
 
-        AppointmentService futureService = new AppointmentService(repo, true, futureClock);
+        AppointmentService futureService =
+                new AppointmentService(repo, true, futureClock, notificationService);
 
         service.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.VIRTUAL);
         futureService.cancelAppointment("2026-06-01T10:00", "user1");
@@ -399,12 +395,16 @@ public class AppointmentServiceTest {
 
     @Test
     void testModifyAppointment_PastAppointment_Rejected() {
+        NotificationService notificationService =
+                new NotificationService(new FakeEmailSender());
+
         Clock futureClock = Clock.fixed(
                 LocalDateTime.of(2027, 1, 1, 0, 0).toInstant(ZoneOffset.UTC),
                 ZoneId.of("UTC")
         );
 
-        AppointmentService futureService = new AppointmentService(repo, true, futureClock);
+        AppointmentService futureService =
+                new AppointmentService(repo, true, futureClock, notificationService);
 
         service.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.VIRTUAL);
         futureService.modifyAppointment("2026-06-01T10:00", "2026-06-01T11:00", "user1");
@@ -415,12 +415,16 @@ public class AppointmentServiceTest {
 
     @Test
     void testCancelAppointment_FutureAppointment_Accepted() {
+        NotificationService notificationService =
+                new NotificationService(new FakeEmailSender());
+
         Clock pastClock = Clock.fixed(
                 LocalDateTime.of(2025, 1, 1, 0, 0).toInstant(ZoneOffset.UTC),
                 ZoneId.of("UTC")
         );
 
-        AppointmentService pastService = new AppointmentService(repo, true, pastClock);
+        AppointmentService pastService =
+                new AppointmentService(repo, true, pastClock, notificationService);
 
         pastService.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.VIRTUAL);
         pastService.cancelAppointment("2026-06-01T10:00", "user1");
@@ -431,17 +435,60 @@ public class AppointmentServiceTest {
 
     @Test
     void testModifyAppointment_FutureAppointment_Accepted() {
+        NotificationService notificationService =
+                new NotificationService(new FakeEmailSender());
+
         Clock pastClock = Clock.fixed(
                 LocalDateTime.of(2025, 1, 1, 0, 0).toInstant(ZoneOffset.UTC),
                 ZoneId.of("UTC")
         );
 
-        AppointmentService pastService = new AppointmentService(repo, true, pastClock);
+        AppointmentService pastService =
+                new AppointmentService(repo, true, pastClock, notificationService);
 
         pastService.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.VIRTUAL);
         pastService.modifyAppointment("2026-06-01T10:00", "2026-06-01T11:00", "user1");
 
         assertEquals(0, repo.findByDateTime(DT1).getCurrentParticipants());
         assertEquals(1, repo.findByDateTime(DT2).getCurrentParticipants());
+    }
+    @Test
+    void testConstructor_Default_Works() {
+        AppointmentService s = new AppointmentService(repo);
+        assertNotNull(s.getAllAppointments());
+    }
+
+    @Test
+    void testConstructor_TestMode_Works() {
+        AppointmentService s = new AppointmentService(repo, true);
+        assertNotNull(s.getAllAppointments());
+    }
+
+    @Test
+    void testConstructor_WithClock_Works() {
+        Clock clock = Clock.fixed(
+            LocalDateTime.of(2025, 1, 1, 0, 0).toInstant(ZoneOffset.UTC),
+            ZoneId.of("UTC"));
+        AppointmentService s = new AppointmentService(repo, true, clock);
+        assertNotNull(s.getAllAppointments());
+    }
+
+    @Test
+    void testBookAppointment_PastAppointment_Rejected() {
+        Clock futureClock = Clock.fixed(
+            LocalDateTime.of(2027, 1, 1, 0, 0).toInstant(ZoneOffset.UTC),
+            ZoneId.of("UTC"));
+        NotificationService ns = new NotificationService(new FakeEmailSender());
+        AppointmentService futureService = new AppointmentService(repo, true, futureClock, ns);
+
+        futureService.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.VIRTUAL);
+
+        assertFalse(repo.findByDateTime(DT1).isBookedByUser("user1"));
+    }
+
+    @Test
+    void testGetAvailableAppointments_ReturnsSameAsAll() {
+        assertEquals(service.getAllAppointments().size(),
+                     service.getAvailableAppointments().size());
     }
 }

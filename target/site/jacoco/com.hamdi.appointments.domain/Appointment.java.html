@@ -48,15 +48,15 @@ public class Appointment {
      * @param type            the appointment type
      */
     public Appointment(LocalDateTime dateTime, int durationMinutes,
-<span class="nc" id="L51">                       int maxParticipants, AppointmentType type) {</span>
-<span class="nc" id="L52">        this.dateTime = dateTime;</span>
-<span class="nc" id="L53">        this.durationMinutes = durationMinutes;</span>
-<span class="nc" id="L54">        this.maxParticipants = maxParticipants;</span>
-<span class="nc" id="L55">        this.currentParticipants = 0;</span>
-<span class="nc" id="L56">        this.status = &quot;Pending&quot;;</span>
-<span class="nc" id="L57">        this.bookedUsers = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L58">        this.userTypes = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L59">    }</span>
+<span class="fc" id="L51">                       int maxParticipants, AppointmentType type) {</span>
+<span class="fc" id="L52">        this.dateTime = dateTime;</span>
+<span class="fc" id="L53">        this.durationMinutes = durationMinutes;</span>
+<span class="fc" id="L54">        this.maxParticipants = maxParticipants;</span>
+<span class="fc" id="L55">        this.currentParticipants = 0;</span>
+<span class="fc" id="L56">        this.status = &quot;Pending&quot;;</span>
+<span class="fc" id="L57">        this.bookedUsers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L58">        this.userTypes = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L59">    }</span>
 
     /** @return the appointment date and time */
     public LocalDateTime getDateTime() {
@@ -96,15 +96,15 @@ public class Appointment {
      * @return status for that user
      */
     public String getStatusForUser(String username) {
-<span class="pc bpc" id="L99" title="1 of 2 branches missed.">        if (isBookedByUser(username)) {</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">        if (isBookedByUser(username)) {</span>
 <span class="fc" id="L100">            return &quot;Confirmed&quot;;</span>
         }
 
-<span class="nc bnc" id="L103" title="All 2 branches missed.">        if (currentParticipants &gt;= maxParticipants) {</span>
-<span class="nc" id="L104">            return &quot;FULL&quot;;</span>
+<span class="fc bfc" id="L103" title="All 2 branches covered.">        if (currentParticipants &gt;= maxParticipants) {</span>
+<span class="fc" id="L104">            return &quot;FULL&quot;;</span>
         }
 
-<span class="nc" id="L107">        return status;</span>
+<span class="fc" id="L107">        return status;</span>
     }
 
     /** @return booked users list */
@@ -128,7 +128,7 @@ public class Appointment {
      * @return map of username to AppointmentType
      */
     public Map&lt;String, AppointmentType&gt; getUserTypes() {
-<span class="nc" id="L131">        return userTypes;</span>
+<span class="fc" id="L131">        return userTypes;</span>
     }
 
     /**
@@ -137,8 +137,8 @@ public class Appointment {
      * @param status the new status
      */
     public void setStatus(String status) {
-<span class="nc" id="L140">        this.status = status;</span>
-<span class="nc" id="L141">    }</span>
+<span class="fc" id="L140">        this.status = status;</span>
+<span class="fc" id="L141">    }</span>
 
     /**
      * Sets the type for a specific user.

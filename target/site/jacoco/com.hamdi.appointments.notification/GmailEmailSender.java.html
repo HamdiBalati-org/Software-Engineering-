@@ -49,13 +49,13 @@ public class GmailEmailSender implements EmailSender {
 <span class="fc" id="L49">            message.setSubject(subject);</span>
 <span class="fc" id="L50">            message.setText(body);</span>
 
-<span class="nc" id="L52">            Transport.send(message);</span>
+<span class="nc" id="L52">           Transport.send(message);</span>
 <span class="nc" id="L53">            System.out.println(&quot;Email sent successfully.&quot;);</span>
 <span class="nc" id="L54">            return true;</span>
 
-<span class="nc" id="L56">        } catch (MessagingException e) {</span>
-<span class="nc" id="L57">            e.printStackTrace();</span>
-<span class="nc" id="L58">            return false;</span>
+<span class="fc" id="L56">        } catch (MessagingException e) {</span>
+<span class="fc" id="L57">            e.printStackTrace();</span>
+<span class="fc" id="L58">            return false;</span>
         }
     }
 }

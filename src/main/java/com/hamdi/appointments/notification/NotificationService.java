@@ -5,10 +5,9 @@ import java.util.List;
 
 /**
  * Sends notifications to users and records sent messages.
- * Also sends email notifications asynchronously to avoid GUI freezing.
  *
  * @author Hamdi
- * @version 5.0
+ * @version 5.1
  */
 public class NotificationService implements Observer {
 
@@ -25,14 +24,11 @@ public class NotificationService implements Observer {
     public void notifyUser(String username, String message) {
         sentMessages.add(message);
 
-        // إرسال الإيميل بالخلفية حتى لا يعلق الـ GUI
-        new Thread(() -> {
-            emailSender.sendEmail(
-                    SYSTEM_EMAIL,
-                    "Appointment Notification",
-                    message
-            );
-        }).start();
+        emailSender.sendEmail(
+                SYSTEM_EMAIL,
+                "Appointment Notification",
+                message
+        );
     }
 
     public List<String> getSentMessages() {

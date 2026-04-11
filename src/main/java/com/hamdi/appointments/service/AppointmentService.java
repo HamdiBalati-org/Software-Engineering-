@@ -61,6 +61,44 @@ public class AppointmentService {
         }
     }
 
+    // ================= NEW FEATURE =================
+    public void addAppointment(String dateTime, int duration, int maxParticipants) {
+
+        LocalDateTime dt;
+
+        try {
+            dt = LocalDateTime.parse(dateTime);
+        } catch (Exception e) {
+            showMessage("Invalid date/time format. Use: yyyy-MM-ddTHH:mm");
+            return;
+        }
+
+        if (!dt.isAfter(LocalDateTime.now(clock))) {
+            showMessage("Cannot create an appointment in the past.");
+            return;
+        }
+
+        if (duration <= 0) {
+            showMessage("Duration must be greater than zero.");
+            return;
+        }
+
+        if (maxParticipants <= 0) {
+            showMessage("Max participants must be greater than zero.");
+            return;
+        }
+
+        if (repo.findByDateTime(dt) != null) {
+            showMessage("An appointment already exists at this time.");
+            return;
+        }
+
+        repo.addAppointment(new Appointment(dt, duration, maxParticipants));
+
+        showMessage("Appointment added successfully!");
+    }
+    // ==============================================
+
     public List<Appointment> getAvailableAppointments() {
         return repo.getAllAppointments();
     }
@@ -81,6 +119,7 @@ public class AppointmentService {
             default:         return new VirtualRule();
         }
     }
+
 
     public void bookAppointment(String dateTime, int duration,
                                 String username, AppointmentType type) {

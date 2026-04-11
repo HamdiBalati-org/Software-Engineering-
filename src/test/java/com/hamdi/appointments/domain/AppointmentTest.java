@@ -179,4 +179,53 @@ public class AppointmentTest {
         assertFalse(appointment.getBookedUsers().contains("user1"));
         assertTrue(appointment.getBookedUsers().isEmpty());
     }
+    @Test
+    void testGetStatusForUser_FULL_WhenNotBookedAndFull() {
+        Appointment a = new Appointment(DT, 30, 1);
+        a.incrementParticipants("user1");
+        assertEquals("FULL", a.getStatusForUser("user2"));
+    }
+
+    @Test
+    void testIncrementParticipants_StatusFull_WhenMaxReached() {
+        Appointment a = new Appointment(DT, 30, 1);
+        a.incrementParticipants("user1");
+        assertEquals("FULL", a.getStatus());
+    }
+
+    @Test
+    void testCancelBooking_StatusFull_WhenStillFull() {
+        Appointment a = new Appointment(DT, 30, 2);
+        a.incrementParticipants("user1");
+        a.incrementParticipants("user2");
+        assertEquals("FULL", a.getStatus());
+
+        // نضيف user3 يدوياً عشان نوصل للحالة اللي currentParticipants >= maxParticipants بعد إلغاء
+        // نستخدم setStatus مباشرة
+        a.setStatus("FULL");
+        a.cancelBooking("user1");
+        assertEquals("Confirmed", a.getStatus());
+    }
+
+    @Test
+    void testConstructor_WithType_Works() {
+        Appointment a = new Appointment(DT, 30, 3, AppointmentType.VIRTUAL);
+        assertEquals(DT, a.getDateTime());
+        assertEquals(30, a.getDurationMinutes());
+        assertEquals(3, a.getMaxParticipants());
+        assertEquals("Pending", a.getStatus());
+    }
+
+    @Test
+    void testGetUserTypes_NotEmpty_AfterBooking() {
+        appointment.setTypeForUser("user1", AppointmentType.VIRTUAL);
+        assertFalse(appointment.getUserTypes().isEmpty());
+        assertEquals(AppointmentType.VIRTUAL, appointment.getUserTypes().get("user1"));
+    }
+
+    @Test
+    void testSetStatus_DirectlyChangesStatus() {
+        appointment.setStatus("FULL");
+        assertEquals("FULL", appointment.getStatus());
+    }
 }

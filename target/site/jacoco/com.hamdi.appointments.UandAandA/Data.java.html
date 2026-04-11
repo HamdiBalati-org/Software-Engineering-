@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Data.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">AppointmentSystem</a> &gt; <a href="index.source.html" class="el_package">com.hamdi.appointments.UandAandA</a> &gt; <span class="el_source">Data.java</span></div><h1>Data.java</h1><pre class="source lang-java linenums">package com.hamdi.appointments.UandAandA;
+
+import java.time.LocalDateTime;
+
+import com.hamdi.appointments.domain.Appointment;
+import com.hamdi.appointments.repository.AppointmentRepository;
+import com.hamdi.appointments.service.AuthService;
+
+/**
+ * Seeds initial users, administrators, and appointments for the system.
+ *
+ * @author Hamdi
+ * @version 1.0
+ */
+public class Data {
+
+    /**
+     * Adds initial administrators, users, and appointments.
+     *
+     * @param repo the appointment repository
+     * @param auth the authentication service
+     */
+    public static void initialize(AppointmentRepository repo, AuthService auth) {
+<span class="pc bpc" id="L24" title="2 of 4 branches missed.">        if (repo == null || auth == null) {</span>
+<span class="nc" id="L25">            throw new IllegalArgumentException(&quot;Repository and AuthService must not be null.&quot;);</span>
+        }
+
+        // Administrators
+<span class="fc" id="L29">        auth.addAdministrator(&quot;abood&quot;, &quot;1234&quot;);</span>
+<span class="fc" id="L30">        auth.addAdministrator(&quot;hamdi&quot;, &quot;1122&quot;);</span>
+<span class="fc" id="L31">        auth.addAdministrator(&quot;hamood&quot;, &quot;1122&quot;);</span>
+        // Users
+<span class="fc" id="L33">        auth.addUser(&quot;user1&quot;, &quot;1234&quot;);</span>
+<span class="fc" id="L34">        auth.addUser(&quot;user2&quot;, &quot;1234&quot;);</span>
+<span class="fc" id="L35">        auth.addUser(&quot;user3&quot;, &quot;1234&quot;);</span>
+
+        // Appointments
+<span class="fc" id="L38">        repo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 10, 0), 30, 1));</span>
+<span class="fc" id="L39">        repo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 11, 0), 60, 3));</span>
+<span class="fc" id="L40">        repo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 12, 0), 45, 5));</span>
+<span class="fc" id="L41">        repo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 13, 0), 30, 2));</span>
+<span class="fc" id="L42">        repo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 14, 0), 60, 2));</span>
+<span class="fc" id="L43">        repo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 15, 0), 90, 3));</span>
+<span class="fc" id="L44">        repo.addAppointment(new Appointment(LocalDateTime.of(2026, 3, 1, 16, 0), 45, 8));</span>
+<span class="fc" id="L45">    }</span>
+
+    /**
+     * Prevent instantiation.
+     */
+    private Data() {
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

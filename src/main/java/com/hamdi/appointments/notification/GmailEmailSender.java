@@ -49,7 +49,7 @@ public class GmailEmailSender implements EmailSender {
             message.setSubject(subject);
             message.setText(body);
 
-            Transport.send(message);
+           Transport.send(message);
             System.out.println("Email sent successfully.");
             return true;
 
