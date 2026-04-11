@@ -7,7 +7,7 @@ import java.util.List;
  * Sends notifications to users and records sent messages.
  *
  * @author Hamdi
- * @version 5.1
+ * @version 5.2
  */
 public class NotificationService implements Observer {
 
@@ -22,13 +22,16 @@ public class NotificationService implements Observer {
 
     @Override
     public void notifyUser(String username, String message) {
+
         sentMessages.add(message);
 
-        emailSender.sendEmail(
-                SYSTEM_EMAIL,
-                "Appointment Notification",
-                message
-        );
+        new Thread(() -> {
+            emailSender.sendEmail(
+                    SYSTEM_EMAIL,
+                    "Appointment Notification",
+                    message
+            );
+        }).start();
     }
 
     public List<String> getSentMessages() {
