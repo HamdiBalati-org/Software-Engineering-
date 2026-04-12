@@ -5,6 +5,8 @@ import com.hamdi.appointments.domain.AppointmentType;
 import com.hamdi.appointments.service.AppointmentService;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
@@ -13,15 +15,15 @@ import java.util.List;
  * Main appointments window for booking, cancellation, and modification.
  *
  * @author Hamdi
- * @version 1.0
+ * @version 3.1
  */
 public class AppointmentsGUI extends JFrame {
 
     private static final long serialVersionUID = 1L;
 
-    private AppointmentService service;
-    private String currentUser;
-    private boolean isAdmin;
+    private final AppointmentService service;
+    private final String currentUser;
+    private final boolean isAdmin;
 
     private JTable table;
     private DefaultTableModel tableModel;
@@ -36,34 +38,54 @@ public class AppointmentsGUI extends JFrame {
     private JButton modifyButton;
     private JButton myBookingsButton;
     private JButton viewBookingsButton;
-    private JButton addAppointmentButton; // جديد
+    private JButton addAppointmentButton;
     private JButton logoutButton;
 
-    /**
-     * Builds the appointments GUI for the logged-in user.
-     *
-     * @param service   the appointment service
-     * @param username  the logged-in username
-     * @param isAdmin   true if administrator
-     */
     public AppointmentsGUI(AppointmentService service, String username, boolean isAdmin) {
         super("Appointments - " + username + (isAdmin ? " [ADMIN]" : ""));
-        this.service     = service;
+        this.service = service;
         this.currentUser = username;
-        this.isAdmin     = isAdmin;
+        this.isAdmin = isAdmin;
+
+        buildUI();
+        wireActions();
+        refreshTable();
+
+        setSize(980, 540);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setVisible(true);
+
+        showPendingNotificationsForUser();
+    }
+
+    private void buildUI() {
+        setLayout(new BorderLayout(10, 10));
+        ((JComponent) getContentPane()).setBorder(new EmptyBorder(10, 10, 10, 10));
+
+        buildTable();
+        add(buildCenterPanel(), BorderLayout.CENTER);
 
         if (isAdmin) {
+            add(buildAdminBottomPanel(), BorderLayout.SOUTH);
+        } else {
+            add(buildUserBottomPanel(), BorderLayout.SOUTH);
+        }
+    }
+
+    private void buildTable() {
+        if (isAdmin) {
             tableModel = new DefaultTableModel(
-                new Object[]{"DateTime", "Duration", "Max", "Current", "Status", "Booked By"}, 0);
+                    new Object[]{"DateTime", "Duration", "Max", "Current", "Status", "Booked By"}, 0);
         } else {
             tableModel = new DefaultTableModel(
-                new Object[]{"DateTime", "Duration", "Max", "Current", "Status", "Type"}, 0);
+                    new Object[]{"DateTime", "Duration", "Max", "Current", "Status", "Type"}, 0);
         }
 
         table = new JTable(tableModel);
         table.getTableHeader().setReorderingAllowed(false);
-        refreshTable();
-        JScrollPane scrollPane = new JScrollPane(table);
+        table.setRowHeight(22);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         if (!isAdmin) {
             table.getSelectionModel().addListSelectionListener(e -> {
@@ -74,96 +96,146 @@ public class AppointmentsGUI extends JFrame {
                 }
             });
         }
+    }
 
-        JPanel topPanel    = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    private JPanel buildCenterPanel() {
+        JPanel centerPanel = new JPanel(new BorderLayout(8, 8));
 
-        dateTimeField    = new JTextField(10);
-        newDateTimeField = new JTextField(10);
-        durationField    = new JTextField(5);
-        typeComboBox     = new JComboBox<>(AppointmentType.values());
+        JLabel titleLabel = new JLabel("Available Appointments", JLabel.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        titleLabel.setBorder(new EmptyBorder(0, 0, 8, 0));
 
-        if (!isAdmin) {
-            bookButton       = new JButton("Book");
-            cancelButton     = new JButton("Cancel My Booking");
-            modifyButton     = new JButton("Modify My Booking");
-            myBookingsButton = new JButton("My Bookings");
+        JScrollPane scrollPane = new JScrollPane(table);
 
-            topPanel.add(new JLabel("DateTime:"));
-            topPanel.add(dateTimeField);
-            topPanel.add(new JLabel("Duration:"));
-            topPanel.add(durationField);
-            topPanel.add(new JLabel("Type:"));
-            topPanel.add(typeComboBox);
-            topPanel.add(bookButton);
-            topPanel.add(cancelButton);
-            topPanel.add(myBookingsButton);
+        centerPanel.add(titleLabel, BorderLayout.NORTH);
+        centerPanel.add(scrollPane, BorderLayout.CENTER);
 
-            bottomPanel.add(new JLabel("New DateTime:"));
-            bottomPanel.add(newDateTimeField);
-            bottomPanel.add(modifyButton);
-        }
+        return centerPanel;
+    }
 
-        if (isAdmin) {
-            viewBookingsButton = new JButton("View All Bookings");
-            addAppointmentButton = new JButton("Add Appointment");
+    private JPanel buildUserBottomPanel() {
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
+        bottomPanel.setBorder(new EmptyBorder(8, 0, 0, 0));
 
-            topPanel.add(viewBookingsButton);
-            topPanel.add(addAppointmentButton);
-        }
+        dateTimeField = new JTextField(12);
+        durationField = new JTextField(6);
+        newDateTimeField = new JTextField(12);
+        typeComboBox = new JComboBox<>(AppointmentType.values());
 
+        bookButton = new JButton("Book");
+        cancelButton = new JButton("Cancel My Booking");
+        modifyButton = new JButton("Modify My Booking");
+        myBookingsButton = new JButton("My Bookings");
         logoutButton = new JButton("Logout");
-        bottomPanel.add(logoutButton);
 
-        setLayout(new BorderLayout());
+        Dimension smallButton = new Dimension(110, 30);
+        Dimension mediumButton = new Dimension(160, 30);
+        Dimension logoutSize = new Dimension(100, 30);
 
-        if (isAdmin) {
-            JPanel centerPanel = new JPanel(new BorderLayout());
-            JLabel titleLabel  = new JLabel("Available Appointments", JLabel.CENTER);
-            titleLabel.setFont(new Font("Arial", Font.BOLD, 14));
-            titleLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-            centerPanel.add(titleLabel, BorderLayout.NORTH);
-            centerPanel.add(scrollPane, BorderLayout.CENTER);
-            add(centerPanel, BorderLayout.CENTER);
-        } else {
-            add(scrollPane, BorderLayout.CENTER);
-        }
+        bookButton.setPreferredSize(smallButton);
+        cancelButton.setPreferredSize(mediumButton);
+        modifyButton.setPreferredSize(mediumButton);
+        myBookingsButton.setPreferredSize(new Dimension(130, 30));
+        logoutButton.setPreferredSize(logoutSize);
 
-        add(topPanel, BorderLayout.NORTH);
-        add(bottomPanel, BorderLayout.SOUTH);
+        JPanel bookingCard = new JPanel();
+        bookingCard.setLayout(new BoxLayout(bookingCard, BoxLayout.Y_AXIS));
+        bookingCard.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createEtchedBorder(),
+                "Book / Cancel / View",
+                TitledBorder.LEFT,
+                TitledBorder.TOP,
+                new Font("Arial", Font.BOLD, 12)
+        ));
 
-        setSize(950, 450);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setVisible(true);
+        JPanel bookingRow1 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 6));
+        JPanel bookingRow2 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 6));
 
+        bookingRow1.add(new JLabel("DateTime:"));
+        bookingRow1.add(dateTimeField);
+        bookingRow1.add(new JLabel("Duration:"));
+        bookingRow1.add(durationField);
+        bookingRow1.add(new JLabel("Type:"));
+        bookingRow1.add(typeComboBox);
+        bookingRow1.add(bookButton);
+
+        bookingRow2.add(cancelButton);
+        bookingRow2.add(myBookingsButton);
+
+        bookingCard.add(bookingRow1);
+        bookingCard.add(bookingRow2);
+
+        JPanel modifyCard = new JPanel(new BorderLayout(10, 10));
+        modifyCard.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createEtchedBorder(),
+                "Modify Booking",
+                TitledBorder.LEFT,
+                TitledBorder.TOP,
+                new Font("Arial", Font.BOLD, 12)
+        ));
+
+        JPanel modifyLeft = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        JPanel modifyRight = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
+
+        modifyLeft.add(new JLabel("New DateTime:"));
+        modifyLeft.add(newDateTimeField);
+        modifyLeft.add(modifyButton);
+
+        modifyRight.add(logoutButton);
+
+        modifyCard.add(modifyLeft, BorderLayout.WEST);
+        modifyCard.add(modifyRight, BorderLayout.EAST);
+
+        bottomPanel.add(bookingCard);
+        bottomPanel.add(Box.createVerticalStrut(8));
+        bottomPanel.add(modifyCard);
+
+        return bottomPanel;
+    }
+
+    private JPanel buildAdminBottomPanel() {
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+
+        viewBookingsButton = new JButton("View All Bookings");
+        addAppointmentButton = new JButton("Add Appointment");
+        logoutButton = new JButton("Logout");
+
+        Dimension buttonSize = new Dimension(160, 32);
+        viewBookingsButton.setPreferredSize(buttonSize);
+        addAppointmentButton.setPreferredSize(buttonSize);
+        logoutButton.setPreferredSize(new Dimension(100, 32));
+
+        JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 8));
+        JPanel centerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 8));
+        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 8));
+
+        leftPanel.add(addAppointmentButton);
+        centerPanel.add(viewBookingsButton);
+        rightPanel.add(logoutButton);
+
+        bottomPanel.add(leftPanel, BorderLayout.WEST);
+        bottomPanel.add(centerPanel, BorderLayout.CENTER);
+        bottomPanel.add(rightPanel, BorderLayout.EAST);
+
+        return bottomPanel;
+    }
+
+    private void wireActions() {
         if (!isAdmin) {
-            List<String> msgs = LoginGUI.popPendingMessages(currentUser);
-            if (!msgs.isEmpty()) {
-                StringBuilder sb = new StringBuilder("📢 Notifications:\n\n");
-                for (String msg : msgs) {
-                    sb.append("• ").append(msg).append("\n");
-                }
-                JOptionPane.showMessageDialog(this, sb.toString(),
-                    "Notifications", JOptionPane.INFORMATION_MESSAGE);
-            }
-        }
-
-        if (!isAdmin) {
-
             bookButton.addActionListener(e -> {
                 String dt = dateTimeField.getText().trim();
                 int dur;
 
                 if (dt.isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Please enter a DateTime!");
+                    JOptionPane.showMessageDialog(this, "Please enter a DateTime!");
                     return;
                 }
 
                 try {
                     dur = Integer.parseInt(durationField.getText().trim());
                 } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(null, "Invalid duration!");
+                    JOptionPane.showMessageDialog(this, "Invalid duration!");
                     return;
                 }
 
@@ -176,7 +248,7 @@ public class AppointmentsGUI extends JFrame {
                 String dt = dateTimeField.getText().trim();
 
                 if (dt.isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Please enter a DateTime!");
+                    JOptionPane.showMessageDialog(this, "Please enter a DateTime!");
                     return;
                 }
 
@@ -189,12 +261,12 @@ public class AppointmentsGUI extends JFrame {
                 String newDt = newDateTimeField.getText().trim();
 
                 if (oldDt.isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Please enter the current DateTime!");
+                    JOptionPane.showMessageDialog(this, "Please enter the current DateTime!");
                     return;
                 }
 
                 if (newDt.isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Please enter the new DateTime!");
+                    JOptionPane.showMessageDialog(this, "Please enter the new DateTime!");
                     return;
                 }
 
@@ -203,17 +275,17 @@ public class AppointmentsGUI extends JFrame {
             });
 
             myBookingsButton.addActionListener(e -> {
-                StringBuilder sb = new StringBuilder("📅 Your Bookings:\n\n");
+                StringBuilder sb = new StringBuilder("Your Bookings:\n\n");
                 boolean found = false;
 
                 for (Appointment a : service.getAllAppointments()) {
                     if (a.isBookedByUser(currentUser)) {
                         found = true;
-                        sb.append("• ").append(a.getDateTime())
-                          .append(" | Duration: ").append(a.getDurationMinutes()).append(" min")
-                          .append(" | Type: ").append(a.getTypeForUser(currentUser))
-                          .append(" | Status: ").append(a.getStatusForUser(currentUser))
-                          .append("\n");
+                        sb.append("- ").append(a.getDateTime())
+                                .append(" | Duration: ").append(a.getDurationMinutes()).append(" min")
+                                .append(" | Type: ").append(a.getTypeForUser(currentUser))
+                                .append(" | Status: ").append(a.getStatusForUser(currentUser))
+                                .append("\n");
                     }
                 }
 
@@ -221,8 +293,12 @@ public class AppointmentsGUI extends JFrame {
                     sb.append("You have no bookings yet.");
                 }
 
-                JOptionPane.showMessageDialog(this, sb.toString(),
-                    "My Bookings", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(
+                        this,
+                        sb.toString(),
+                        "My Bookings",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
             });
         }
 
@@ -278,9 +354,26 @@ public class AppointmentsGUI extends JFrame {
         });
     }
 
+    private void showPendingNotificationsForUser() {
+        if (!isAdmin) {
+            List<String> msgs = LoginGUI.popPendingMessages(currentUser);
+            if (!msgs.isEmpty()) {
+                StringBuilder sb = new StringBuilder("Notifications:\n\n");
+                for (String msg : msgs) {
+                    sb.append("- ").append(msg).append("\n");
+                }
+                JOptionPane.showMessageDialog(
+                        this,
+                        sb.toString(),
+                        "Notifications",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+            }
+        }
+    }
+
     /**
      * Refreshes the appointments table.
-     * Admins see all appointments, users see appointments returned by the service.
      */
     private void refreshTable() {
         tableModel.setRowCount(0);

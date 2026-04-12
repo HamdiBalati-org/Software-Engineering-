@@ -28,16 +28,13 @@ public class BookingsGUI extends JFrame {
     private JButton modifyButton;
     private JButton backButton;
 
-    // 🔥 زر جديد
-    private JButton addAppointmentButton;
-
     public BookingsGUI(AppointmentService service, String adminName) {
         super("All Bookings - Admin: " + adminName);
-        this.service   = service;
+        this.service = service;
         this.adminName = adminName;
 
         tableModel = new DefaultTableModel(
-            new Object[]{"User", "DateTime", "Duration", "Type", "Status"}, 0);
+                new Object[]{"User", "DateTime", "Duration", "Type", "Status"}, 0);
 
         table = new JTable(tableModel);
         table.getTableHeader().setReorderingAllowed(false);
@@ -51,17 +48,15 @@ public class BookingsGUI extends JFrame {
             }
         });
 
-        JPanel topPanel    = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
-        userField        = new JTextField(8);
-        dateTimeField    = new JTextField(12);
+        userField = new JTextField(8);
+        dateTimeField = new JTextField(12);
         newDateTimeField = new JTextField(12);
-        cancelButton     = new JButton("Admin Cancel");
-        modifyButton     = new JButton("Admin Modify");
-        backButton       = new JButton("Back");
-
-        addAppointmentButton = new JButton("Add Appointment");
+        cancelButton = new JButton("Admin Cancel");
+        modifyButton = new JButton("Admin Modify");
+        backButton = new JButton("Back");
 
         topPanel.add(new JLabel("Target User:"));
         topPanel.add(userField);
@@ -74,8 +69,6 @@ public class BookingsGUI extends JFrame {
         bottomPanel.add(modifyButton);
         bottomPanel.add(backButton);
 
-        bottomPanel.add(addAppointmentButton);
-
         noBookingsLabel = new JLabel("No bookings available for any user.", JLabel.CENTER);
         noBookingsLabel.setFont(new Font("Arial", Font.BOLD, 14));
         noBookingsLabel.setForeground(Color.GRAY);
@@ -83,11 +76,11 @@ public class BookingsGUI extends JFrame {
 
         JPanel centerPanel = new JPanel(new BorderLayout());
         centerPanel.add(noBookingsLabel, BorderLayout.NORTH);
-        centerPanel.add(scrollPane,      BorderLayout.CENTER);
+        centerPanel.add(scrollPane, BorderLayout.CENTER);
 
         setLayout(new BorderLayout());
         add(centerPanel, BorderLayout.CENTER);
-        add(topPanel,    BorderLayout.NORTH);
+        add(topPanel, BorderLayout.NORTH);
         add(bottomPanel, BorderLayout.SOUTH);
 
         setSize(750, 400);
@@ -97,11 +90,9 @@ public class BookingsGUI extends JFrame {
         refreshTable();
         setVisible(true);
 
-        // ================== ACTIONS ==================
-
         cancelButton.addActionListener(e -> {
             String user = userField.getText().trim();
-            String dt   = dateTimeField.getText().trim();
+            String dt = dateTimeField.getText().trim();
 
             if (user.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Please enter a Target User!");
@@ -118,7 +109,7 @@ public class BookingsGUI extends JFrame {
         });
 
         modifyButton.addActionListener(e -> {
-            String user  = userField.getText().trim();
+            String user = userField.getText().trim();
             String oldDt = dateTimeField.getText().trim();
             String newDt = newDateTimeField.getText().trim();
 
@@ -139,31 +130,6 @@ public class BookingsGUI extends JFrame {
 
             service.adminModifyAppointment(oldDt, newDt, user, adminName);
             refreshTable();
-        });
-
-        // 🔥 ACTION جديد للإضافة
-        addAppointmentButton.addActionListener(e -> {
-
-            String dateTime = JOptionPane.showInputDialog("Enter date and time (yyyy-MM-ddTHH:mm):");
-            if (dateTime == null) return;
-
-            String durationStr = JOptionPane.showInputDialog("Enter duration (minutes):");
-            if (durationStr == null) return;
-
-            String maxStr = JOptionPane.showInputDialog("Enter max participants:");
-            if (maxStr == null) return;
-
-            try {
-                int duration = Integer.parseInt(durationStr);
-                int maxParticipants = Integer.parseInt(maxStr);
-
-                service.addAppointment(dateTime, duration, maxParticipants);
-
-                refreshTable(); // 🔥 تحديث الجدول
-
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(null, "Invalid numbers!");
-            }
         });
 
         backButton.addActionListener(e -> dispose());

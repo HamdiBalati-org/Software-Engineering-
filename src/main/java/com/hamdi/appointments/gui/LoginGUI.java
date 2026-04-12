@@ -6,6 +6,7 @@ import com.hamdi.appointments.service.AppointmentService;
 import com.hamdi.appointments.service.AuthService;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,7 +17,7 @@ import java.util.Map;
  * Login window for the Appointment Scheduling System.
  *
  * @author Hamdi
- * @version 1.0
+ * @version 2.0
  */
 public class LoginGUI extends JFrame {
 
@@ -58,7 +59,7 @@ public class LoginGUI extends JFrame {
      * Initializes shared services once, then builds the login UI.
      */
     public LoginGUI() {
-        super("Login");
+        super("Appointment Scheduling System - Login");
 
         initializeSharedObjects();
         buildUI();
@@ -87,42 +88,92 @@ public class LoginGUI extends JFrame {
      * Builds the login window UI.
      */
     private void buildUI() {
-        usernameField = new JTextField(15);
-        passwordField = new JPasswordField(15);
-        loginButton = new JButton("Login");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(520, 320);
+        setLocationRelativeTo(null);
 
-        setLayout(new GridBagLayout());
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
+
+        // Top title section
+        JPanel titlePanel = new JPanel();
+        titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
+
+        JLabel titleLabel = new JLabel("Appointment Scheduling System");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JLabel subTitleLabel = new JLabel("Please log in to continue");
+        subTitleLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        subTitleLabel.setForeground(Color.DARK_GRAY);
+        subTitleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        titlePanel.add(titleLabel);
+        titlePanel.add(Box.createVerticalStrut(8));
+        titlePanel.add(subTitleLabel);
+
+        // Center form section
+        JPanel formWrapper = new JPanel(new GridBagLayout());
+
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createTitledBorder("Login Details"),
+                new EmptyBorder(15, 15, 15, 15)
+        ));
+
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.insets = new Insets(8, 8, 8, 8);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
+        usernameField = new JTextField(18);
+        passwordField = new JPasswordField(18);
+        loginButton = new JButton("Login");
+
+        loginButton.setPreferredSize(new Dimension(120, 32));
+        loginButton.setFont(new Font("Arial", Font.BOLD, 13));
+
+        JLabel usernameLabel = new JLabel("Username:");
+        JLabel passwordLabel = new JLabel("Password:");
+
+        usernameLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        passwordLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        usernameField.setFont(new Font("Arial", Font.PLAIN, 14));
+        passwordField.setFont(new Font("Arial", Font.PLAIN, 14));
+
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.gridwidth = 1;
-        add(new JLabel("Username:"), gbc);
+        gbc.weightx = 0;
+        formPanel.add(usernameLabel, gbc);
 
         gbc.gridx = 1;
         gbc.gridy = 0;
-        add(usernameField, gbc);
+        gbc.weightx = 1;
+        formPanel.add(usernameField, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
-        add(new JLabel("Password:"), gbc);
+        gbc.weightx = 0;
+        formPanel.add(passwordLabel, gbc);
 
         gbc.gridx = 1;
         gbc.gridy = 1;
-        add(passwordField, gbc);
+        gbc.weightx = 1;
+        formPanel.add(passwordField, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 2;
-        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0;
         gbc.anchor = GridBagConstraints.CENTER;
-        add(loginButton, gbc);
+        gbc.fill = GridBagConstraints.NONE;
+        formPanel.add(loginButton, gbc);
 
-        setSize(400, 150);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+        formWrapper.add(formPanel);
+
+        mainPanel.add(titlePanel, BorderLayout.NORTH);
+        mainPanel.add(formWrapper, BorderLayout.CENTER);
+
+        setContentPane(mainPanel);
         setVisible(true);
     }
 
@@ -130,23 +181,31 @@ public class LoginGUI extends JFrame {
      * Registers button actions.
      */
     private void registerActions() {
-        loginButton.addActionListener(e -> {
-            String username = usernameField.getText().trim();
-            String password = new String(passwordField.getPassword());
+        loginButton.addActionListener(e -> performLogin());
 
-            if (sharedAuth.login(username, password)) {
-                if (sharedAuth.isAdmin(username)) {
-                    JOptionPane.showMessageDialog(this, "Welcome Admin, " + username + "! 👋");
-                } else {
-                    JOptionPane.showMessageDialog(this, "Welcome, " + username + "! 👋");
-                }
+        passwordField.addActionListener(e -> performLogin());
+        usernameField.addActionListener(e -> performLogin());
+    }
 
-                dispose();
-                new AppointmentsGUI(sharedService, username, sharedAuth.isAdmin(username));
+    /**
+     * Handles login logic.
+     */
+    private void performLogin() {
+        String username = usernameField.getText().trim();
+        String password = new String(passwordField.getPassword());
+
+        if (sharedAuth.login(username, password)) {
+            if (sharedAuth.isAdmin(username)) {
+                JOptionPane.showMessageDialog(this, "Welcome Admin, " + username + "! 👋");
             } else {
-                JOptionPane.showMessageDialog(this, "Login failed! Check credentials.");
+                JOptionPane.showMessageDialog(this, "Welcome, " + username + "! 👋");
             }
-        });
+
+            dispose();
+            new AppointmentsGUI(sharedService, username, sharedAuth.isAdmin(username));
+        } else {
+            JOptionPane.showMessageDialog(this, "Login failed! Check user name or password.");
+        }
     }
 
     /**
