@@ -40,5 +40,30 @@ public class LoginGUITest {
         assertEquals(1, msgs.size());
     }
     
+    @Test
+    void testLoginGUI_FieldsNotNull() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            LoginGUI gui = new LoginGUI();
+
+            assertNotNull(gui);
+
+            gui.dispose();
+        });
+    }
+    
+    
+    
+    
+    @Test
+    void testLoginGUI_SetVisible() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            LoginGUI gui = new LoginGUI();
+            gui.setVisible(true);
+
+            assertTrue(gui.isVisible());
+
+            gui.dispose();
+        });
+    }
     
 }

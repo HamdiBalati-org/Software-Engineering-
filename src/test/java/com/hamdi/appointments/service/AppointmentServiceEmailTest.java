@@ -71,7 +71,10 @@ public class AppointmentServiceEmailTest {
 
     @Test
     void testBooking_FailedRule_NoEmailSent() {
-        service.bookAppointment("2026-06-01T11:00", 60, "user1", AppointmentType.URGENT);
+        LocalDateTime dt3 = LocalDateTime.of(2026, 6, 1, 12, 0);
+        repo.addAppointment(new Appointment(dt3, 20, 1));
+
+        service.bookAppointment("2026-06-01T12:00", 20, "user1", AppointmentType.URGENT);
 
         verify(mockEmailSender, after(300).never())
                 .sendEmail(anyString(), anyString(), anyString());

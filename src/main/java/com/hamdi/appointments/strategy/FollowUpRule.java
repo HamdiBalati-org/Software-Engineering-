@@ -15,7 +15,7 @@ public class FollowUpRule implements BookingRuleStrategy {
 
     @Override
     public boolean isValid(Appointment appointment) {
-        return appointment.getDurationMinutes() <= MAX_DURATION;
+        return appointment.getDurationMinutes() >= MAX_DURATION;
     }
 
     @Override

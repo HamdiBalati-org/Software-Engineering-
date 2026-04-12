@@ -35,10 +35,10 @@ public class Data {
         auth.addUser("user3", "1234");
 
         // Appointments
-        repo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 10, 0), 30, 1));
+        repo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 10, 0), 25, 1));
         repo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 11, 0), 60, 3));
         repo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 12, 0), 45, 5));
-        repo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 13, 0), 30, 2));
+        repo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 13, 0), 30, 1));
         repo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 14, 0), 60, 2));
         repo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 15, 0), 90, 3));
         repo.addAppointment(new Appointment(LocalDateTime.of(2026, 3, 1, 16, 0), 45, 8));

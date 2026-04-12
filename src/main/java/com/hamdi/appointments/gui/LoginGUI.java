@@ -26,6 +26,7 @@ public class LoginGUI extends JFrame {
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JButton loginButton;
+    private JCheckBox showPasswordCheckBox;
 
     private static AppointmentRepository sharedRepo;
     private static AppointmentService sharedService;
@@ -103,7 +104,7 @@ public class LoginGUI extends JFrame {
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JLabel subTitleLabel = new JLabel("Please log in to continue");
+        JLabel subTitleLabel = new JLabel(" Welcome Back! Please log in to continue");
         subTitleLabel.setFont(new Font("Arial", Font.PLAIN, 14));
         subTitleLabel.setForeground(Color.DARK_GRAY);
         subTitleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -127,6 +128,8 @@ public class LoginGUI extends JFrame {
 
         usernameField = new JTextField(18);
         passwordField = new JPasswordField(18);
+        showPasswordCheckBox = new JCheckBox("Show Password");
+        showPasswordCheckBox.setFont(new Font("Arial", Font.PLAIN, 12));
         loginButton = new JButton("Login");
 
         loginButton.setPreferredSize(new Dimension(120, 32));
@@ -148,20 +151,30 @@ public class LoginGUI extends JFrame {
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         formPanel.add(usernameField, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.weightx = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         formPanel.add(passwordLabel, gbc);
 
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         formPanel.add(passwordField, gbc);
 
-        gbc.gridx = 0;
+        gbc.gridx = 1;
         gbc.gridy = 2;
+        gbc.weightx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.WEST;
+        formPanel.add(showPasswordCheckBox, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 3;
         gbc.gridwidth = 2;
         gbc.weightx = 0;
         gbc.anchor = GridBagConstraints.CENTER;
@@ -185,6 +198,13 @@ public class LoginGUI extends JFrame {
 
         passwordField.addActionListener(e -> performLogin());
         usernameField.addActionListener(e -> performLogin());
+
+        showPasswordCheckBox.addActionListener(e -> {
+            if (showPasswordCheckBox.isSelected()) {
+                passwordField.setEchoChar((char) 0);
+            } else {
+            	passwordField.setEchoChar('•');            }
+        });
     }
 
     /**

@@ -15,12 +15,6 @@ import java.time.ZoneOffset;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Unit tests for AppointmentService.
- *
- * @author Hamdi
- * @version 3.0
- */
 public class AppointmentServiceTest {
 
     private AppointmentRepository repo;
@@ -64,7 +58,17 @@ public class AppointmentServiceTest {
         assertEquals(0, repo.findByDateTime(DT1).getCurrentParticipants());
         assertFalse(repo.findByDateTime(DT1).isBookedByUser("user1"));
     }
+    @Test
+    void testModifyAppointment_RuleViolated_GroupToSingleCapacity() {
+        LocalDateTime dt3 = LocalDateTime.of(2026, 6, 1, 12, 0);
+        repo.addAppointment(new Appointment(dt3, 30, 1));
 
+        service.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.GROUP);
+        service.modifyAppointment("2026-06-01T10:00", "2026-06-01T12:00", "user1");
+
+        assertTrue(repo.findByDateTime(DT1).isBookedByUser("user1"));
+        assertFalse(repo.findByDateTime(dt3).isBookedByUser("user1"));
+    }
     @Test
     void testBookAppointment_WrongDuration() {
         service.bookAppointment("2026-06-01T10:00", 99, "user1", AppointmentType.VIRTUAL);
@@ -74,7 +78,46 @@ public class AppointmentServiceTest {
         assertFalse(a.isBookedByUser("user1"));
         assertNull(a.getTypeForUser("user1"));
     }
+    @Test
+    void testCancelAppointment_NullUser() {
+        service.cancelAppointment("2026-06-01T10:00", null);
 
+        Appointment a = repo.findByDateTime(DT1);
+        assertEquals(0, a.getCurrentParticipants());
+    }
+    
+   
+    
+    
+    @Test
+    void testAdminModifyAppointment_RuleViolated_GroupToSingleCapacity() {
+        LocalDateTime dt3 = LocalDateTime.of(2026, 6, 1, 12, 0);
+        repo.addAppointment(new Appointment(dt3, 30, 1));
+
+        service.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.GROUP);
+        service.adminModifyAppointment("2026-06-01T10:00", "2026-06-01T12:00", "user1", "admin");
+
+        assertTrue(repo.findByDateTime(DT1).isBookedByUser("user1"));
+        assertFalse(repo.findByDateTime(dt3).isBookedByUser("user1"));
+    }
+    
+    @Test
+    void testCancelAppointment_UserNull() {
+        service.cancelAppointment("2026-06-01T10:00", null);
+
+        Appointment a = repo.findByDateTime(DT1);
+        assertEquals(0, a.getCurrentParticipants());
+    }
+    
+    @Test
+    void testModifyAppointment_SameDateTime() {
+        service.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.VIRTUAL);
+
+        service.modifyAppointment("2026-06-01T10:00", "2026-06-01T10:00", "user1");
+
+        Appointment a = repo.findByDateTime(DT1);
+        assertEquals(1, a.getCurrentParticipants());
+    }
     @Test
     void testBookAppointment_AlreadyBooked() {
         service.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.VIRTUAL);
@@ -95,7 +138,28 @@ public class AppointmentServiceTest {
         assertTrue(a.isBookedByUser("user1"));
         assertFalse(a.isBookedByUser("user2"));
     }
+    
+    @Test
+    void testModifyAppointment_SameDateTime_NoChange() {
+        service.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.VIRTUAL);
 
+        service.modifyAppointment("2026-06-01T10:00", "2026-06-01T10:00", "user1");
+
+        Appointment a = repo.findByDateTime(DT1);
+        assertEquals(1, a.getCurrentParticipants());
+        assertTrue(a.isBookedByUser("user1"));
+    }
+    
+    
+    
+    @Test
+    void testBookAppointment_Group_Invalid_WhenCapacityIsOne() {
+        service.bookAppointment("2026-06-01T11:00", 60, "user1", AppointmentType.GROUP);
+
+        Appointment a = repo.findByDateTime(DT2);
+        assertEquals(0, a.getCurrentParticipants());
+        assertFalse(a.isBookedByUser("user1"));
+    }
     @Test
     void testBookAppointment_MultipleUsers_DifferentTypes() {
         service.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.URGENT);
@@ -106,21 +170,41 @@ public class AppointmentServiceTest {
         assertEquals(AppointmentType.URGENT, a.getTypeForUser("user1"));
         assertEquals(AppointmentType.VIRTUAL, a.getTypeForUser("user2"));
     }
-
     @Test
-    void testBookAppointment_Individual_AllowedWhenAppointmentCapacityIsGreaterThanOne() {
+    void testGetAllAppointments_Called() {
+        service.getAllAppointments();
+        assertNotNull(service.getAllAppointments());
+    }
+    
+    
+    
+    
+    
+    
+    @Test
+    void testGetAvailableAppointments_Called() {
+        service.getAvailableAppointments();
+        assertNotNull(service.getAvailableAppointments());
+    }
+    
+    @Test
+    void testBookAppointment_Individual_InvalidWhenAppointmentCapacityIsGreaterThanOne() {
         service.bookAppointment("2026-06-01T10:00", 30, "user1", AppointmentType.INDIVIDUAL);
 
         Appointment a = repo.findByDateTime(DT1);
-        assertEquals(1, a.getCurrentParticipants());
-        assertEquals(AppointmentType.INDIVIDUAL, a.getTypeForUser("user1"));
+        assertEquals(0, a.getCurrentParticipants());
+        assertNull(a.getTypeForUser("user1"));
+        assertFalse(a.isBookedByUser("user1"));
     }
 
     @Test
     void testBookAppointment_RuleViolated_UrgentDuration() {
-        service.bookAppointment("2026-06-01T11:00", 60, "user1", AppointmentType.URGENT);
+        LocalDateTime dt3 = LocalDateTime.of(2026, 6, 1, 12, 0);
+        repo.addAppointment(new Appointment(dt3, 20, 1));
 
-        Appointment a = repo.findByDateTime(DT2);
+        service.bookAppointment("2026-06-01T12:00", 20, "user1", AppointmentType.URGENT);
+
+        Appointment a = repo.findByDateTime(dt3);
         assertEquals(0, a.getCurrentParticipants());
         assertFalse(a.isBookedByUser("user1"));
         assertNull(a.getTypeForUser("user1"));
@@ -452,6 +536,7 @@ public class AppointmentServiceTest {
         assertEquals(0, repo.findByDateTime(DT1).getCurrentParticipants());
         assertEquals(1, repo.findByDateTime(DT2).getCurrentParticipants());
     }
+
     @Test
     void testConstructor_Default_Works() {
         AppointmentService s = new AppointmentService(repo);
@@ -467,8 +552,8 @@ public class AppointmentServiceTest {
     @Test
     void testConstructor_WithClock_Works() {
         Clock clock = Clock.fixed(
-            LocalDateTime.of(2025, 1, 1, 0, 0).toInstant(ZoneOffset.UTC),
-            ZoneId.of("UTC"));
+                LocalDateTime.of(2025, 1, 1, 0, 0).toInstant(ZoneOffset.UTC),
+                ZoneId.of("UTC"));
         AppointmentService s = new AppointmentService(repo, true, clock);
         assertNotNull(s.getAllAppointments());
     }
@@ -476,8 +561,8 @@ public class AppointmentServiceTest {
     @Test
     void testBookAppointment_PastAppointment_Rejected() {
         Clock futureClock = Clock.fixed(
-            LocalDateTime.of(2027, 1, 1, 0, 0).toInstant(ZoneOffset.UTC),
-            ZoneId.of("UTC"));
+                LocalDateTime.of(2027, 1, 1, 0, 0).toInstant(ZoneOffset.UTC),
+                ZoneId.of("UTC"));
         NotificationService ns = new NotificationService(new FakeEmailSender());
         AppointmentService futureService = new AppointmentService(repo, true, futureClock, ns);
 
@@ -485,10 +570,15 @@ public class AppointmentServiceTest {
 
         assertFalse(repo.findByDateTime(DT1).isBookedByUser("user1"));
     }
-
+    @Test
+    void testConstructor_WithNotification_Works() {
+        NotificationService ns = new NotificationService(new FakeEmailSender());
+        AppointmentService s = new AppointmentService(repo, true, Clock.systemUTC(), ns);
+        assertNotNull(s);
+    }
     @Test
     void testGetAvailableAppointments_ReturnsSameAsAll() {
         assertEquals(service.getAllAppointments().size(),
-                     service.getAvailableAppointments().size());
+                service.getAvailableAppointments().size());
     }
 }

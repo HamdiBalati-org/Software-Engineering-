@@ -33,6 +33,8 @@ public class AppointmentsGUITest {
         assertTrue(frame.isDisplayable());
     }
 
+    
+    
     @Test
     void shouldCreateAdminGUI() throws Exception {
         SwingUtilities.invokeAndWait(() -> {

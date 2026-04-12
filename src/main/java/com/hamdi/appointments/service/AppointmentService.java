@@ -61,7 +61,6 @@ public class AppointmentService {
         }
     }
 
-    // ================= NEW FEATURE =================
     public void addAppointment(String dateTime, int duration, int maxParticipants) {
 
         LocalDateTime dt;
@@ -97,7 +96,6 @@ public class AppointmentService {
 
         showMessage("Appointment added successfully!");
     }
-    // ==============================================
 
     public List<Appointment> getAvailableAppointments() {
         return repo.getAllAppointments();
@@ -119,7 +117,6 @@ public class AppointmentService {
             default:         return new VirtualRule();
         }
     }
-
 
     public void bookAppointment(String dateTime, int duration,
                                 String username, AppointmentType type) {
@@ -208,11 +205,6 @@ public class AppointmentService {
 
         showMessage("Appointment at " + dateTime + " cancelled successfully.");
 
-      //  AppointmentType userType = appointment.getTypeForUser(username);
-
-      
-
-      
         String message =
                 "Appointment Cancellation Confirmation\n\n" +
                 "Dear " + username + ",\n\n" +
@@ -225,7 +217,6 @@ public class AppointmentService {
                 "Appointment Booking System";
 
         notificationManager.notifyAllObservers(username, message);
-       
     }
 
     public void modifyAppointment(String oldDateTime, String newDateTime, String username) {
@@ -267,6 +258,13 @@ public class AppointmentService {
         }
 
         AppointmentType oldType = oldAppointment.getTypeForUser(username);
+
+        BookingRuleStrategy rule = getRule(oldType);
+        if (!rule.isValid(newAppointment)) {
+            showMessage("Booking rule violated!\n" + rule.getRuleDescription());
+            return;
+        }
+
         oldAppointment.cancelBooking(username);
         newAppointment.setTypeForUser(username, oldType);
         newAppointment.incrementParticipants(username);
@@ -306,17 +304,17 @@ public class AppointmentService {
             showMessage(username + " has no booking for this appointment!");
             return;
         }
+
         AppointmentType userType = appointment.getTypeForUser(username);
         appointment.cancelBooking(username);
 
         if (!testMode) {
             LoginGUI.addPendingMessage(username,
-                    " The Admin" + " cancelled your appointment at " + dateTime);
+                    " The Admin cancelled your appointment at " + dateTime);
         }
 
-        showMessage("Admin " +  adminName + " cancelled " + username +
+        showMessage("Admin " + adminName + " cancelled " + username +
                 "'s appointment at " + dateTime + " successfully.");
-       
 
         String message =
                 "Appointment Cancelled by Administrator\n\n" +
@@ -326,7 +324,7 @@ public class AppointmentService {
                 "  • Date & Time : " + appointment.getDateTime() + "\n" +
                 "  • Duration : " + appointment.getDurationMinutes() + " minutes\n" +
                 "  • Status : Cancelled\n" +
-                "  • Cancelled By : " + "The Admin of the system" + "\n\n" +
+                "  • Cancelled By : The Admin of the system\n\n" +
                 "If you need more information, please contact the administrator.\n\n" +
                 "Best regards,\n" +
                 "Appointment Booking System";
@@ -369,18 +367,24 @@ public class AppointmentService {
         }
 
         AppointmentType oldType = oldAppointment.getTypeForUser(username);
+
+        BookingRuleStrategy rule = getRule(oldType);
+        if (!rule.isValid(newAppointment)) {
+            showMessage("Booking rule violated!\n" + rule.getRuleDescription());
+            return;
+        }
+
         oldAppointment.cancelBooking(username);
         newAppointment.setTypeForUser(username, oldType);
         newAppointment.incrementParticipants(username);
 
         if (!testMode) {
             LoginGUI.addPendingMessage(username,
-                    
-            		"The Admin"+ " modified your appointment from "
+                    "The Admin modified your appointment from "
                             + oldDateTime + " to " + newDateTime);
         }
 
-        showMessage( "Admin "   + adminName + " modified " + username + "'s appointment!\n" +
+        showMessage("Admin " + adminName + " modified " + username + "'s appointment!\n" +
                 "From: " + oldDateTime + "\n" +
                 "To:   " + newDateTime);
 
@@ -394,7 +398,7 @@ public class AppointmentService {
                 "  • Status : " + newAppointment.getStatusForUser(username) + "\n" +
                 "  • Participants: " + newAppointment.getCurrentParticipants() +
                 " / " + newAppointment.getMaxParticipants() + "\n" +
-                "  • Modified By : " + "The Admin of the system" + "\n\n" +
+                "  • Modified By : The Admin of the system\n\n" +
                 "If you have any questions, please contact the administrator.\n\n" +
                 "Best regards,\n" +
                 "Appointment Booking System";

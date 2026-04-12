@@ -22,7 +22,7 @@ public class IndividualRule implements BookingRuleStrategy {
      */
     @Override
     public boolean isValid(Appointment appointment) {
-        return appointment.getMaxParticipants() >= REQUIRED_PARTICIPANTS;
+        return appointment.getMaxParticipants() == REQUIRED_PARTICIPANTS;
     }
 
     /**
