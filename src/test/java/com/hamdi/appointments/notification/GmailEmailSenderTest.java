@@ -3,6 +3,7 @@ package com.hamdi.appointments.notification;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+
 public class GmailEmailSenderTest {
 
     @Test
@@ -15,6 +16,15 @@ public class GmailEmailSenderTest {
     void testSendEmail_ReturnsFalse_WhenInvalidCredentials() {
         GmailEmailSender sender = new GmailEmailSender("invalid@gmail.com", "wrongpassword");
         boolean result = sender.sendEmail("to@gmail.com", "Subject", "Body");
+        assertFalse(result);
+    }
+    
+    
+    
+    @Test
+    void testSendEmail_ReturnsFalse_WhenReceiverInvalid() {
+        GmailEmailSender sender = new GmailEmailSender("invalid@gmail.com", "wrongpassword");
+        boolean result = sender.sendEmail("invalid-email", "Subject", "Body");
         assertFalse(result);
     }
 }

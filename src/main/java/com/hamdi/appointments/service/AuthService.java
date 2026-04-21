@@ -7,7 +7,7 @@ import java.util.Map;
  * Manages authentication for administrators and users.
  *
  * @author Hamdi
- * @version 1.0
+ * @version 1.1
  */
 public class AuthService {
 
@@ -64,5 +64,33 @@ public class AuthService {
      */
     public boolean isUser(String username) {
         return users.containsKey(username);
+    }
+
+    /**
+     * Checks whether a username already exists.
+     *
+     * @param username the username to check
+     * @return true if it already exists as admin or user
+     */
+    public boolean usernameExists(String username) {
+        return admins.containsKey(username) || users.containsKey(username);
+    }
+
+    /**
+     * Returns all normal users.
+     *
+     * @return map of users
+     */
+    public Map<String, String> getAllUsers() {
+        return users;
+    }
+
+    /**
+     * Removes a normal user.
+     *
+     * @param username the username to remove
+     */
+    public void removeUser(String username) {
+        users.remove(username);
     }
 }

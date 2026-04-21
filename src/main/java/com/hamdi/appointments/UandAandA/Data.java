@@ -42,6 +42,7 @@ public class Data {
         repo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 14, 0), 60, 2));
         repo.addAppointment(new Appointment(LocalDateTime.of(2026, 6, 1, 15, 0), 90, 3));
         repo.addAppointment(new Appointment(LocalDateTime.of(2026, 3, 1, 16, 0), 45, 8));
+        
     }
 
     /**

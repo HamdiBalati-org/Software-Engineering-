@@ -17,7 +17,7 @@ import java.util.Map;
  * Login window for the Appointment Scheduling System.
  *
  * @author Hamdi
- * @version 2.0
+ * @version 2.1
  */
 public class LoginGUI extends JFrame {
 
@@ -54,6 +54,15 @@ public class LoginGUI extends JFrame {
         List<String> msgs = pendingMessages.getOrDefault(username, new ArrayList<>());
         pendingMessages.remove(username);
         return msgs;
+    }
+
+    /**
+     * Returns shared auth service.
+     *
+     * @return shared auth service
+     */
+    public static AuthService getSharedAuth() {
+        return sharedAuth;
     }
 
     /**
@@ -96,7 +105,6 @@ public class LoginGUI extends JFrame {
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
 
-        // Top title section
         JPanel titlePanel = new JPanel();
         titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
 
@@ -113,7 +121,6 @@ public class LoginGUI extends JFrame {
         titlePanel.add(Box.createVerticalStrut(8));
         titlePanel.add(subTitleLabel);
 
-        // Center form section
         JPanel formWrapper = new JPanel(new GridBagLayout());
 
         JPanel formPanel = new JPanel(new GridBagLayout());
@@ -203,7 +210,8 @@ public class LoginGUI extends JFrame {
             if (showPasswordCheckBox.isSelected()) {
                 passwordField.setEchoChar((char) 0);
             } else {
-            	passwordField.setEchoChar('•');            }
+                passwordField.setEchoChar('•');
+            }
         });
     }
 

@@ -3,6 +3,7 @@ package com.hamdi.appointments.gui;
 import com.hamdi.appointments.domain.Appointment;
 import com.hamdi.appointments.domain.AppointmentType;
 import com.hamdi.appointments.service.AppointmentService;
+import com.hamdi.appointments.service.AuthService;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -10,12 +11,13 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Main appointments window for booking, cancellation, and modification.
  *
  * @author Hamdi
- * @version 3.1
+ * @version 3.2
  */
 public class AppointmentsGUI extends JFrame {
 
@@ -39,6 +41,8 @@ public class AppointmentsGUI extends JFrame {
     private JButton myBookingsButton;
     private JButton viewBookingsButton;
     private JButton addAppointmentButton;
+    private JButton addUserButton;
+    private JButton viewUsersButton;
     private JButton logoutButton;
 
     public AppointmentsGUI(AppointmentService service, String username, boolean isAdmin) {
@@ -195,28 +199,35 @@ public class AppointmentsGUI extends JFrame {
     }
 
     private JPanel buildAdminBottomPanel() {
-        JPanel bottomPanel = new JPanel(new BorderLayout());
+
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
 
         viewBookingsButton = new JButton("View All Bookings");
         addAppointmentButton = new JButton("Add Appointment");
+        addUserButton = new JButton("Add User");
+        viewUsersButton = new JButton("View Users");
         logoutButton = new JButton("Logout");
 
-        Dimension buttonSize = new Dimension(160, 32);
-        viewBookingsButton.setPreferredSize(buttonSize);
+        Dimension buttonSize = new Dimension(160, 35);
+
         addAppointmentButton.setPreferredSize(buttonSize);
-        logoutButton.setPreferredSize(new Dimension(100, 32));
+        addUserButton.setPreferredSize(buttonSize);
+        viewUsersButton.setPreferredSize(buttonSize);
+        viewBookingsButton.setPreferredSize(buttonSize);
+        logoutButton.setPreferredSize(buttonSize);
 
-        JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 8));
-        JPanel centerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 8));
-        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 8));
+        Font btnFont = new Font("Arial", Font.BOLD, 13);
+        addAppointmentButton.setFont(btnFont);
+        addUserButton.setFont(btnFont);
+        viewUsersButton.setFont(btnFont);
+        viewBookingsButton.setFont(btnFont);
+        logoutButton.setFont(btnFont);
 
-        leftPanel.add(addAppointmentButton);
-        centerPanel.add(viewBookingsButton);
-        rightPanel.add(logoutButton);
-
-        bottomPanel.add(leftPanel, BorderLayout.WEST);
-        bottomPanel.add(centerPanel, BorderLayout.CENTER);
-        bottomPanel.add(rightPanel, BorderLayout.EAST);
+        bottomPanel.add(addAppointmentButton);
+        bottomPanel.add(addUserButton);
+        bottomPanel.add(viewUsersButton);
+        bottomPanel.add(viewBookingsButton);
+        bottomPanel.add(logoutButton);
 
         return bottomPanel;
     }
@@ -344,6 +355,102 @@ public class AppointmentsGUI extends JFrame {
                             "Invalid Input",
                             JOptionPane.ERROR_MESSAGE
                     );
+                }
+            });
+
+            addUserButton.addActionListener(e -> {
+                AuthService auth = LoginGUI.getSharedAuth();
+
+                String username = JOptionPane.showInputDialog(
+                        this,
+                        "Enter new username:",
+                        "Add User",
+                        JOptionPane.PLAIN_MESSAGE
+                );
+                if (username == null) return;
+                username = username.trim();
+
+                if (username.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Username cannot be empty.");
+                    return;
+                }
+
+                if (auth.usernameExists(username)) {
+                    JOptionPane.showMessageDialog(this, "This username already exists.");
+                    return;
+                }
+
+                String password = JOptionPane.showInputDialog(
+                        this,
+                        "Enter password:",
+                        "Add User",
+                        JOptionPane.PLAIN_MESSAGE
+                );
+                if (password == null) return;
+                password = password.trim();
+
+                if (password.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Password cannot be empty.");
+                    return;
+                }
+
+                String[] options = {"User", "Admin"};
+                int choice = JOptionPane.showOptionDialog(
+                        this,
+                        "Select account type:",
+                        "Add User",
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.PLAIN_MESSAGE,
+                        null,
+                        options,
+                        options[0]
+                );
+
+                if (choice == -1) return;
+
+                if (choice == 0) {
+                    auth.addUser(username, password);
+                    JOptionPane.showMessageDialog(this, "User added successfully.");
+                } else {
+                    auth.addAdministrator(username, password);
+                    JOptionPane.showMessageDialog(this, "Administrator added successfully.");
+                }
+            });
+
+            viewUsersButton.addActionListener(e -> {
+                AuthService auth = LoginGUI.getSharedAuth();
+
+                Map<String, String> users = auth.getAllUsers();
+
+                if (users.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "No users found.");
+                    return;
+                }
+
+                String[] usernames = users.keySet().toArray(new String[0]);
+
+                String selectedUser = (String) JOptionPane.showInputDialog(
+                        this,
+                        "Select user to delete:",
+                        "Users List",
+                        JOptionPane.PLAIN_MESSAGE,
+                        null,
+                        usernames,
+                        usernames[0]
+                );
+
+                if (selectedUser == null) return;
+
+                int confirm = JOptionPane.showConfirmDialog(
+                        this,
+                        "Are you sure you want to delete " + selectedUser + "?",
+                        "Confirm Delete",
+                        JOptionPane.YES_NO_OPTION
+                );
+
+                if (confirm == JOptionPane.YES_OPTION) {
+                    auth.removeUser(selectedUser);
+                    JOptionPane.showMessageDialog(this, "User deleted successfully.");
                 }
             });
         }

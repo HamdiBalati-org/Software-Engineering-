@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.hamdi.appointments.strategy.StrategyTest" time="0.019" tests="21" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.hamdi.appointments.strategy.StrategyTest" time="0.03" tests="32" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="21"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -16,7 +16,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="US"/>
     <property name="sun.boot.library.path" value="C:\Users\Msys\Downloads\eclipse-committers-2025-03-R-win32-x86_64\eclipse\plugins\org.eclipse.justj.openjdk.hotspot.jre.full.win32.x86_64_21.0.6.v20250130-0529\jre\bin"/>
-    <property name="sun.java.command" value="C:\Users\Msys\AppData\Local\Temp\surefire9802305721842743154\surefirebooter-20260412004810207_3.jar C:\Users\Msys\AppData\Local\Temp\surefire9802305721842743154 2026-04-12T00-48-10_025-jvmRun1 surefire-20260412004810207_1tmp surefire_0-20260412004810207_2tmp"/>
+    <property name="sun.java.command" value="C:\Users\Msys\AppData\Local\Temp\surefire8025612628628756062\surefirebooter-20260412221402049_3.jar C:\Users\Msys\AppData\Local\Temp\surefire8025612628628756062 2026-04-12T22-14-01_701-jvmRun1 surefire-20260412221402049_1tmp surefire_0-20260412221402049_2tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="C:\Users\Msys\eclipse-workspace\AppointmentSystem\target\test-classes;C:\Users\Msys\eclipse-workspace\AppointmentSystem\target\classes;C:\Users\Msys\.m2\repository\org\junit\jupiter\junit-jupiter\5.9.2\junit-jupiter-5.9.2.jar;C:\Users\Msys\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.9.2\junit-jupiter-api-5.9.2.jar;C:\Users\Msys\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\Msys\.m2\repository\org\junit\platform\junit-platform-commons\1.9.2\junit-platform-commons-1.9.2.jar;C:\Users\Msys\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\Msys\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.9.2\junit-jupiter-params-5.9.2.jar;C:\Users\Msys\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.9.2\junit-jupiter-engine-5.9.2.jar;C:\Users\Msys\.m2\repository\org\junit\platform\junit-platform-engine\1.9.2\junit-platform-engine-1.9.2.jar;C:\Users\Msys\.m2\repository\org\mockito\mockito-core\5.5.0\mockito-core-5.5.0.jar;C:\Users\Msys\.m2\repository\net\bytebuddy\byte-buddy\1.14.6\byte-buddy-1.14.6.jar;C:\Users\Msys\.m2\repository\net\bytebuddy\byte-buddy-agent\1.14.6\byte-buddy-agent-1.14.6.jar;C:\Users\Msys\.m2\repository\org\objenesis\objenesis\3.3\objenesis-3.3.jar;C:\Users\Msys\.m2\repository\com\sun\mail\javax.mail\1.6.2\javax.mail-1.6.2.jar;C:\Users\Msys\.m2\repository\javax\activation\activation\1.1\activation-1.1.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -32,7 +32,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="C:\Users\Msys\AppData\Local\Temp\surefire9802305721842743154\surefirebooter-20260412004810207_3.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\Msys\AppData\Local\Temp\surefire8025612628628756062\surefirebooter-20260412221402049_3.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="21.0.6+7-LTS"/>
@@ -61,25 +61,36 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="65.0"/>
   </properties>
-  <testcase name="testIndividualRule_Valid_WhenCapacityGreaterThanOne" classname="com.hamdi.appointments.strategy.StrategyTest" time="0"/>
-  <testcase name="testAssessmentRule_Invalid_Not120Minutes" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.001"/>
+  <testcase name="testFollowUpRule_Invalid_Below60Minutes" classname="com.hamdi.appointments.strategy.StrategyTest" time="0"/>
   <testcase name="testAssessmentRule_Description_NotBlank" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.001"/>
   <testcase name="testIndividualRule_Invalid_WhenCapacityIsZero" classname="com.hamdi.appointments.strategy.StrategyTest" time="0"/>
-  <testcase name="testVirtualRule_Description_NotBlank" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.002"/>
-  <testcase name="testIndividualRule_Valid_WhenCapacityIsOne" classname="com.hamdi.appointments.strategy.StrategyTest" time="0"/>
-  <testcase name="testGroupRule_Valid_WhenCapacityGreaterThanOne" classname="com.hamdi.appointments.strategy.StrategyTest" time="0"/>
+  <testcase name="testVirtualRule_Description_NotBlank" classname="com.hamdi.appointments.strategy.StrategyTest" time="0"/>
+  <testcase name="testIndividualRule_Valid_WhenCapacityIsOne" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.001"/>
+  <testcase name="testUrgentRule_Valid_Above30Minutes" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.001"/>
+  <testcase name="testGroupRule_Valid_WhenCapacityGreaterThanTwo" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.001"/>
+  <testcase name="inPersonBoundary_Exactly10" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.001"/>
   <testcase name="testGroupRule_Invalid_WhenCapacityIsOne" classname="com.hamdi.appointments.strategy.StrategyTest" time="0"/>
-  <testcase name="testFollowUpRule_Invalid_Not60Minutes" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.002"/>
-  <testcase name="testFollowUpRule_Description_NotBlank" classname="com.hamdi.appointments.strategy.StrategyTest" time="0"/>
+  <testcase name="testAssessmentRule_Valid_Above120Minutes" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.001"/>
+  <testcase name="testAssessmentRule_Invalid_Below120Minutes" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.001"/>
+  <testcase name="testUrgentRule_Invalid_Below30Minutes" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.001"/>
+  <testcase name="assessmentBoundary_JustAbove120" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.001"/>
+  <testcase name="testFollowUpRule_Description_NotBlank" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.001"/>
   <testcase name="testVirtualRule_AlwaysValid" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.001"/>
   <testcase name="testInPersonRule_Valid_WhenMaxParticipantsIs10" classname="com.hamdi.appointments.strategy.StrategyTest" time="0"/>
-  <testcase name="testGroupRule_Description_NotBlank" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.001"/>
-  <testcase name="testInPersonRule_Description_NotBlank" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.001"/>
-  <testcase name="testUrgentRule_Invalid_Above30Minutes" classname="com.hamdi.appointments.strategy.StrategyTest" time="0"/>
+  <testcase name="testGroupRule_Description_NotBlank" classname="com.hamdi.appointments.strategy.StrategyTest" time="0"/>
+  <testcase name="testGroupRule_Invalid_WhenCapacityZero" classname="com.hamdi.appointments.strategy.StrategyTest" time="0"/>
+  <testcase name="urgentBoundary_JustAbove30" classname="com.hamdi.appointments.strategy.StrategyTest" time="0"/>
+  <testcase name="testFollowUpRule_Valid_Above60Minutes" classname="com.hamdi.appointments.strategy.StrategyTest" time="0"/>
+  <testcase name="testInPersonRule_Description_NotBlank" classname="com.hamdi.appointments.strategy.StrategyTest" time="0"/>
+  <testcase name="testVirtualRule_WithNormalValues" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.001"/>
   <testcase name="testFollowUpRule_Valid_Exactly60Minutes" classname="com.hamdi.appointments.strategy.StrategyTest" time="0"/>
-  <testcase name="testIndividualRule_Description_NotBlank" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.002"/>
-  <testcase name="testAssessmentRule_Valid_Exactly120Minutes" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.001"/>
-  <testcase name="testUrgentRule_Description_NotBlank" classname="com.hamdi.appointments.strategy.StrategyTest" time="0"/>
+  <testcase name="testIndividualRule_Description_NotBlank" classname="com.hamdi.appointments.strategy.StrategyTest" time="0"/>
+  <testcase name="testIndividualRule_Invalid_WhenCapacityGreaterThanOne" classname="com.hamdi.appointments.strategy.StrategyTest" time="0"/>
+  <testcase name="testGroupRule_Valid_WhenCapacityIsTwo" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.001"/>
+  <testcase name="testAssessmentRule_Valid_Exactly120Minutes" classname="com.hamdi.appointments.strategy.StrategyTest" time="0"/>
+  <testcase name="testUrgentRule_Description_NotBlank" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.002"/>
   <testcase name="testInPersonRule_Invalid_WhenMaxParticipantsExceeds10" classname="com.hamdi.appointments.strategy.StrategyTest" time="0"/>
-  <testcase name="testUrgentRule_Valid_Exactly30Minutes" classname="com.hamdi.appointments.strategy.StrategyTest" time="0"/>
+  <testcase name="urgentEdge_ZeroDuration" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.001"/>
+  <testcase name="followUpBoundary_JustAbove60" classname="com.hamdi.appointments.strategy.StrategyTest" time="0"/>
+  <testcase name="testUrgentRule_Valid_Exactly30Minutes" classname="com.hamdi.appointments.strategy.StrategyTest" time="0.001"/>
 </testsuite>

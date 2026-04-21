@@ -21,7 +21,7 @@ import com.hamdi.appointments.domain.Appointment;
      */
     @Override
     public boolean isValid(Appointment appointment) {
-<span class="fc bfc" id="L24" title="All 2 branches covered.">        return appointment.getDurationMinutes() &lt;= MAX_DURATION;</span>
+<span class="fc bfc" id="L24" title="All 2 branches covered.">        return appointment.getDurationMinutes() &gt;= MAX_DURATION;</span>
     }
 
     /**

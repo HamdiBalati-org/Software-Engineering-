@@ -44,4 +44,25 @@ public class AppointmentsGUITest {
 
         assertNotNull(frame);
     }
+    @Test
+    void shouldCreateAdminGUIAndBeDisplayable() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            AppointmentService service = new AppointmentService(new AppointmentRepository());
+            frame = new AppointmentsGUI(service, "admin", true);
+        });
+
+        assertNotNull(frame);
+        assertTrue(frame.isDisplayable());
+    }
+    @Test
+    void shouldCreateUserGUIAndBeDisplayable() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            AppointmentService service = new AppointmentService(new AppointmentRepository());
+            frame = new AppointmentsGUI(service, "user1", false);
+        });
+
+        assertNotNull(frame);
+        assertTrue(frame.isDisplayable());
+    }
+    
 }

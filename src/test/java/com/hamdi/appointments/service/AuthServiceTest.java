@@ -76,4 +76,48 @@ public class AuthServiceTest {
     void testLogin_BothEmpty() {
         assertFalse(authService.login("", ""));
     }
+    @Test
+    void testUsernameExists_ForAdmin() {
+        assertTrue(authService.usernameExists("admin"));
+    }
+
+    @Test
+    void testUsernameExists_ForUser() {
+        assertTrue(authService.usernameExists("user1"));
+    }
+
+    @Test
+    void testUsernameExists_False() {
+        assertFalse(authService.usernameExists("unknown"));
+    }
+
+    @Test
+    void testGetAllUsers_ReturnsUsersMap() {
+        assertEquals(1, authService.getAllUsers().size());
+        assertTrue(authService.getAllUsers().containsKey("user1"));
+    }
+
+    @Test
+    void testRemoveUser_RemovesExistingUser() {
+        authService.removeUser("user1");
+
+        assertFalse(authService.isUser("user1"));
+        assertFalse(authService.login("user1", "1234"));
+    }
+
+    @Test
+    void testRemoveUser_NonExistingUser() {
+        authService.removeUser("unknown");
+
+        assertTrue(authService.isAdmin("admin"));
+        assertFalse(authService.isUser("unknown"));
+    }
+
+    @Test
+    void testAddUser_AfterAdminFeature() {
+        authService.addUser("user2", "5678");
+
+        assertTrue(authService.isUser("user2"));
+        assertTrue(authService.login("user2", "5678"));
+    }
 }

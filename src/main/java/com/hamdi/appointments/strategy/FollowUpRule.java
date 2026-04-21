@@ -20,6 +20,6 @@ public class FollowUpRule implements BookingRuleStrategy {
 
     @Override
     public String getRuleDescription() {
-        return "Follow-up appointments must not exceed " + MAX_DURATION + " minutes.";
+        return "Follow-up appointments must be at least " + MAX_DURATION + " minutes.";
     }
 }

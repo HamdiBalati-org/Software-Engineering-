@@ -31,6 +31,5 @@ public class UrgentRule implements BookingRuleStrategy {
      */
     @Override
     public String getRuleDescription() {
-        return "Urgent appointments must not exceed " + MAX_DURATION + " minutes.";
-    }
+    	return "Urgent appointments must be at least " + MAX_DURATION + " minutes.";    }
 }

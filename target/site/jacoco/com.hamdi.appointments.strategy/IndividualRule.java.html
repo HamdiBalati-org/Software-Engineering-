@@ -22,7 +22,7 @@ import com.hamdi.appointments.domain.Appointment;
      */
     @Override
     public boolean isValid(Appointment appointment) {
-<span class="fc bfc" id="L25" title="All 2 branches covered.">        return appointment.getMaxParticipants() &gt;= REQUIRED_PARTICIPANTS;</span>
+<span class="fc bfc" id="L25" title="All 2 branches covered.">        return appointment.getMaxParticipants() == REQUIRED_PARTICIPANTS;</span>
     }
 
     /**

@@ -7,7 +7,7 @@ import java.util.List;
  * Sends notifications to users and records sent messages.
  *
  * @author Hamdi
- * @version 5.1
+ * @version 5.2
  */
 public class NotificationService implements Observer {
 
@@ -22,21 +22,24 @@ public class NotificationService implements Observer {
 
     @Override
     public void notifyUser(String username, String message) {
-<span class="fc" id="L25">        sentMessages.add(message);</span>
 
-<span class="fc" id="L27">        emailSender.sendEmail(</span>
-                SYSTEM_EMAIL,
-                &quot;Appointment Notification&quot;,
-                message
-        );
-<span class="fc" id="L32">    }</span>
+<span class="fc" id="L26">        sentMessages.add(message);</span>
+
+<span class="fc" id="L28">        new Thread(() -&gt; {</span>
+<span class="fc" id="L29">            emailSender.sendEmail(</span>
+                    SYSTEM_EMAIL,
+                    &quot;Appointment Notification&quot;,
+                    message
+            );
+<span class="fc" id="L34">        }).start();</span>
+<span class="fc" id="L35">    }</span>
 
     public List&lt;String&gt; getSentMessages() {
-<span class="nc" id="L35">        return sentMessages;</span>
+<span class="nc" id="L38">        return sentMessages;</span>
     }
 
     public void clearMessages() {
-<span class="nc" id="L39">        sentMessages.clear();</span>
-<span class="nc" id="L40">    }</span>
+<span class="nc" id="L42">        sentMessages.clear();</span>
+<span class="nc" id="L43">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

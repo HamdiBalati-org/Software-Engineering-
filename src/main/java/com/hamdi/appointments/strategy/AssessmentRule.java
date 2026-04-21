@@ -20,6 +20,6 @@ public class AssessmentRule implements BookingRuleStrategy {
 
     @Override
     public String getRuleDescription() {
-        return "Assessment appointments must not exceed " + MAX_DURATION + " minutes.";
+        return "Assessment appointments must be at least " + MAX_DURATION + " minutes.";
     }
 }
