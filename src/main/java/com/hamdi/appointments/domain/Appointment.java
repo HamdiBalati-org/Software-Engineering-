@@ -14,6 +14,10 @@ import java.util.Map;
  */
 public class Appointment {
 
+    private static final String STATUS_PENDING = "Pending";
+    private static final String STATUS_CONFIRMED = "Confirmed";
+    private static final String STATUS_FULL = "FULL";
+
     private LocalDateTime dateTime;
     private int durationMinutes;
     private int maxParticipants;
@@ -22,38 +26,31 @@ public class Appointment {
     private List<String> bookedUsers;
     private Map<String, AppointmentType> userTypes;
 
-    /**
+        /**
      * Creates a new Appointment with Pending status.
      *
      * @param dateTime        the date and time
      * @param durationMinutes the duration in minutes
      * @param maxParticipants the maximum participants
      */
+
     public Appointment(LocalDateTime dateTime, int durationMinutes, int maxParticipants) {
         this.dateTime = dateTime;
         this.durationMinutes = durationMinutes;
         this.maxParticipants = maxParticipants;
         this.currentParticipants = 0;
-        this.status = "Pending";
+        this.status = STATUS_PENDING;
         this.bookedUsers = new ArrayList<>();
         this.userTypes = new HashMap<>();
     }
 
-    /**
-     * Creates a new Appointment with a predefined type.
-     *
-     * @param dateTime        the date and time
-     * @param durationMinutes the duration in minutes
-     * @param maxParticipants the maximum participants
-     * @param type            the appointment type
-     */
     public Appointment(LocalDateTime dateTime, int durationMinutes,
                        int maxParticipants, AppointmentType type) {
         this.dateTime = dateTime;
         this.durationMinutes = durationMinutes;
         this.maxParticipants = maxParticipants;
         this.currentParticipants = 0;
-        this.status = "Pending";
+        this.status = STATUS_PENDING;
         this.bookedUsers = new ArrayList<>();
         this.userTypes = new HashMap<>();
     }
@@ -62,18 +59,15 @@ public class Appointment {
     public LocalDateTime getDateTime() {
         return dateTime;
     }
-
-    /** @return duration in minutes */
+/** @return duration in minutes */
     public int getDurationMinutes() {
         return durationMinutes;
     }
-
-    /** @return max participants */
+/** @return max participants */
     public int getMaxParticipants() {
         return maxParticipants;
     }
-
-    /** @return current participants */
+/** @return current participants */
     public int getCurrentParticipants() {
         return currentParticipants;
     }
@@ -97,41 +91,29 @@ public class Appointment {
      */
     public String getStatusForUser(String username) {
         if (isBookedByUser(username)) {
-            return "Confirmed";
+            return STATUS_CONFIRMED;
         }
 
         if (currentParticipants >= maxParticipants) {
-            return "FULL";
+            return STATUS_FULL;
         }
 
         return status;
     }
 
-    /** @return booked users list */
     public List<String> getBookedUsers() {
         return bookedUsers;
     }
 
-    /**
-     * Returns the type chosen by a specific user.
-     *
-     * @param username the username
-     * @return the appointment type or null
-     */
     public AppointmentType getTypeForUser(String username) {
         return userTypes.get(username);
     }
 
-    /**
-     * Returns the userTypes map.
-     *
-     * @return map of username to AppointmentType
-     */
     public Map<String, AppointmentType> getUserTypes() {
         return userTypes;
     }
 
-    /**
+      /**
      * Sets the appointment status.
      *
      * @param status the new status
@@ -150,17 +132,18 @@ public class Appointment {
         userTypes.put(username, type);
     }
 
-    /**
+        /**
      * Checks if a user already booked this appointment.
      *
      * @param username the username to check
      * @return true if already booked
      */
+
     public boolean isBookedByUser(String username) {
         return bookedUsers.contains(username);
     }
 
-    /**
+        /**
      * Increments participants and updates status.
      *
      * @param username the booking username
@@ -171,19 +154,20 @@ public class Appointment {
             bookedUsers.add(username);
 
             if (currentParticipants >= maxParticipants) {
-                this.status = "FULL";
+                this.status = STATUS_FULL;
             } else {
-                this.status = "Confirmed";
+                this.status = STATUS_CONFIRMED;
             }
         }
     }
 
-    /**
+        /**
      * Cancels a booking for a specific user.
      *
      * @param username the username to cancel
      * @return true if cancelled successfully
      */
+
     public boolean cancelBooking(String username) {
         if (!isBookedByUser(username)) {
             return false;
@@ -194,11 +178,11 @@ public class Appointment {
         currentParticipants--;
 
         if (currentParticipants <= 0) {
-            this.status = "Pending";
+            this.status = STATUS_PENDING;
         } else if (currentParticipants < maxParticipants) {
-            this.status = "Confirmed";
+            this.status = STATUS_CONFIRMED;
         } else {
-            this.status = "FULL";
+            this.status = STATUS_FULL;
         }
 
         return true;
