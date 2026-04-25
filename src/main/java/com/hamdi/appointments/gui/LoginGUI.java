@@ -61,7 +61,7 @@ public class LoginGUI extends JFrame {
      *
      * @return shared auth service
      */
-    public static AuthService getSharedAuth() {
+    public  AuthService getSharedAuth() {
         return sharedAuth;
     }
 
