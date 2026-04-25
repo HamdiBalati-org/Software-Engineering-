@@ -322,7 +322,7 @@ public class AppointmentsGUI extends JFrame {
                 String dateTime = JOptionPane.showInputDialog(
                         this,
                         "Enter date and time (yyyy-MM-ddTHH:mm):",
-                        "Add Appointment",
+                        BTN_ADD_APPOINTMENT,
                         JOptionPane.PLAIN_MESSAGE
                 );
                 if (dateTime == null) return;
@@ -330,7 +330,7 @@ public class AppointmentsGUI extends JFrame {
                 String durationStr = JOptionPane.showInputDialog(
                         this,
                         "Enter duration (minutes):",
-                        "Add Appointment",
+                        BTN_ADD_APPOINTMENT,
                         JOptionPane.PLAIN_MESSAGE
                 );
                 if (durationStr == null) return;
@@ -338,7 +338,7 @@ public class AppointmentsGUI extends JFrame {
                 String maxStr = JOptionPane.showInputDialog(
                         this,
                         "Enter max participants:",
-                        "Add Appointment",
+                        BTN_ADD_APPOINTMENT,
                         JOptionPane.PLAIN_MESSAGE
                 );
                 if (maxStr == null) return;
