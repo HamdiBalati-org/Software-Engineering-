@@ -53,6 +53,7 @@ public class Appointment {
         this.status = STATUS_PENDING;
         this.bookedUsers = new ArrayList<>();
         this.userTypes = new HashMap<>();
+        this.userTypes.put("DEFAULT", type);
     }
 
     /** @return the appointment date and time */
