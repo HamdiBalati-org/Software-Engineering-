@@ -30,7 +30,7 @@ public class LoginGUI extends JFrame {
 
     private  AppointmentRepository sharedRepo;
     private  AppointmentService sharedService;
-    private  AuthService sharedAuth;
+    private  static AuthService sharedAuth;
 
     public static Map<String, List<String>> pendingMessages = new HashMap<>();
 
@@ -61,7 +61,7 @@ public class LoginGUI extends JFrame {
      *
      * @return shared auth service
      */
-    public  AuthService getSharedAuth() {
+    public static AuthService getSharedAuth() {
         return sharedAuth;
     }
 
