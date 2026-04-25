@@ -23,6 +23,8 @@ public class AppointmentsGUI extends JFrame {
 
     private static final long serialVersionUID = 1L;
 
+
+    private static final String BTN_ADD_APPOINTMENT = "Add Appointment";
     private final transient AppointmentService service;
     private final String currentUser;
     private final boolean isAdmin;
@@ -203,7 +205,7 @@ public class AppointmentsGUI extends JFrame {
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
 
         viewBookingsButton = new JButton("View All Bookings");
-        addAppointmentButton = new JButton("Add Appointment");
+        addAppointmentButton = new JButton(BTN_ADD_APPOINTMENT);
         addUserButton = new JButton("Add User");
         viewUsersButton = new JButton("View Users");
         logoutButton = new JButton("Logout");
