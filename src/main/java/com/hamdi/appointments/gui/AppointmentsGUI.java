@@ -23,7 +23,7 @@ public class AppointmentsGUI extends JFrame {
 
     private static final long serialVersionUID = 1L;
 
-    private final AppointmentService service;
+    private final transient AppointmentService service;
     private final String currentUser;
     private final boolean isAdmin;
 
