@@ -28,9 +28,9 @@ public class LoginGUI extends JFrame {
     private JButton loginButton;
     private JCheckBox showPasswordCheckBox;
 
-    private static AppointmentRepository sharedRepo;
-    private static AppointmentService sharedService;
-    private static AuthService sharedAuth;
+    private  AppointmentRepository sharedRepo;
+    private  AppointmentService sharedService;
+    private  AuthService sharedAuth;
 
     public static Map<String, List<String>> pendingMessages = new HashMap<>();
 
