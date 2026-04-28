@@ -3,6 +3,12 @@ package com.hamdi.appointments.domain;
 /**
  * Represents an administrator user
  */
+/*
+Administrator class is a domain class that represents an administrator user in the system.
+*/
+
+
+
 public class Administrator {
     private String username;
     private String password;

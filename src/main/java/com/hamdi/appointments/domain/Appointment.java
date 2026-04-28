@@ -6,12 +6,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+
 /**
  * Represents a scheduled appointment in the system.
  *
  * @author Hamdi
  * @version 2.0
  */
+/*
+Appointment class is a domain class that represents a scheduled appointment in the system.
+*/
+
+
+
 public class Appointment {
 
     private static final String STATUS_PENDING = "Pending";
