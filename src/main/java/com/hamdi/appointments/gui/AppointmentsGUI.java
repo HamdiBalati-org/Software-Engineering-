@@ -13,12 +13,19 @@ import java.awt.*;
 import java.util.List;
 import java.util.Map;
 
+
+
+
+
 /**
  * Main appointments window for booking, cancellation, and modification.
  *
  * @author Hamdi
  * @version 3.2
  */
+
+
+
 public class AppointmentsGUI extends JFrame {
 
     private static final long serialVersionUID = 1L;

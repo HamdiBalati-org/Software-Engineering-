@@ -1,8 +1,13 @@
 package com.hamdi.appointments.gui;
 
+
+
 /**
  * Validates booking input fields for GUI forms.
  */
+
+
+
 public class BookingInputValidator {
 
     public static String validateBookInput(String dateTime, String duration) {
