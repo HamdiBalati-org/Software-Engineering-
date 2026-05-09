@@ -10,14 +10,17 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
 
-        <sonar.organization>hamdibalati-org</sonar.organization>
-        <sonar.projectKey>HamdiBalati-org_Software-Engineering-</sonar.projectKey>
-        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-    </properties>
+    <sonar.organization>hamdibalati-org</sonar.organization>
+    <sonar.projectKey>HamdiBalati-org_Software-Engineering-</sonar.projectKey>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    <sonar.coverage.jacoco.xmlReportPaths>
+        target/site/jacoco/jacoco.xml
+    </sonar.coverage.jacoco.xmlReportPaths>
+</properties>
 
     <dependencies>
         <dependency>
