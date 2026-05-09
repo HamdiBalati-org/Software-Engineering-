@@ -54,7 +54,7 @@ public class GmailEmailSender implements EmailSender {
             return true;
 
         } catch (MessagingException e) {
-            e.printStackTrace();
+            System.err.println("Failed to send email: " + e.getMessage());
             return false;
         }
     }
