@@ -2,6 +2,7 @@ package com.hamdi.appointments.gui;
 import javax.swing.JButton;
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.hamdi.appointments.domain.AppointmentType;
 import java.lang.reflect.Field;
 
 import javax.swing.JFrame;
@@ -217,6 +218,26 @@ void cancelButtonShouldCancelUserBooking() throws Exception {
                         .get(0)
                         .isBookedByUser("user1")
         );
+    });
+}
+
+@Test
+void tableShouldContainAppointmentsAfterAdding() throws Exception {
+
+    SwingUtilities.invokeAndWait(() -> {
+
+        AppointmentService service =
+                new AppointmentService(new AppointmentRepository());
+
+        service.addAppointment("2026-11-01T09:00", 30, 5);
+        service.addAppointment("2026-11-01T10:00", 45, 2);
+
+        frame = new AppointmentsGUI(service, "user1", false);
+
+        JTable table =
+                getPrivateField(frame, "table", JTable.class);
+
+        assertEquals(2, table.getRowCount());
     });
 }
 }
