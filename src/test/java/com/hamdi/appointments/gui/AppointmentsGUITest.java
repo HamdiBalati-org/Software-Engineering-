@@ -185,4 +185,38 @@ void bookButtonShouldBookAppointment() throws Exception {
         );
     });
 }
+
+@Test
+void cancelButtonShouldCancelUserBooking() throws Exception {
+    SwingUtilities.invokeAndWait(() -> {
+        AppointmentService service =
+                new AppointmentService(new AppointmentRepository());
+
+        service.addAppointment("2026-09-01T11:00", 30, 3);
+        service.bookAppointment(
+                "2026-09-01T11:00",
+                30,
+                "user1",
+                AppointmentType.INDIVIDUAL
+        );
+
+        frame = new AppointmentsGUI(service, "user1", false);
+
+        JTextField dateTimeField =
+                getPrivateField(frame, "dateTimeField", JTextField.class);
+
+        JButton cancelButton =
+                getPrivateField(frame, "cancelButton", JButton.class);
+
+        dateTimeField.setText("2026-09-01T11:00");
+
+        cancelButton.doClick();
+
+        assertFalse(
+                service.getAllAppointments()
+                        .get(0)
+                        .isBookedByUser("user1")
+        );
+    });
+}
 }
