@@ -1,5 +1,5 @@
 package com.hamdi.appointments.gui;
-
+import javax.swing.JButton;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.lang.reflect.Field;
@@ -149,6 +149,39 @@ void shouldFillFieldsWhenRowSelected() throws Exception {
         assertEquals(
                 "60",
                 durationField.getText()
+        );
+    });
+}
+
+
+@Test
+void bookButtonShouldBookAppointment() throws Exception {
+    SwingUtilities.invokeAndWait(() -> {
+        AppointmentService service =
+                new AppointmentService(new AppointmentRepository());
+
+        service.addAppointment("2026-08-01T10:00", 30, 3);
+
+        frame = new AppointmentsGUI(service, "user1", false);
+
+        JTextField dateTimeField =
+                getPrivateField(frame, "dateTimeField", JTextField.class);
+
+        JTextField durationField =
+                getPrivateField(frame, "durationField", JTextField.class);
+
+        JButton bookButton =
+                getPrivateField(frame, "bookButton", JButton.class);
+
+        dateTimeField.setText("2026-08-01T10:00");
+        durationField.setText("30");
+
+        bookButton.doClick();
+
+        assertTrue(
+                service.getAllAppointments()
+                        .get(0)
+                        .isBookedByUser("user1")
         );
     });
 }
