@@ -64,7 +64,7 @@ public class AppointmentsGUITest {
             DefaultTableModel model = (DefaultTableModel) table.getModel();
 
             assertEquals(1, model.getRowCount());
-            assertEquals("2026-05-10T10:00", model.getValueAt(0, 0));
+            assertEquals("2026-05-10T10:00", model.getValueAt(0, 0).toString());
             assertEquals(30, model.getValueAt(0, 1));
             assertEquals(3, model.getValueAt(0, 2));
         });
@@ -83,8 +83,7 @@ public class AppointmentsGUITest {
             DefaultTableModel model = (DefaultTableModel) table.getModel();
 
             assertEquals(1, model.getRowCount());
-            assertEquals("2026-05-11T12:00", model.getValueAt(0, 0));
-            assertEquals(45, model.getValueAt(0, 1));
+assertEquals("2026-05-11T12:00", model.getValueAt(0, 0).toString());            assertEquals(45, model.getValueAt(0, 1));
             assertEquals("user1", model.getValueAt(0, 5));
         });
     }
