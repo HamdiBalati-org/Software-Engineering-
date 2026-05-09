@@ -6,8 +6,6 @@ import java.lang.reflect.Field;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import org.junit.jupiter.api.AfterEach;
@@ -55,41 +53,6 @@ public class BookingsGUITest {
             assertTrue(label.isVisible());
         });
     }
-
-    @Test
-void shouldFillFieldsWhenRowSelected() throws Exception {
-
-    SwingUtilities.invokeAndWait(() -> {
-
-        AppointmentService service =
-                new AppointmentService(new AppointmentRepository());
-
-        service.addAppointment("2026-07-01T14:00", 60, 4);
-
-        frame = new AppointmentsGUI(service, "user1", false);
-
-        JTable table =
-                getPrivateField(frame, "table", JTable.class);
-
-        JTextField dateTimeField =
-                getPrivateField(frame, "dateTimeField", JTextField.class);
-
-        JTextField durationField =
-                getPrivateField(frame, "durationField", JTextField.class);
-
-        table.setRowSelectionInterval(0, 0);
-
-        assertEquals(
-                "2026-07-01T14:00",
-                dateTimeField.getText()
-        );
-
-        assertEquals(
-                "60",
-                durationField.getText()
-        );
-    });
-}
 
     @SuppressWarnings("unchecked")
     private static <T> T getPrivateField(Object object, String fieldName, Class<T> type) {

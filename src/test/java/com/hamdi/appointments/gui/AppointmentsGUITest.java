@@ -117,4 +117,39 @@ assertEquals("2026-05-11T12:00", model.getValueAt(0, 0).toString());            
             throw new RuntimeException(e);
         }
     }
+
+    @Test
+void shouldFillFieldsWhenRowSelected() throws Exception {
+
+    SwingUtilities.invokeAndWait(() -> {
+
+        AppointmentService service =
+                new AppointmentService(new AppointmentRepository());
+
+        service.addAppointment("2026-07-01T14:00", 60, 4);
+
+        frame = new AppointmentsGUI(service, "user1", false);
+
+        JTable table =
+                getPrivateField(frame, "table", JTable.class);
+
+        JTextField dateTimeField =
+                getPrivateField(frame, "dateTimeField", JTextField.class);
+
+        JTextField durationField =
+                getPrivateField(frame, "durationField", JTextField.class);
+
+        table.setRowSelectionInterval(0, 0);
+
+        assertEquals(
+                "2026-07-01T14:00",
+                dateTimeField.getText()
+        );
+
+        assertEquals(
+                "60",
+                durationField.getText()
+        );
+    });
+}
 }
