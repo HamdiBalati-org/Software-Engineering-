@@ -1,0 +1,528 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AppointmentsGUI.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=٤;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">AppointmentSystem</a> &gt; <a href="index.source.html" class="el_package">com.hamdi.appointments.gui</a> &gt; <span class="el_source">AppointmentsGUI.java</span></div><h1>AppointmentsGUI.java</h1><pre class="source lang-java linenums">package com.hamdi.appointments.gui;
+
+import com.hamdi.appointments.domain.Appointment;
+import com.hamdi.appointments.domain.AppointmentType;
+import com.hamdi.appointments.service.AppointmentService;
+import com.hamdi.appointments.service.AuthService;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.util.List;
+import java.util.Map;
+
+
+
+
+
+/**
+ * Main appointments window for booking, cancellation, and modification.
+ *
+ * @author Hamdi
+ * @version 3.2
+ */
+
+
+
+public class AppointmentsGUI extends JFrame {
+
+    private static final long serialVersionUID = 1L;
+
+
+    private static final String BTN_ADD_APPOINTMENT = &quot;Add Appointment&quot;;
+    private final transient AppointmentService service;
+    private final String currentUser;
+    private final boolean isAdmin;
+
+    private JTable table;
+    private DefaultTableModel tableModel;
+
+    private JTextField dateTimeField;
+    private JTextField durationField;
+    private JTextField newDateTimeField;
+    private JComboBox&lt;AppointmentType&gt; typeComboBox;
+
+    private JButton bookButton;
+    private JButton cancelButton;
+    private JButton modifyButton;
+    private JButton myBookingsButton;
+    private JButton viewBookingsButton;
+    private JButton addAppointmentButton;
+    private JButton addUserButton;
+    private JButton viewUsersButton;
+    private JButton logoutButton;
+
+    public AppointmentsGUI(AppointmentService service, String username, boolean isAdmin) {
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        super(&quot;Appointments - &quot; + username + (isAdmin ? &quot; [ADMIN]&quot; : &quot;&quot;));</span>
+<span class="fc" id="L59">        this.service = service;</span>
+<span class="fc" id="L60">        this.currentUser = username;</span>
+<span class="fc" id="L61">        this.isAdmin = isAdmin;</span>
+
+<span class="fc" id="L63">        buildUI();</span>
+<span class="fc" id="L64">        wireActions();</span>
+<span class="fc" id="L65">        refreshTable();</span>
+
+<span class="fc" id="L67">        setSize(980, 540);</span>
+<span class="fc" id="L68">        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);</span>
+<span class="fc" id="L69">        setLocationRelativeTo(null);</span>
+<span class="fc" id="L70">        setVisible(true);</span>
+
+<span class="fc" id="L72">        showPendingNotificationsForUser();</span>
+<span class="fc" id="L73">    }</span>
+
+    private void buildUI() {
+<span class="fc" id="L76">        setLayout(new BorderLayout(10, 10));</span>
+<span class="fc" id="L77">        ((JComponent) getContentPane()).setBorder(new EmptyBorder(10, 10, 10, 10));</span>
+
+<span class="fc" id="L79">        buildTable();</span>
+<span class="fc" id="L80">        add(buildCenterPanel(), BorderLayout.CENTER);</span>
+
+<span class="fc bfc" id="L82" title="All 2 branches covered.">        if (isAdmin) {</span>
+<span class="fc" id="L83">            add(buildAdminBottomPanel(), BorderLayout.SOUTH);</span>
+        } else {
+<span class="fc" id="L85">            add(buildUserBottomPanel(), BorderLayout.SOUTH);</span>
+        }
+<span class="fc" id="L87">    }</span>
+
+    private void buildTable() {
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        if (isAdmin) {</span>
+<span class="fc" id="L91">            tableModel = new DefaultTableModel(</span>
+                    new Object[]{&quot;DateTime&quot;, &quot;Duration&quot;, &quot;Max&quot;, &quot;Current&quot;, &quot;Status&quot;, &quot;Booked By&quot;}, 0);
+        } else {
+<span class="fc" id="L94">            tableModel = new DefaultTableModel(</span>
+                    new Object[]{&quot;DateTime&quot;, &quot;Duration&quot;, &quot;Max&quot;, &quot;Current&quot;, &quot;Status&quot;, &quot;Type&quot;}, 0);
+        }
+
+<span class="fc" id="L98">        table = new JTable(tableModel);</span>
+<span class="fc" id="L99">        table.getTableHeader().setReorderingAllowed(false);</span>
+<span class="fc" id="L100">        table.setRowHeight(22);</span>
+<span class="fc" id="L101">        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);</span>
+
+<span class="fc bfc" id="L103" title="All 2 branches covered.">        if (!isAdmin) {</span>
+<span class="fc" id="L104">            table.getSelectionModel().addListSelectionListener(e -&gt; {</span>
+<span class="nc" id="L105">                int row = table.getSelectedRow();</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">                if (row != -1) {</span>
+<span class="nc" id="L107">                    dateTimeField.setText(tableModel.getValueAt(row, 0).toString());</span>
+<span class="nc" id="L108">                    durationField.setText(tableModel.getValueAt(row, 1).toString());</span>
+                }
+<span class="nc" id="L110">            });</span>
+        }
+<span class="fc" id="L112">    }</span>
+
+    private JPanel buildCenterPanel() {
+<span class="fc" id="L115">        JPanel centerPanel = new JPanel(new BorderLayout(8, 8));</span>
+
+<span class="fc" id="L117">        JLabel titleLabel = new JLabel(&quot;Available Appointments&quot;, JLabel.CENTER);</span>
+<span class="fc" id="L118">        titleLabel.setFont(new Font(&quot;Arial&quot;, Font.BOLD, 20));</span>
+<span class="fc" id="L119">        titleLabel.setBorder(new EmptyBorder(0, 0, 8, 0));</span>
+
+<span class="fc" id="L121">        JScrollPane scrollPane = new JScrollPane(table);</span>
+
+<span class="fc" id="L123">        centerPanel.add(titleLabel, BorderLayout.NORTH);</span>
+<span class="fc" id="L124">        centerPanel.add(scrollPane, BorderLayout.CENTER);</span>
+
+<span class="fc" id="L126">        return centerPanel;</span>
+    }
+
+    private JPanel buildUserBottomPanel() {
+<span class="fc" id="L130">        JPanel bottomPanel = new JPanel();</span>
+<span class="fc" id="L131">        bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));</span>
+<span class="fc" id="L132">        bottomPanel.setBorder(new EmptyBorder(8, 0, 0, 0));</span>
+
+<span class="fc" id="L134">        dateTimeField = new JTextField(12);</span>
+<span class="fc" id="L135">        durationField = new JTextField(6);</span>
+<span class="fc" id="L136">        newDateTimeField = new JTextField(12);</span>
+<span class="fc" id="L137">        typeComboBox = new JComboBox&lt;&gt;(AppointmentType.values());</span>
+
+<span class="fc" id="L139">        bookButton = new JButton(&quot;Book&quot;);</span>
+<span class="fc" id="L140">        cancelButton = new JButton(&quot;Cancel My Booking&quot;);</span>
+<span class="fc" id="L141">        modifyButton = new JButton(&quot;Modify My Booking&quot;);</span>
+<span class="fc" id="L142">        myBookingsButton = new JButton(&quot;My Bookings&quot;);</span>
+<span class="fc" id="L143">        logoutButton = new JButton(&quot;Logout&quot;);</span>
+
+<span class="fc" id="L145">        Dimension smallButton = new Dimension(110, 30);</span>
+<span class="fc" id="L146">        Dimension mediumButton = new Dimension(160, 30);</span>
+<span class="fc" id="L147">        Dimension logoutSize = new Dimension(100, 30);</span>
+
+<span class="fc" id="L149">        bookButton.setPreferredSize(smallButton);</span>
+<span class="fc" id="L150">        cancelButton.setPreferredSize(mediumButton);</span>
+<span class="fc" id="L151">        modifyButton.setPreferredSize(mediumButton);</span>
+<span class="fc" id="L152">        myBookingsButton.setPreferredSize(new Dimension(130, 30));</span>
+<span class="fc" id="L153">        logoutButton.setPreferredSize(logoutSize);</span>
+
+<span class="fc" id="L155">        JPanel bookingCard = new JPanel();</span>
+<span class="fc" id="L156">        bookingCard.setLayout(new BoxLayout(bookingCard, BoxLayout.Y_AXIS));</span>
+<span class="fc" id="L157">        bookingCard.setBorder(BorderFactory.createTitledBorder(</span>
+<span class="fc" id="L158">                BorderFactory.createEtchedBorder(),</span>
+                &quot;Book / Cancel / View&quot;,
+                TitledBorder.LEFT,
+                TitledBorder.TOP,
+                new Font(&quot;Arial&quot;, Font.BOLD, 12)
+        ));
+
+<span class="fc" id="L165">        JPanel bookingRow1 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 6));</span>
+<span class="fc" id="L166">        JPanel bookingRow2 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 6));</span>
+
+<span class="fc" id="L168">        bookingRow1.add(new JLabel(&quot;DateTime:&quot;));</span>
+<span class="fc" id="L169">        bookingRow1.add(dateTimeField);</span>
+<span class="fc" id="L170">        bookingRow1.add(new JLabel(&quot;Duration:&quot;));</span>
+<span class="fc" id="L171">        bookingRow1.add(durationField);</span>
+<span class="fc" id="L172">        bookingRow1.add(new JLabel(&quot;Type:&quot;));</span>
+<span class="fc" id="L173">        bookingRow1.add(typeComboBox);</span>
+<span class="fc" id="L174">        bookingRow1.add(bookButton);</span>
+
+<span class="fc" id="L176">        bookingRow2.add(cancelButton);</span>
+<span class="fc" id="L177">        bookingRow2.add(myBookingsButton);</span>
+
+<span class="fc" id="L179">        bookingCard.add(bookingRow1);</span>
+<span class="fc" id="L180">        bookingCard.add(bookingRow2);</span>
+
+<span class="fc" id="L182">        JPanel modifyCard = new JPanel(new BorderLayout(10, 10));</span>
+<span class="fc" id="L183">        modifyCard.setBorder(BorderFactory.createTitledBorder(</span>
+<span class="fc" id="L184">                BorderFactory.createEtchedBorder(),</span>
+                &quot;Modify Booking&quot;,
+                TitledBorder.LEFT,
+                TitledBorder.TOP,
+                new Font(&quot;Arial&quot;, Font.BOLD, 12)
+        ));
+
+<span class="fc" id="L191">        JPanel modifyLeft = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));</span>
+<span class="fc" id="L192">        JPanel modifyRight = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));</span>
+
+<span class="fc" id="L194">        modifyLeft.add(new JLabel(&quot;New DateTime:&quot;));</span>
+<span class="fc" id="L195">        modifyLeft.add(newDateTimeField);</span>
+<span class="fc" id="L196">        modifyLeft.add(modifyButton);</span>
+
+<span class="fc" id="L198">        modifyRight.add(logoutButton);</span>
+
+<span class="fc" id="L200">        modifyCard.add(modifyLeft, BorderLayout.WEST);</span>
+<span class="fc" id="L201">        modifyCard.add(modifyRight, BorderLayout.EAST);</span>
+
+<span class="fc" id="L203">        bottomPanel.add(bookingCard);</span>
+<span class="fc" id="L204">        bottomPanel.add(Box.createVerticalStrut(8));</span>
+<span class="fc" id="L205">        bottomPanel.add(modifyCard);</span>
+
+<span class="fc" id="L207">        return bottomPanel;</span>
+    }
+
+    private JPanel buildAdminBottomPanel() {
+
+<span class="fc" id="L212">        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));</span>
+
+<span class="fc" id="L214">        viewBookingsButton = new JButton(&quot;View All Bookings&quot;);</span>
+<span class="fc" id="L215">        addAppointmentButton = new JButton(BTN_ADD_APPOINTMENT);</span>
+<span class="fc" id="L216">        addUserButton = new JButton(&quot;Add User&quot;);</span>
+<span class="fc" id="L217">        viewUsersButton = new JButton(&quot;View Users&quot;);</span>
+<span class="fc" id="L218">        logoutButton = new JButton(&quot;Logout&quot;);</span>
+
+<span class="fc" id="L220">        Dimension buttonSize = new Dimension(160, 35);</span>
+
+<span class="fc" id="L222">        addAppointmentButton.setPreferredSize(buttonSize);</span>
+<span class="fc" id="L223">        addUserButton.setPreferredSize(buttonSize);</span>
+<span class="fc" id="L224">        viewUsersButton.setPreferredSize(buttonSize);</span>
+<span class="fc" id="L225">        viewBookingsButton.setPreferredSize(buttonSize);</span>
+<span class="fc" id="L226">        logoutButton.setPreferredSize(buttonSize);</span>
+
+<span class="fc" id="L228">        Font btnFont = new Font(&quot;Arial&quot;, Font.BOLD, 13);</span>
+<span class="fc" id="L229">        addAppointmentButton.setFont(btnFont);</span>
+<span class="fc" id="L230">        addUserButton.setFont(btnFont);</span>
+<span class="fc" id="L231">        viewUsersButton.setFont(btnFont);</span>
+<span class="fc" id="L232">        viewBookingsButton.setFont(btnFont);</span>
+<span class="fc" id="L233">        logoutButton.setFont(btnFont);</span>
+
+<span class="fc" id="L235">        bottomPanel.add(addAppointmentButton);</span>
+<span class="fc" id="L236">        bottomPanel.add(addUserButton);</span>
+<span class="fc" id="L237">        bottomPanel.add(viewUsersButton);</span>
+<span class="fc" id="L238">        bottomPanel.add(viewBookingsButton);</span>
+<span class="fc" id="L239">        bottomPanel.add(logoutButton);</span>
+
+<span class="fc" id="L241">        return bottomPanel;</span>
+    }
+
+    private void wireActions() {
+<span class="fc bfc" id="L245" title="All 2 branches covered.">        if (!isAdmin) {</span>
+<span class="fc" id="L246">            bookButton.addActionListener(e -&gt; {</span>
+<span class="nc" id="L247">                String dt = dateTimeField.getText().trim();</span>
+                int dur;
+
+<span class="nc bnc" id="L250" title="All 2 branches missed.">                if (dt.isEmpty()) {</span>
+<span class="nc" id="L251">                    JOptionPane.showMessageDialog(this, &quot;Please enter a DateTime!&quot;);</span>
+<span class="nc" id="L252">                    return;</span>
+                }
+
+                try {
+<span class="nc" id="L256">                    dur = Integer.parseInt(durationField.getText().trim());</span>
+<span class="nc" id="L257">                } catch (NumberFormatException ex) {</span>
+<span class="nc" id="L258">                    JOptionPane.showMessageDialog(this, &quot;Invalid duration!&quot;);</span>
+<span class="nc" id="L259">                    return;</span>
+<span class="nc" id="L260">                }</span>
+
+<span class="nc" id="L262">                AppointmentType type = (AppointmentType) typeComboBox.getSelectedItem();</span>
+<span class="nc" id="L263">                service.bookAppointment(dt, dur, currentUser, type);</span>
+<span class="nc" id="L264">                refreshTable();</span>
+<span class="nc" id="L265">            });</span>
+
+<span class="fc" id="L267">            cancelButton.addActionListener(e -&gt; {</span>
+<span class="nc" id="L268">                String dt = dateTimeField.getText().trim();</span>
+
+<span class="nc bnc" id="L270" title="All 2 branches missed.">                if (dt.isEmpty()) {</span>
+<span class="nc" id="L271">                    JOptionPane.showMessageDialog(this, &quot;Please enter a DateTime!&quot;);</span>
+<span class="nc" id="L272">                    return;</span>
+                }
+
+<span class="nc" id="L275">                service.cancelAppointment(dt, currentUser);</span>
+<span class="nc" id="L276">                refreshTable();</span>
+<span class="nc" id="L277">            });</span>
+
+<span class="fc" id="L279">            modifyButton.addActionListener(e -&gt; {</span>
+<span class="nc" id="L280">                String oldDt = dateTimeField.getText().trim();</span>
+<span class="nc" id="L281">                String newDt = newDateTimeField.getText().trim();</span>
+
+<span class="nc bnc" id="L283" title="All 2 branches missed.">                if (oldDt.isEmpty()) {</span>
+<span class="nc" id="L284">                    JOptionPane.showMessageDialog(this, &quot;Please enter the current DateTime!&quot;);</span>
+<span class="nc" id="L285">                    return;</span>
+                }
+
+<span class="nc bnc" id="L288" title="All 2 branches missed.">                if (newDt.isEmpty()) {</span>
+<span class="nc" id="L289">                    JOptionPane.showMessageDialog(this, &quot;Please enter the new DateTime!&quot;);</span>
+<span class="nc" id="L290">                    return;</span>
+                }
+
+<span class="nc" id="L293">                service.modifyAppointment(oldDt, newDt, currentUser);</span>
+<span class="nc" id="L294">                refreshTable();</span>
+<span class="nc" id="L295">            });</span>
+
+<span class="fc" id="L297">            myBookingsButton.addActionListener(e -&gt; {</span>
+<span class="nc" id="L298">                StringBuilder sb = new StringBuilder(&quot;Your Bookings:\n\n&quot;);</span>
+<span class="nc" id="L299">                boolean found = false;</span>
+
+<span class="nc bnc" id="L301" title="All 2 branches missed.">                for (Appointment a : service.getAllAppointments()) {</span>
+<span class="nc bnc" id="L302" title="All 2 branches missed.">                    if (a.isBookedByUser(currentUser)) {</span>
+<span class="nc" id="L303">                        found = true;</span>
+<span class="nc" id="L304">                        sb.append(&quot;- &quot;).append(a.getDateTime())</span>
+<span class="nc" id="L305">                                .append(&quot; | Duration: &quot;).append(a.getDurationMinutes()).append(&quot; min&quot;)</span>
+<span class="nc" id="L306">                                .append(&quot; | Type: &quot;).append(a.getTypeForUser(currentUser))</span>
+<span class="nc" id="L307">                                .append(&quot; | Status: &quot;).append(a.getStatusForUser(currentUser))</span>
+<span class="nc" id="L308">                                .append(&quot;\n&quot;);</span>
+                    }
+<span class="nc" id="L310">                }</span>
+
+<span class="nc bnc" id="L312" title="All 2 branches missed.">                if (!found) {</span>
+<span class="nc" id="L313">                    sb.append(&quot;You have no bookings yet.&quot;);</span>
+                }
+
+<span class="nc" id="L316">                JOptionPane.showMessageDialog(</span>
+                        this,
+<span class="nc" id="L318">                        sb.toString(),</span>
+                        &quot;My Bookings&quot;,
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+<span class="nc" id="L322">            });</span>
+        }
+
+<span class="fc bfc" id="L325" title="All 2 branches covered.">        if (isAdmin) {</span>
+<span class="pc" id="L326">            viewBookingsButton.addActionListener(e -&gt; new BookingsGUI(service, currentUser));</span>
+
+<span class="fc" id="L328">            addAppointmentButton.addActionListener(e -&gt; {</span>
+<span class="nc" id="L329">                String dateTime = JOptionPane.showInputDialog(</span>
+                        this,
+                        &quot;Enter date and time (yyyy-MM-ddTHH:mm):&quot;,
+                        BTN_ADD_APPOINTMENT,
+                        JOptionPane.PLAIN_MESSAGE
+                );
+<span class="nc bnc" id="L335" title="All 2 branches missed.">                if (dateTime == null) return;</span>
+
+<span class="nc" id="L337">                String durationStr = JOptionPane.showInputDialog(</span>
+                        this,
+                        &quot;Enter duration (minutes):&quot;,
+                        BTN_ADD_APPOINTMENT,
+                        JOptionPane.PLAIN_MESSAGE
+                );
+<span class="nc bnc" id="L343" title="All 2 branches missed.">                if (durationStr == null) return;</span>
+
+<span class="nc" id="L345">                String maxStr = JOptionPane.showInputDialog(</span>
+                        this,
+                        &quot;Enter max participants:&quot;,
+                        BTN_ADD_APPOINTMENT,
+                        JOptionPane.PLAIN_MESSAGE
+                );
+<span class="nc bnc" id="L351" title="All 2 branches missed.">                if (maxStr == null) return;</span>
+
+                try {
+<span class="nc" id="L354">                    int duration = Integer.parseInt(durationStr.trim());</span>
+<span class="nc" id="L355">                    int maxParticipants = Integer.parseInt(maxStr.trim());</span>
+
+<span class="nc" id="L357">                    service.addAppointment(dateTime.trim(), duration, maxParticipants);</span>
+<span class="nc" id="L358">                    refreshTable();</span>
+
+<span class="nc" id="L360">                } catch (NumberFormatException ex) {</span>
+<span class="nc" id="L361">                    JOptionPane.showMessageDialog(</span>
+                            this,
+                            &quot;Duration and max participants must be valid numbers.&quot;,
+                            &quot;Invalid Input&quot;,
+                            JOptionPane.ERROR_MESSAGE
+                    );
+<span class="nc" id="L367">                }</span>
+<span class="nc" id="L368">            });</span>
+
+<span class="fc" id="L370">            addUserButton.addActionListener(e -&gt; {</span>
+<span class="nc" id="L371">                AuthService auth = LoginGUI.getSharedAuth();</span>
+
+<span class="nc" id="L373">                String username = JOptionPane.showInputDialog(</span>
+                        this,
+                        &quot;Enter new username:&quot;,
+                        &quot;Add User&quot;,
+                        JOptionPane.PLAIN_MESSAGE
+                );
+<span class="nc bnc" id="L379" title="All 2 branches missed.">                if (username == null) return;</span>
+<span class="nc" id="L380">                username = username.trim();</span>
+
+<span class="nc bnc" id="L382" title="All 2 branches missed.">                if (username.isEmpty()) {</span>
+<span class="nc" id="L383">                    JOptionPane.showMessageDialog(this, &quot;Username cannot be empty.&quot;);</span>
+<span class="nc" id="L384">                    return;</span>
+                }
+
+<span class="nc bnc" id="L387" title="All 2 branches missed.">                if (auth.usernameExists(username)) {</span>
+<span class="nc" id="L388">                    JOptionPane.showMessageDialog(this, &quot;This username already exists.&quot;);</span>
+<span class="nc" id="L389">                    return;</span>
+                }
+
+<span class="nc" id="L392">                String password = JOptionPane.showInputDialog(</span>
+                        this,
+                        &quot;Enter password:&quot;,
+                        &quot;Add User&quot;,
+                        JOptionPane.PLAIN_MESSAGE
+                );
+<span class="nc bnc" id="L398" title="All 2 branches missed.">                if (password == null) return;</span>
+<span class="nc" id="L399">                password = password.trim();</span>
+
+<span class="nc bnc" id="L401" title="All 2 branches missed.">                if (password.isEmpty()) {</span>
+<span class="nc" id="L402">                    JOptionPane.showMessageDialog(this, &quot;Password cannot be empty.&quot;);</span>
+<span class="nc" id="L403">                    return;</span>
+                }
+
+<span class="nc" id="L406">                String[] options = {&quot;User&quot;, &quot;Admin&quot;};</span>
+<span class="nc" id="L407">                int choice = JOptionPane.showOptionDialog(</span>
+                        this,
+                        &quot;Select account type:&quot;,
+                        &quot;Add User&quot;,
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.PLAIN_MESSAGE,
+                        null,
+                        options,
+                        options[0]
+                );
+
+<span class="nc bnc" id="L418" title="All 2 branches missed.">                if (choice == -1) return;</span>
+
+<span class="nc bnc" id="L420" title="All 2 branches missed.">                if (choice == 0) {</span>
+<span class="nc" id="L421">                    auth.addUser(username, password);</span>
+<span class="nc" id="L422">                    JOptionPane.showMessageDialog(this, &quot;User added successfully.&quot;);</span>
+                } else {
+<span class="nc" id="L424">                    auth.addAdministrator(username, password);</span>
+<span class="nc" id="L425">                    JOptionPane.showMessageDialog(this, &quot;Administrator added successfully.&quot;);</span>
+                }
+<span class="nc" id="L427">            });</span>
+
+<span class="fc" id="L429">            viewUsersButton.addActionListener(e -&gt; {</span>
+<span class="nc" id="L430">                AuthService auth = LoginGUI.getSharedAuth();</span>
+
+<span class="nc" id="L432">                Map&lt;String, String&gt; users = auth.getAllUsers();</span>
+
+<span class="nc bnc" id="L434" title="All 2 branches missed.">                if (users.isEmpty()) {</span>
+<span class="nc" id="L435">                    JOptionPane.showMessageDialog(this, &quot;No users found.&quot;);</span>
+<span class="nc" id="L436">                    return;</span>
+                }
+
+<span class="nc" id="L439">                String[] usernames = users.keySet().toArray(new String[0]);</span>
+
+<span class="nc" id="L441">                String selectedUser = (String) JOptionPane.showInputDialog(</span>
+                        this,
+                        &quot;Select user to delete:&quot;,
+                        &quot;Users List&quot;,
+                        JOptionPane.PLAIN_MESSAGE,
+                        null,
+                        usernames,
+                        usernames[0]
+                );
+
+<span class="nc bnc" id="L451" title="All 2 branches missed.">                if (selectedUser == null) return;</span>
+
+<span class="nc" id="L453">                int confirm = JOptionPane.showConfirmDialog(</span>
+                        this,
+                        &quot;Are you sure you want to delete &quot; + selectedUser + &quot;?&quot;,
+                        &quot;Confirm Delete&quot;,
+                        JOptionPane.YES_NO_OPTION
+                );
+
+<span class="nc bnc" id="L460" title="All 2 branches missed.">                if (confirm == JOptionPane.YES_OPTION) {</span>
+<span class="nc" id="L461">                    auth.removeUser(selectedUser);</span>
+<span class="nc" id="L462">                    JOptionPane.showMessageDialog(this, &quot;User deleted successfully.&quot;);</span>
+                }
+<span class="nc" id="L464">            });</span>
+        }
+
+<span class="fc" id="L467">        logoutButton.addActionListener(e -&gt; {</span>
+<span class="nc" id="L468">            dispose();</span>
+<span class="nc" id="L469">            new LoginGUI();</span>
+<span class="nc" id="L470">        });</span>
+<span class="fc" id="L471">    }</span>
+
+    private void showPendingNotificationsForUser() {
+<span class="fc bfc" id="L474" title="All 2 branches covered.">        if (!isAdmin) {</span>
+<span class="fc" id="L475">            List&lt;String&gt; msgs = LoginGUI.popPendingMessages(currentUser);</span>
+<span class="pc bpc" id="L476" title="1 of 2 branches missed.">            if (!msgs.isEmpty()) {</span>
+<span class="nc" id="L477">                StringBuilder sb = new StringBuilder(&quot;Notifications:\n\n&quot;);</span>
+<span class="nc bnc" id="L478" title="All 2 branches missed.">                for (String msg : msgs) {</span>
+<span class="nc" id="L479">                    sb.append(&quot;- &quot;).append(msg).append(&quot;\n&quot;);</span>
+<span class="nc" id="L480">                }</span>
+<span class="nc" id="L481">                JOptionPane.showMessageDialog(</span>
+                        this,
+<span class="nc" id="L483">                        sb.toString(),</span>
+                        &quot;Notifications&quot;,
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+            }
+        }
+<span class="fc" id="L489">    }</span>
+
+    /**
+     * Refreshes the appointments table.
+     */
+    private void refreshTable() {
+<span class="fc" id="L495">        tableModel.setRowCount(0);</span>
+
+<span class="fc bfc" id="L497" title="All 2 branches covered.">        List&lt;Appointment&gt; appointments = isAdmin</span>
+<span class="fc" id="L498">                ? service.getAllAppointments()</span>
+<span class="fc" id="L499">                : service.getAvailableAppointments();</span>
+
+<span class="pc bpc" id="L501" title="1 of 2 branches missed.">        for (Appointment a : appointments) {</span>
+<span class="nc bnc" id="L502" title="All 2 branches missed.">            if (isAdmin) {</span>
+<span class="nc bnc" id="L503" title="All 2 branches missed.">                String bookedBy = a.getBookedUsers().isEmpty()</span>
+<span class="nc" id="L504">                        ? &quot;-&quot;</span>
+<span class="nc" id="L505">                        : String.join(&quot;, &quot;, a.getBookedUsers());</span>
+
+<span class="nc" id="L507">                tableModel.addRow(new Object[]{</span>
+<span class="nc" id="L508">                        a.getDateTime(),</span>
+<span class="nc" id="L509">                        a.getDurationMinutes(),</span>
+<span class="nc" id="L510">                        a.getMaxParticipants(),</span>
+<span class="nc" id="L511">                        a.getCurrentParticipants(),</span>
+<span class="nc" id="L512">                        a.getStatus(),</span>
+                        bookedBy
+                });
+<span class="nc" id="L515">            } else {</span>
+<span class="nc" id="L516">                tableModel.addRow(new Object[]{</span>
+<span class="nc" id="L517">                        a.getDateTime(),</span>
+<span class="nc" id="L518">                        a.getDurationMinutes(),</span>
+<span class="nc" id="L519">                        a.getMaxParticipants(),</span>
+<span class="nc" id="L520">                        a.getCurrentParticipants(),</span>
+<span class="nc" id="L521">                        a.getStatusForUser(currentUser),</span>
+<span class="nc bnc" id="L522" title="All 2 branches missed.">                        a.getTypeForUser(currentUser) != null ? a.getTypeForUser(currentUser) : &quot;-&quot;</span>
+                });
+            }
+<span class="nc" id="L525">        }</span>
+<span class="fc" id="L526">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -1,0 +1,17 @@
+com\hamdi\appointments\notification\FakeEmailSender.class
+com\hamdi\appointments\gui\GUIValidatorTest.class
+com\hamdi\appointments\domain\AdministratorTest.class
+com\hamdi\appointments\notification\GmailEmailSenderTest.class
+com\hamdi\appointments\notification\NotificationServiceTest.class
+com\hamdi\appointments\gui\BookingsGUITest.class
+com\hamdi\appointments\strategy\StrategyTest.class
+com\hamdi\appointments\domain\AppointmentStatusTest.class
+com\hamdi\appointments\domain\AppointmentTest.class
+com\hamdi\appointments\domain\UserTest.class
+com\hamdi\appointments\gui\LoginGUITest.class
+com\hamdi\appointments\service\AppointmentServiceTest.class
+com\hamdi\appointments\repository\AppointmentRepositoryTest.class
+com\hamdi\appointments\service\AppointmentServiceEmailTest.class
+com\hamdi\appointments\gui\AppointmentsGUITest.class
+com\hamdi\appointments\gui\BookingInputValidatorTest.class
+com\hamdi\appointments\service\AuthServiceTest.class
