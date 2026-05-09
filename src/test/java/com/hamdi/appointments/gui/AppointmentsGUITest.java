@@ -84,7 +84,7 @@ public class AppointmentsGUITest {
 
             assertEquals(1, model.getRowCount());
 assertEquals("2026-05-11T12:00", model.getValueAt(0, 0).toString());            assertEquals(45, model.getValueAt(0, 1));
-            assertEquals("user1", model.getValueAt(0, 5));
+            assertEquals("-", model.getValueAt(0, 5));
         });
     }
 
