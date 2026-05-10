@@ -14,7 +14,6 @@ public class BookingsGUI extends JFrame {
     private static final long serialVersionUID = 1L;
 
     private AppointmentService service;
-    private String adminName;
 
     private JTable table;
     private DefaultTableModel tableModel;
