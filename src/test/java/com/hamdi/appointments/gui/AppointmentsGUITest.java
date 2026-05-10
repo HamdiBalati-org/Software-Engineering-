@@ -240,4 +240,6 @@ void tableShouldContainAppointmentsAfterAdding() throws Exception {
         assertEquals(2, table.getRowCount());
     });
 }
+
+
 }
